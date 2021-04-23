@@ -1,0 +1,1205 @@
+// function currying(fn, ...args) {
+//   const length = fn.length;
+//   return function (...rest) {
+//     args = [...args, ...rest];
+//     return args.length < length ? currying(fn, ...args) : fn.call(null, ...args);
+//   }
+// }
+
+// function currying(fn, ...args) {
+//   const length = fn.length;
+//   return function (...rest) {
+//     args = [...args, ...rest];
+//     return length > args.length
+//       ? currying(fn, ...args)
+//       : fn.call(null, ...args);
+//   };
+// }
+
+// function currying(fn, ...args) {
+//   const length = fn.length;
+//   return function (...rest) {
+//     rest = [...args, ...rest];
+//     return length > rest.length ? currying(fn, ...rest) : fn.apply(null, rest)
+//   }
+// }
+
+// function currying(fn, ...args) {
+//   const length = fn.length;
+//   return function (...rest) {
+//     rest = [...args, ...rest];
+//     return rest.length < length ? currying(fn, ...rest) : fn.apply(null, rest);
+//   }
+// }
+// function currying(fn, ...args) {
+//   const length = fn.length;
+//   return function (...rest) {
+//     rest = [...args, ...rest];
+//     return length > rest.length ? currying(fn, ...rest) : fn.apply(null, rest);
+//   };
+// }
+function currying(fn, ...args) {
+  const length = fn.length;
+  return function (...rest) {
+    rest = [...args, ...rest];
+    return length < rest.length ? currying(fn, ...rest) : fn.apply(null, rest);
+  }
+}
+
+function sum(a, b, c, d) {
+  return a + b + c + d;
+}
+var add = currying(sum);
+// console.log(add(1, 2)(3)(4));
+
+
+function fn1(a) {
+  console.log('fn1: ', a);
+  return a+1
+}
+
+function fn2(a) {
+  console.log('fn2: ', a);
+  return a+1
+}
+
+function fn3(a) {
+  console.log('fn3: ', a);
+  return a+1
+}
+
+function fn4(a) {
+  console.log('fn4: ', a);
+  return a+1
+}
+
+// function compose(...fns) {
+//   return function (...args) {
+//     const firstFn = fns.shift();
+//     return fns.reduce((pre, cur) => {
+//       return cur(pre);
+//     }, firstFn(...args));
+//   }
+// }
+// function compose(...fns) {
+//   return function (...args) {
+//     const firstFn = fns.shift();
+//     return fns.reduce((pre, cur) => {
+//       return cur(pre);
+//     }, firstFn(...args));
+//   }
+// }
+// function compose(...fns) {
+//   return function (...rest) {
+//     const lastFn = fns.pop();
+//     return fns.reduceRight((pre, cur) => {
+//       return cur(pre);
+//     }, lastFn(...rest));
+//   }
+// }
+
+function compose(...fns) {
+  return function (...rest) {
+    const lastFn = fns.pop();
+    return fns.reduceRight((prev, cur) => {
+      return cur(prev);
+    }, lastFn(...rest));
+  }
+}
+
+console.log(compose(fn1, fn2, fn3, fn4)(1));
+
+
+// 大数相加
+function addBigNumber(a, b) {
+  // 获取最长字符，使用padStart使两个长度相等
+  const length = Math.max(a.length, b.length);
+  a = a.padStart(length, '0');
+  b = b.padStart(length, '0');
+
+  // 算总字符串
+  let sum = '';
+  // 进位
+  let f = 0;
+  // 精确位上的数字
+  let t = 0;
+  for (let i = length - 1; i >= 0; i--) {
+    t = Number(a[i]) + Number(b[i]) + f;
+    f = Math.floor(t/10);
+    // 决定字串的顺序
+    sum = t%10 + sum;
+  }
+  if (f === 1) {
+    sum = '1' + sum;
+  }
+
+  return sum;
+}
+console.log(addBigNumber('7827598742389574938257934', '9'));
+console.log(
+  addBigNumber('7827598742389574938257934', '7827598742389574938257934')
+);
+
+new Promise((resolve, reject)=>{
+  Promise.resolve().then(()=>{
+    resolve(1);
+    Promise.resolve().then(()=>{console.log(2)})
+  })
+}).then((value)=>{console.log(value)});
+console.log(3);
+
+
+
+var abc = {
+  '2': 'a',
+  '3': 'b',
+  length: 2,
+  push: Array.prototype.push
+}
+
+// generator自执行函数
+// 基于Thunk函数
+/**
+ *
+ * @param {Generator} gen
+ */
+function run(gen) {
+  let it = gen();
+
+  function next(err, data) {
+    let result = it.next(data);
+    if (result.done) {
+      return result;
+    }
+    result.value.then(function(data){
+      next(data);
+    });
+  }
+
+  next();
+}
+
+function *gen() {
+  yield Promise.resolve(1);
+  yield Promise.resolve(2);
+  yield Promise.resolve(3);
+}
+
+run(gen);
+
+Promise.myAll = function (promises) {
+  let ret = [];
+  let count = 0;
+  return new Promise((resolve, reject) => {
+    promises.forEach((item, index) => {
+      Promise.resolve(item).then(
+        (data) => {
+          ret[index] = data;
+          count++;
+          if (count === promises.length) {
+            resolve(ret);
+          }
+        },
+        (err) => {
+          reject(err);
+        }
+      );
+    });
+  });
+};
+
+var p1 = function () {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(1);
+    }, 500);
+  });
+}
+var p2 = function () {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(2);
+    }, 1000);
+  });
+}
+var p3 = 3;
+Promise.myAll([p1(), p2(), p3]).then((data) => {
+  console.log(data);
+});
+
+
+
+Promise.myRace = function (promises) {
+  return new Promise((resolve, reject) => {
+    promises.forEach((item, index) => {
+      item.then((data) => {
+        resolve(data);
+      },
+      (err) => {
+        reject(err);
+      });
+    })
+  });
+}
+
+Promise.myRace([
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(1);
+    }, 3000);
+  }),
+  Promise.reject(2),
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(3);
+    }, 2000);
+  }),
+]).then((data) => {
+  console.log(data);
+});
+
+Promise.prototype.myFinally = function (callback) {
+  return this.then(
+    (data) => {
+      callback();
+      return data;
+    },
+    (err) => {
+      callback();
+      throw new Error(err);
+    }
+  );
+};
+
+Promise.prototype.myFinally1 = function (callback) {
+  const p = this.constructor;
+  return this.then(
+    (data) => {
+      p.resolve(callback()).then(() => data);
+    },
+    (err) => {
+      p.resolve(callback()).then(() => {
+        throw new Error(err);
+      });
+    }
+  );
+};
+
+Promise.prototype.myDone = function () {
+  this.catch((err) => {
+    setTimeout(() => {
+      throw new Error(err);
+    }, 0);
+  });
+}
+
+function factorial(n, total = 1) {
+  if (n <= 1) return total;
+  return factorial(n - 1, n * total);
+}
+console.log(factorial(10));
+
+function fibna(n, p1 = 1, p2 = 1) {
+  if (p1 <= 1) return p2;
+  return fibna(n - 1, p2, p1 + p2);
+}
+
+function dp(n) {
+  const arr = new Array(n);
+  arr[0] = 1;
+  arr[1] = 2;
+  for (let i = 2; i < arr.length; i++) {
+    arr[i] = arr[i - 1] + arr[i - 2];
+  }
+  return arr[nn - 1];
+}
+
+//蹦床函数
+function trampoline(f) {
+  while (f && typeof f === 'function') {
+    f = f();
+  }
+  return f;
+}
+function sum(x, y) {
+  if (y > 0) {
+    return sum.bind(null, x + 1, y - 1);
+  } else {
+    return x;
+  }
+}
+trampoline(sum(1, 100000));
+
+sum(1).sumOf()
+sum(1)(2)(3).sumOf();
+sum(1, 2, 3).sumOf();
+sum(1, 2)(3, 4).sumOf();
+
+// 数都计算出来之后使用sumOf导出来
+function sum(...args) {
+  let s = add(...args);
+
+  function add(...args) {
+    return args.reduce((pre, cur) => {
+      return pre + cur;
+    }, 0);
+  }
+
+  function func(...args) {
+    s += add(...args);
+    return func;
+  }
+
+  func.sumOf = function () {
+    return s;
+  }
+
+  return func;
+}
+
+sum(1)(2)(3).sumOf();
+sum(1).sumOf();
+
+
+// 手写promise
+const PENDING = 'pending';
+const FULFILLED = 'fulfilled';
+const REJECTED = 'rejected';
+
+class MyPromise {
+  constructor (execute) {
+    this.status = 'pending';
+    this.data = '';
+    this.reason = '';
+    this.onFulfilledCallback = [];
+    this.onRejectedCallback = [];
+
+    const resolve = (data) => {
+      if (this.status === PENDING) {
+        this.status = FULFILLED;
+        this.data = data;
+        this.onFulfilledCallback.forEach((f) => {
+          f(this.data);
+        });
+      }
+    }
+
+    const reject = (reason) => {
+      if (this.status === PENDING) {
+        this.status = REJECTED;
+        this.reason = reason;
+        this.onRejectedCallback.forEach((f) => {
+          f(this.reason);
+        });
+      }
+    }
+
+    execute(resolve, reject);
+  }
+
+  then(onFulfilled, onRejected) {
+    if (this.status === FULFILLED) {
+      onFulfilled(this.data);
+    }
+    if (this.status === REJECTED) {
+      onRejected(this.reson);
+    }
+    if (this.status === PENDING) {
+      this.onFulfilledCallback.push(onFulfilled);
+      this.onRejectedCallback.push(onrejected);
+    }
+  }
+}
+
+new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve(2);
+  }, 500);
+}).then((data) => {
+  console.log(data);
+});
+
+MyPromise.all = function (promises) {
+  let dataArr = [];
+  let count = 0;
+  return new Promise((resolve, reject) => {
+    promises.forEach((fn, index) => {
+      Promise.resolve(fn).then((data) => {
+        dataArr[index] = data;
+        if (count === promises.length - 1) {
+          resolve(dataArr);
+        }
+        i++;
+      }, (err) => {
+        reject(err);
+      });
+    });
+  });
+}
+
+Function.prototype.myCall = function (o) {
+  if (typeof this !== 'function') {
+    throw new TypeError('not a function');
+  }
+  let symbol = Symbol('call');
+  const ctx = o ?? window;
+  const args = [...arguments].slice(1);
+  ctx[symbol] = this;
+  let result = ctx[symbol](...args);
+  delete ctx[symbol];
+  return result;
+}
+
+Function.prototype.myApply = function (o) {
+  if (typeof this !== 'function') {
+    throw new TypeError('not a function');
+  }
+  const symbol = symbol('apply');
+  const ctx = o ?? window;
+  const [args] = [...arguments].slice(1);
+  const result = ctx[symbol](...args);
+  delete ctx[symbol];
+  return result;
+}
+Function.prototype.myBind = function (o, ...args) {
+  if (typeof this !== 'function') {
+    throw new TypeError('not a function');
+  }
+  const symbol = Symbol('bind');
+  const ctx = o ?? window;
+  return (...rest) => {
+    ctx[symbol] = this;
+    const result = ctx[symbol](...args, ...rest);
+    delete ctx[symbol];
+    return result;
+  }
+}
+function sum() {
+  return this.a + this.b;
+}
+var obj = {
+  a: 1,
+  b: 2
+}
+sum.myCall(obj);
+
+// settimeout节流
+function throttle(fn, timeout) {
+  let timer = null;
+  return function (...rest) {
+    if (timer) return;
+    timer = setTimeout(() => {
+      fn.call(this, ...rest);
+      clearTimeout(timer);
+    }, timeout);
+  }
+}
+
+function throttle1(fn, timeout) {
+  let prevTime = +new Date();
+  return (...args) => {
+    const nowDate = +new Date();
+    if (nowDate - prevTime > timeout) {
+      fn.call(null, ...args);
+      prevTime = nowDate;
+    }
+  }
+}
+
+function debounce(fn, timeout, immediate = false) {
+  // let timer = null;
+  // return function (...args) {
+  //   if (timer) {
+  //     clearTimeout(timer);
+  //   }
+  //   timer = setTimeout(() => {
+  //     fn.call(this, ...args);
+  //   }, timeout);
+  // }
+  let timer = null;
+  return function (...rest) {
+    if (timer) clearTimeout(timer);
+
+    if (immediate) {
+      const isCallNow = !timer;
+      timer = setTimeout(() => {
+        timer = null;
+      }, timeout);
+      if (isCallNow) fn.call(this, ...rest);
+    } else {
+      timer = setTimeout(() => {
+        fn.call(this, ...rest);
+      }, timeout);
+    }
+  }
+}
+
+
+// instanceof原理: 查找构造函数的原型是否存在于目标对象的原型链上
+function instanceof1(left, right) {
+  let l = Object.getPrototypeOf(left);
+  const r = right.prototype;
+  while (l) {
+    if (l === r) {
+      return true;
+    }
+    l = Object.getPrototypeOf(l);
+  }
+  return false;
+}
+
+var arr = [];
+instanceof1([], String);
+
+// 手写Object.create(): 将o放到某一个对象的__proto__
+Object.create1 = function (o, properties = {}) {
+  // let obj = {};
+  // Object.setPrototypeOf(obj, o);
+  // Object.defineProperties(obj, properties);
+  // return obj;
+  function Fn() {};
+  Fn.prototype = o;
+  return new Fn();
+}
+
+function currying(fn, ...args) {
+  const len = fn.length;
+  return function (...rest) {
+    rest = [...args, ...rest];
+    if (len > rest.length) {
+      return currying(fn, ...rest);
+    } else {
+      return fn.call(null, ...rest);
+    }
+  }
+}
+
+function sum(a, b, c, d) {
+  return a + b + c + d;
+}
+
+currying(sum)(1)(2)(3)(4);
+
+
+// 不定参数的一种方式
+function compute(arr) {
+  return arr.reduce((prev, cur) => {
+    return prev + cur;
+  });
+}
+function sum(...args) {
+  let total = compute(args);
+
+  function fn(...rest) {
+    total += compute(rest);
+    return fn;
+  }
+
+  fn.sumOf = function () {
+    return total;
+  }
+  return fn;
+}
+sum(1, 2, 3)(4).sumOf()
+
+// 不定参数的另一种方式
+// sum1(1, 2, 4)()/sum1(1)(2)()
+function sum1(...args) {
+  return function (...rest) {
+    if (!rest.length) {
+      return compute([...args, ...rest]);
+    } else {
+      return sum1.call(null, ...args, ...rest);
+    }
+  }
+}
+
+function handler(msg) {
+  console.log(msg)
+}
+function handler1(msg) {
+  console.log(msg)
+}
+const customEvent = {
+  // 一个对象存储事件类型和handler
+  event: {},
+  // 添加事件函数和type
+  addListener(type, handler) {
+    const handlerSet = this.event[type];
+    if (!handlerSet) {
+      handlerSet = new Set();
+    }
+    handlerSet.add(handler);
+  },
+  fireEvent(type, message) {
+    const handlerSet = this.event[type];
+    if (handlerSet && handlerSet.size) {
+      handlerSet.forEach((fn) => {
+        fn(message);
+      });
+    }
+  },
+  removeListener(type, handler) {
+    const handlerSet = this.event[type];
+    if (handlerSet && handlerSet.size) {
+      for (const fn of handlerSet.values()) {
+        if (fn === handler) {
+          handlerSet.delete(fn);
+          break;
+        }
+      }
+    }
+  }
+}
+
+customEvent.addListener('msg', handler);
+customEvent.addListener('msg', handler1);
+customEvent.fireEvent('msg', {'name': 'jin'});
+customEvent.removeListener('msg', handler);
+
+
+class EventBus {
+  constructor() {
+    this.eventSet = {};
+  }
+
+  addListener(type, handler) {
+    if (!this.eventSet[type]) {
+      this.eventSet[type] = new Set();
+    }
+    this.eventSet[type].add(handler);
+  }
+
+  fireEvent(type, message) {
+    let handlerArr = this.eventSet[type];
+    if (handlerArr && handlerArr.size) {
+      handlerArr.forEach((fn) => {
+        fn(message);
+      });
+    }
+  }
+
+  removeListener(type, handler) {
+    let handlerArr = this.eventSet[type];
+    if (handlerArr && handlerArr.size) {
+      for (const fn of handlerArr.values()) {
+        if (fn === handler) {
+          handlerArr.delete(fn);
+          break;
+        }
+      }
+    }
+  }
+}
+var eventBus = new EventBus();
+eventBus.addListener('msg', handler);
+eventBus.addListener('msg', handler1);
+eventBus.fireEvent('msg', {'name': 'jin'});
+eventBus.removeListener('msg', handler);
+
+
+// 简易双向绑定
+var input = document.getElementById('input');
+var obj = {}
+Object.defineProperty(obj, 'name', {
+  enumerable: true,
+  configurable: true,
+  set(val) {
+    // this.value = val;
+    input.value = val;
+  },
+  get() {
+    // return this.value;
+    console.log('get');
+  }
+});
+
+document.addEventListener('click', function (evt) {
+  obj.name = evt.target.value;
+});
+
+
+// 使用 reduce 方法实现 forEach、map、filter
+// forEach执行回到函数即可，没有返回值
+// 但是这第一个参数确实没法处理了，只能放在这不使用
+Array.prototype.myForEach = function (callback) {
+  return this.reduce((prev, cur, index) => {
+    callback(cur, index);
+  }, 0);
+}
+Array.prototype.myMap = function (callback) {
+  return this.reduce((prev, cur, index) => {
+    return prev.concat(callback(cur, index));
+  }, []);
+}
+Array.prototype.myFilter = function (callback) {
+  return this.reduce((prev, cur, index) => {
+    return prev.concat(callback(cur, index) ? callback(cur, index) : []);
+  }, []);
+}
+var a = []
+var b = [1, 2, 3];
+b.myFilter((value, index) => {
+  return value > 2 ? value : false;
+});
+b.myMap((value, index) => {
+  return value * 2;
+});
+b.myForEach(function (value, index) {
+  a.push(value);
+});
+
+// 实现indexOf方法
+// 实现谁的indexOf方法？Array? String?
+// 通用的先试一下
+function myIndexOf(o, s) {
+  const toStringTag = Object.prototype.toString;
+  if (
+    toStringTag.call(o) !== '[object Array]' &&
+    toStringTag.call(o) !== '[object String]'
+  ) {
+    throw new TypeError('o is invalid!');
+  }
+  let temp = [...o];
+  for (let i = 0; i < temp.length; i++) {
+    if (s === temp[i]) {
+      return i;
+    }
+  }
+  return -1;
+}
+myIndexOf('abcd', 'c');
+myIndexOf([1, 3, 6, 4], 4);
+
+
+// 设计一个简单的任务队列，要求分别在 1,3,4 秒后打印出 "1", "2", "3"
+// Promise实现
+function timeouter(value, time) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log(value);
+      resolve();
+    }, time);
+  });
+}
+Promise.resolve().then(() => {
+  return timeouter('1', 1000);
+}).then(() => {
+  return timeouter('2', 3000);
+}).then(() => {
+  return timeouter('3', 4000);
+});
+
+//JavaScript 实现如下语法的功能 var a=(5).plus(3).minus(6);
+Number.prototype.plus = function (num) {
+  return this + num;
+}
+Number.prototype.minus = function (num) {
+  return this - num;
+}
+var a=(5).plus(3).minus(6);
+
+// 打印fibonacci数
+function fibonacci(n) {
+  if (n < 0) return false;
+  if (n === 0) return [0];
+  let arr = [];
+  arr = [0, 1];
+  for (let i = 1; i < n; i++) {
+    arr.push(arr[i - 1] + arr[i]);
+  }
+  return arr;
+}
+fibonacci(5);
+
+// 加载一个图片，并设置高度50，宽度50
+function loadImage(url) {
+  let image = new Image();
+  image.onload = function () {
+    image.src = url;
+    image.width = 50;
+    image.height = 50;
+  }
+}
+
+
+// 数组实现栈
+// LIFO
+class Stack {
+  constructor() {
+    this.arr = new Array();
+  }
+  push(item) {
+    this.arr.push(item);
+  }
+  pop() {
+    return this.arr.pop();
+  }
+  getTop() {
+    return this.arr[this.arr.length - 1];
+  }
+  empty() {
+    return this.arr.length === 0;
+  }
+  clear() {
+    this.arr.length = 0;
+  }
+}
+
+// 两个栈实现一个队列
+// 至少支持push功能和pop功能
+// 队列：FIFO 栈：LIFO
+class Queue {
+  // 队列先进先出的
+  constructor() {
+    this.iStack = new Stack();
+    this.rStack = new Stack();
+  }
+  pop() {
+    if (!this.rStack.empty()) {
+      return this.rStack.pop();
+    }
+
+    while (!this.iStack.empty()) {
+      const i = this.iStack.pop();
+      this.rStack.push(i);
+    }
+    return this.rStack.pop();
+  }
+  push(item) {
+    this.iStack.push(item);
+  }
+}
+
+var queue = new Queue();
+queue.push(123);
+queue.push(234);
+queue.pop()
+
+
+// 0-59依次循环
+function timer() {
+  var i = 0;
+  setInterval(() => {
+    console.log(i++);
+    if (i === 60) {
+      i = 0;
+    }
+  }, 1000);
+}
+
+/**
+ * 页面上有三个按钮，分别为 A、B、C，点击各个按钮都会发送异步请求且互不影响，
+ * 每次请求回来的数据都为按钮的名字。
+ * 请实现当用户依次点击 A、B、C、A、C、B 的时候，最终获取的数据为 ABCACB。
+*/
+function handlerClick(tag, timeout) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(tag);
+    }, 500 * timeout);
+  });
+}
+var p = Promise.resolve();
+function queue(tag) {
+  p = p.then(() => {
+    return handlerClick(tag, Math.floor(Math.random() * 2) + 1);
+  });
+  return p;
+}
+async function getResult(tag) {
+  const result = await queue(tag);
+  console.log(result);
+}
+getResult('A');
+getResult('B');
+getResult('C');
+getResult('A');
+getResult('C');
+getResult('B');
+
+// history
+// popstage事件， 在调用back(), go(), forward()时会触发
+// hashchange事件, 1. location.hash = 'edit';
+// 2. pushState({}, title, url); replaceState({}, title, url), back(), go(), forward()会触发
+
+
+// 观察者模式
+class Subject {
+  /**
+   * 1. 1个数组用于收集观察者
+   * 2. 收集观察者函数
+   * 3. 发布通知
+   * 4. 删除观察者
+   */
+
+  constructor() {
+    this.observers = [];
+  }
+  add(item) {
+    this.observers.push(item);
+  }
+  remove(item) {
+    if (this.observers.includes(item)) {
+      const index = this.observers.findIndex((value) => value === item);
+      this.observers.splice(index, 1);
+    }
+  }
+  notify() {
+    this.observers.forEach((instance) => {
+      instance.update();
+    });
+  }
+}
+
+class Observer {
+  constructor(name) {
+    this.name = name;
+  }
+  update() {
+    console.log(`this name is ${this.name}.`);
+  }
+}
+const subject = new Subject();
+const observer1 = new Observer('xiaoming');
+const observer2 = new Observer('xiaohong');
+subject.add(observer1);
+subject.add(observer2);
+subject.notify();
+
+
+// rgb转换为大写16进制
+function rgb2Hex(str) {
+  let rgbArr = str.match(/\d+/g);
+  const hex = (val) => {
+    return Number(val).toString(16).padStart(2, '0');
+  };
+  return rgbArr.reduce((prev, cur) => {
+    return prev + hex(cur);
+  }, '#').toUpperCase();
+}
+
+// 递归实现1-100的累加和
+function sum100(n, total = 0) {
+  // 终止条件
+  if (n === 0) return total;
+  return sum100(n - 1, total + n);
+}
+
+Promise.all = function (promises) {
+  return new Promise((resolve, reject) => {
+    // 应该是一个具有iterator对象的数据，简易处理使用Array
+    if (!(promises instanceof Array)) {
+      reject(new TypeError('Not an iterable object!'));
+    }
+
+    const dataArr = [];
+    let count = 0;
+    promises.forEach((promise, index) => {
+      Promise.resolve(promise).then(
+        (data) => {
+          dataArr[index] = data;
+          if (count === promises.length - 1) {
+            resolve(dataArr);
+          }
+          count++;
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+var a = {
+  [Symbol.toPrimitive]() {
+    return 2;
+  },
+  valueOf() {
+    return 3;
+  },
+  toString() {
+    return '123';
+  }
+};
+
+var i = 1;
+var a = {
+  valueOf() {
+    return i++;
+  }
+}
+a == 1 && a ==2;
+
+function flatArray(arr) {
+  return arr.reduce((prev, cur) => {
+    return prev.concat(Array.isArray(cur) ? flatArray(cur) : cur);
+  }, []);
+}
+flatArray([1, 2, 3, [1, 2, 3, 4, [2, 3, 4]]]);
+
+function insertSort(arr) {
+  const len = arr.length;
+  for (let i = 1; i < len; i++) {
+    const loopNumber = arr[i];
+    let j = i - 1;
+    while (j >= 0 && arr[j] > loopNumber) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
+    arr[j + 1] = loopNumber;
+  }
+  return arr;
+}
+
+var quickSort = function (array, left, right) {
+
+};
+quickSort([3,44,38,5,47,15,36,26,27,2,46,4,19,50,48], 0, 15);
+
+// 模拟new
+function createNew(Fn, ...args) {
+  if (typeof Fn !== 'function') {
+    throw new TypeError('Not a valid function!');
+  }
+  const o = new Object();
+  Object.setPrototypeOf(o, Fn.prototype);
+  const result = Fn.call(o, ...args);
+  return typeof result === 'object' ? result : o;
+}
+
+Function.prototype.bind = function (o, ...args) {
+  if (typeof this !== 'function') {
+    throw new TypeError('Not a function!');
+  }
+  const context = o ?? window;
+  const symbol = Symbol('bind');
+  return (...rest) => {
+    context[symbol] = this;
+    const result = context[symbol](...args, ...rest);
+    delete context[symbol];
+    return result;
+  }
+}
+
+Function.prototype.bind1 = function (context, ...args) {
+  // 异常处理
+  if (typeof this !== 'function') {
+    throw new Error(
+      'Function.prototype.bind - what is trying to be bound is not callable'
+    );
+  }
+  // 保存this的值，它代表调用 bind 的函数
+  var self = this;
+  var fNOP = function () {};
+
+  var fbound = function () {
+    self.apply(
+      this instanceof self ? this : context,
+      args.concat(Array.prototype.slice.call(arguments))
+    );
+  };
+  fNOP.prototype = this.prototype;
+  fbound.prototype = new fNOP();
+  return fbound;
+};
+
+Function.prototype.call = function (o, ...args) {
+  if (typeof this !== 'function') {
+    throw new TypeError('Not a function!');
+  }
+  const context = o ?? window;
+  const symbol = Symbol('call');
+  context[symbol] = this;
+  const result = context[symbol](...args);
+  delete context[symbol];
+  return result;
+}
+
+Function.prototype.apply = function (o, args) {
+  if (typeof this !== 'function') {
+    throw new TypeError('Not a function!');
+  }
+  const context = o ?? window;
+  const symbol = Symbol('apply');
+  context[symbol] = this;
+  const result = context[symbol](...args);
+  delete context[symbol];
+  return result;
+}
+
+function deepClone(obj, map = new WeakMap()) {
+  if (obj == null) return obj;
+  if (obj instanceof Date) return new Date(obj);
+  if (obj instanceof RegExp) return new RegExp(obj);
+  if (typeof obj !== 'object') return obj;
+  if (map.has(obj)) return obj;
+
+  map.set(obj, true);
+  const o = Array.isArray(obj) ? [] : {};
+  for (const key of Reflect.ownKeys(obj)) {
+    o[key] = typeof obj[key] === 'object' ? deepClone(obj[key], map) : obj[key];
+  }
+  return o;
+}
+
+function string2Binary(str) {
+  let binStr = '';
+  for (const i of str) {
+    // 获取unicode码之后转换2二进制
+    let i2b = i.codePointAt().toString(2).padStart(8, '0');
+    binStr += i2b;
+  }
+  return binStr;
+}
+
+new Promise((resolve, reject) => {
+  console.log('外部promise');
+  resolve();
+})
+  .then(() => {
+    console.log('外部第一个then');
+    new Promise((resolve, reject) => {
+      console.log('内部promise');
+      resolve();
+    })
+      .then(() => {
+        console.log('内部第一个then');
+      })
+      .then(() => {
+        console.log('内部第二个then');
+      });
+    return new Promise((resolve, reject) => {
+      console.log('内部promise2');
+      resolve();
+    })
+      .then(() => {
+        console.log('内部第一个then2');
+      })
+      .then(() => {
+        console.log('内部第二个then2');
+      });
+  })
+  .then(() => {
+    console.log('外部第二个then');
+  });
+
+function currying(fn, ...args) {
+  let len = fn.length;
+  return function (...rest) {
+    rest = [...args, ...rest];
+    if (len > rest.length) {
+      return currying(fn, ...rest);
+    } else {
+      return fn.apply(null, rest);
+    }
+  }
+}
+
+// sort和reserve是返回原数组的引用
+// -/*/\//%在计算时能转数字的才转换数字，不然就是NaN
+
+
+
+

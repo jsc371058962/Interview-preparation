@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="container"></div>
+  <button id="btn-change">改变</button>
+  <script src="https://cdn.jsdelivr.net/npm/snabbdom@0.7.4/dist/snabbdom.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/snabbdom@0.7.4/dist/snabbdom-class.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/snabbdom@0.7.4/dist/snabbdom-style.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/snabbdom@0.7.4/dist/snabbdom-props.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/snabbdom@0.7.4/dist/snabbdom-eventlisteners.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/snabbdom@0.7.4/dist/h.js"></script>
+  <script>
+    const data = [{
+        name: "张三",
+        age: "20",
+        address: "北京"
+      },
+      {
+        name: "李四",
+        age: "21",
+        address: "武汉"
+      },
+      {
+        name: "王五",
+        age: "22",
+        address: "杭州"
+      },
+    ];
+    data.unshift({name: "姓名", age: "年龄", address: "地址"});
+
+    let snabbdom = window.snabbdom;
+    //渲染函数
+    const patch = snabbdom.init([
+      snabbdom_class,
+      snabbdom_props,
+      snabbdom_eventlisteners,
+      snabbdom_style
+    ]);
+
+    const h = snabbdom.h;
+    const container = document.getElementById('container');
+    let vnode;
+    const render = function (data) {
+      let newnode = h('table', {}, data.map((item) => {
+        const tds = [];
+        for (const iter of Object.keys(item)) {
+          tds.push(h('td', {}, item[iter] + ''));
+        }
+        return h('tr', {}, tds);
+      }));
+
+      if (vnode) {
+        patch(vnode, newnode);
+      } else {
+        patch(container, newnode);
+      }
+      vnode = newnode;
+    };
+    // 第一次渲染
+    render(data);
+
+    const button = document.querySelector('#btn-change');
+    button.addEventListener('click', function (evt) {
+      data[1].age = 30;
+      data[2].address = '深圳';
+      render(data);
+    });
+  </script>
+</body>
+</html>
+
