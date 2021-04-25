@@ -1199,6 +1199,45 @@ function currying(fn, ...args) {
 
 // sort和reserve是返回原数组的引用
 // -/*/\//%在计算时能转数字的才转换数字，不然就是NaN
+async function foo() {
+  console.log(2);
+  console.log(await Promise.resolve(8));
+  console.log(9);
+}
+async function bar() {
+  console.log(4);
+  console.log(await 6);
+  console.log(7);
+}
+
+console.log(1);
+foo();
+console.log(3);
+bar();
+console.log(5);
+
+function fn (o) {
+  with (o) {
+    a = 2;
+  }
+}
+
+var o1 = {
+  a: 1
+}
+var o2 = {
+  b: 1
+}
+
+fn(o1);
+console.log(o1.a);
+console.log(a);
+
+fn(o2);
+console.log(o2.a);
+console.log(a);
+
+// https://www.cnblogs.com/zhenjianyu/p/12965561.html, 关于cdn讲挺好。
 
 
 
