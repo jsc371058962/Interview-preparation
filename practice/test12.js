@@ -57,7 +57,7 @@ Array.prototype.myForEach = function (callback) {
   console.log(value, index);
 });
 
-// 累加函数sum(1,2,3)(2).valueOf()
+// 累加函数sum(1,2,3)(2).sumOf()
 function sum(...params) {
   let total = compute(...params);
   function compute(...rest) {
@@ -71,12 +71,12 @@ function sum(...params) {
     total += compute(...params);
     return fn;
   }
-  fn.valueOf = function () {
+  fn.sumOf = function () {
     return total;
   }
   return fn;
 }
-sum(1,2,3)(2).valueOf();
+sum(1,2,3)(2).sumOf();
 
 // 最大公约数
 function getGcd(a, b) {
