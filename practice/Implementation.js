@@ -108,7 +108,20 @@ Array.prototype.myReduce = function (callback, prev) {
   for (let i = 0; i < this.length; i++) {
     if (typeof prev === 'undefined') {
       prev = callback(this[i], this[i + 1], i + 1, this);
-      ++i;
+      i++;
+    } else {
+      prev = callback(prev, this[i], i, this);
+    }
+  }
+  return prev;
+}
+
+Array.prototype.myReduce1 = function (callback, prev) {
+  for (let i = 0; i < this.length; i++) {
+    // 只可能会执行一次
+    if (typeof prev === 'undefined') {
+      prev = callback(this[i], this[i + 1], i + 1, this);
+      i++;
     } else {
       prev = callback(prev, this[i], i, this);
     }
@@ -420,14 +433,14 @@ console.log(person === person1);
 
 
 // 手动实现简单的深拷贝(可拷贝Symbol)
-function deepClone(obj, map = new Map()) {
-  if (map.get(obj)) return obj;
+function deepClone(obj, map = new weakMap()) {
   // null, nudefined直接返回
   if (obj == null) return obj;
   if (obj instanceof Date) return new Date(obj);
   if (obj instanceof RegExp) return new RegExp(obj);
   // 基本类型/方法
   if (typeof obj !== 'object') return obj;
+  if (map.get(obj)) return obj;
   map.set(target, true);
   const o = Array.isArray(target) ? []: {};
   // for (const key in obj) {
@@ -524,8 +537,9 @@ Promise.prototype.finally = function (callback) {
   );
 };
 
+// 最简code实现最小大于0的索引
 function getIndex1(arr){
-  let index = null;
+  let index;
   let min = [...arr].sort((a, b) => a - b).find((a) => a > 0);
   index = arr.indexOf(min);
   return index;
@@ -539,7 +553,7 @@ function sum1To100(n, total = 0) {
 console.log(sum1To100(100));
 
 Promise.prototype.done = function () {
-  return this.catch(
+  this.catch(
     (err) => {
       setTimeout(() => {
         throw new Error(err);

@@ -563,15 +563,15 @@ function selectSort(array) {
   //   }
   // }
 
-  for (let i = 0; i< len; i++) {
-    // 第一次循环得到最小的
-    // 第二次循环得到第二位
-    for (let j = i + 1; j < len; j++) {
-      if (array[i] > array[j]) {
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-  }
+  // for (let i = 0; i< len; i++) {
+  //   // 第一次循环得到最小的
+  //   // 第二次循环得到第二位
+  //   for (let j = i + 1; j < len; j++) {
+  //     if (array[i] > array[j]) {
+  //       [array[i], array[j]] = [array[j], array[i]];
+  //     }
+  //   }
+  // }
   return array;
 }
 console.log(selectSort(sortArray));

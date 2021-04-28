@@ -1086,23 +1086,22 @@ Function.prototype.bind = function (o, ...args) {
 Function.prototype.bind1 = function (context, ...args) {
   // 异常处理
   if (typeof this !== 'function') {
-    throw new Error(
-      'Function.prototype.bind - what is trying to be bound is not callable'
-    );
+    throw new Error('Not a function!');
   }
   // 保存this的值，它代表调用 bind 的函数
-  var self = this;
-  var fNOP = function () {};
+  // 可以是普通函数的调用也有可能是构造函数
 
-  var fbound = function () {
-    self.apply(
-      this instanceof self ? this : context,
-      args.concat(Array.prototype.slice.call(arguments))
-    );
+  // 保存this, 这是一个function
+  const selfFn = this;
+  const FNOP = function () {};
+  const F = function (...rest) {
+    return selfFn.apply(this instanceof FNOP ? this : context ?? window, [
+      ...args,
+      ...rest,
+    ]);
   };
-  fNOP.prototype = this.prototype;
-  fbound.prototype = new fNOP();
-  return fbound;
+  F.prototype = Object.create(FNOP.prototype);
+  return F;
 };
 
 Function.prototype.call = function (o, ...args) {
@@ -1129,6 +1128,7 @@ Function.prototype.apply = function (o, args) {
   return result;
 }
 
+// 深拷贝，可解决循环引用问题
 function deepClone(obj, map = new WeakMap()) {
   if (obj == null) return obj;
   if (obj instanceof Date) return new Date(obj);
@@ -1199,46 +1199,250 @@ function currying(fn, ...args) {
 
 // sort和reserve是返回原数组的引用
 // -/*/\//%在计算时能转数字的才转换数字，不然就是NaN
-async function foo() {
-  console.log(2);
-  console.log(await Promise.resolve(8));
-  console.log(9);
+// https://www.cnblogs.com/zhenjianyu/p/12965561.html, 关于cdn讲挺好。
+
+
+function getTotal() {
+  return [...arguments].reduce((prev, cur) => {
+    return prev + cur;
+  }, 0);
 }
-async function bar() {
-  console.log(4);
-  console.log(await 6);
-  console.log(7);
+function sum1(fn) {
+  let args = Array.prototype.slice(arguments, 1);
+  function getArr (...rest) {
+    rest = [...rest, ...args];
+    return sum1.call(null, fn, ...rest);
+  }
+
+  getArr.toString = function () {
+    return fn.call(null, ...args);
+  }
+
+  return getArr;
 }
 
-console.log(1);
-foo();
-console.log(3);
-bar();
-console.log(5);
+var sum = sum1(getTotal);
+sum(1)(2);
+sum(1, 2, 3);
 
-function fn (o) {
-  with (o) {
-    a = 2;
+// 累加函数sum(1, 2, 3)(2).sumOf()
+function sum(...args) {
+  let total = getSum(...args);
+  function getSum() {
+    return [...arguments].reduce((prev, cur) => {
+      return prev + cur;
+    }, 0);
+  }
+  function curried(...rest) {
+    total += getSum(...rest);
+    return curried;
+  }
+  curried.sumOf = function() {
+    return total;
+  }
+  return curried;
+}
+
+// add(1)(2, 3, 4)(5)
+function add(...args) {
+  let total = getSum(...args);
+  function getSum() {
+    return [...arguments].reduce((prev, cur) => {
+      return prev + cur;
+    }, 0);
+  }
+  function fn(...rest) {
+    total += getSum(...rest);
+    return fn;
+  }
+  fn.toString = function() {
+    return total;
+  }
+
+  return fn;
+}
+
+// 迭代求斐波那契
+function fib(n) {
+  if (n === 0) return 0;
+  if (n === 1) return 1;
+  let p1 = 0, p2 = 1;
+  for (let i = 2; i < n; i++) {
+    [p1, p2] = [p2, p1 + p2];
+  }
+  return p2;
+}
+
+// 实现立即执行的防抖
+function debounce(fn, timeout, immediate = false) {
+  let timer = null;
+  return function (...rest) {
+    if (immediate) {
+      let isCallNow = !timer;
+      timer = setTimeout(() => {
+        clearTimeout(timer);
+        timer = null;
+      }, timeout);
+      if (isCallNow) fn.call(null, ...rest);
+    } else {
+      timer && clearTimeout(timer);
+      timer = setTimeout(() => {
+        fn.call(null, ...rest);
+      }, timeout);
+    }
   }
 }
 
-var o1 = {
-  a: 1
+// LRUCache简单实现
+class LRUCache {
+  constructor(limit) {
+    this.map = new Map();
+    this.limit = limit;
+  }
+
+  put(key, value) {
+    if (this.map.has(key)) {
+      this.map.delete(key);
+    } else if (this.map.size >= this.limit) {
+      // 删除第一个值
+      this.map.delete(this.map.keys().next().value);
+    }
+    this.map.set(key, value);
+  }
+
+  get(key) {
+    if (this.map.has(key)) {
+      const value = this.map.get(key);
+      this.map.delete(key);
+      this.map.set(key, value);
+      return value;
+    }
+    return -1;
+  }
+
+  clear() {
+    this.map.clear();
+  }
 }
-var o2 = {
-  b: 1
+var cache = new LRUCache(5);
+cache.put(1, '1');
+cache.put(2, '2');
+cache.put(3, '3');
+cache.put(4, '4');
+cache.put(5, '5');
+cache.get(2);
+
+// 冒泡排序
+function bubbleSort(array) {
+  array = [...array];
+  // for (let i = 0; i < array.length; i++) {
+  //   for (let j = 0; j < array.length - i; j++) {
+  //     if (array[j] > array[j + 1]) {
+  //       [array[j], array[j + 1]] = [array[j + 1], array[j]];
+  //     }
+  //   }
+  // }
+  // 优化冒泡
+  let i = array.length;
+  while (i) {
+    for (let j = 0; j < i - 1; j++) {
+      if (array[j] > array[j + 1]) {
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+      }
+    }
+    i--;
+  }
+  return array;
 }
 
-fn(o1);
-console.log(o1.a);
-console.log(a);
+// 选择排序
+function selectSort(array) {
+  array = [...array];
+  for (let i = 0; i < array.length; i++) {
+    for (let j = i + 1; j < array.length; j++) {
+      const elementi = array[i];
+      const elementj = array[j];
+      if (elementi > elementj) {
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  }
+  return array;
+}
 
-fn(o2);
-console.log(o2.a);
-console.log(a);
+// 直接插入排序
+function insertSort(array) {
+  array = [...array];
+  for (let i = 1; i < array.length; i++) {
+    let loopNumber = array[i];
+    let j = i - 1;
+    while (j >= 0 && loopNumber < array[j]) {
+      array[j + 1] = array[j];
+      j--;
+    }
+    array[j + 1] = loopNumber;
+  }
+  return array;
+}
 
-// https://www.cnblogs.com/zhenjianyu/p/12965561.html, 关于cdn讲挺好。
+// 所有的promise执行完，无论成功与否
+Promise.myAllSettled = function (promises) {
+  if (!Array.isArray(promises)) {
+    throw new TypeError('Not a iterator object!');
+  }
+  let count = 0;
+  const results = [];
+  return new Promise((resolve, reject) => {
+    promises.forEach((item, index) => {
+      Promise.resolve(item).then((value) => {
+        results[index] = { status: 'fulfilled', value };
+        count++;
+        if (count === promises.length) {
+          resolve(results);
+        }
+      },
+      (reason) => {
+        results[index] = { status: 'rejected', reason };
+        count++;
+        if (count === promises.length) {
+          resolve(results);
+        }
+      });
+    });
+  });
+}
+Promise.myAllSettled([p1(), p2(), p3]).then((data) => {
+  console.log(data);
+});
 
+// 精确settimeout时间，意思是到某个延时时间立即执行
+// 采用系统时间补偿方式。
+// 计算每次执行的理想时间和实际执行时间，算出diff时间，进行补偿机制
+// 53(real) - 50(ideal) = 3; delay更新为50 - 3 = 47;
+function timer(delay = 50) {
+  let startTime = Date.now(),
+    count = 1;
+
+  function instance() {
+    let idealTime = count * delay,
+    realTime = Date.now() - startTime;
+
+    count++;
+    diff = realTime - idealTime;
+
+    window.setTimeout(() => {
+      console.log(idealTime, realTime, diff);
+      instance();
+    }, delay - diff);
+  }
+
+  window.setTimeout(() => {
+    instance();
+  }, delay);
+}
+timer();
+var len = 100000;
+while (len-- >= 0) {}
 
 
 
