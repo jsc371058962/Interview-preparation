@@ -55,22 +55,22 @@ var add = currying(sum);
 
 function fn1(a) {
   console.log('fn1: ', a);
-  return a+1
+  return a + 1;
 }
 
 function fn2(a) {
   console.log('fn2: ', a);
-  return a+1
+  return a + 1;
 }
 
 function fn3(a) {
   console.log('fn3: ', a);
-  return a+1
+  return a + 1;
 }
 
 function fn4(a) {
   console.log('fn4: ', a);
-  return a+1
+  return a + 1;
 }
 
 // function compose(...fns) {
@@ -300,7 +300,7 @@ function factorial(n, total = 1) {
 console.log(factorial(10));
 
 function fibna(n, p1 = 1, p2 = 1) {
-  if (p1 <= 1) return p2;
+  if (n <= 1) return p2;
   return fibna(n - 1, p2, p1 + p2);
 }
 
@@ -311,7 +311,7 @@ function dp(n) {
   for (let i = 2; i < arr.length; i++) {
     arr[i] = arr[i - 1] + arr[i - 2];
   }
-  return arr[nn - 1];
+  return arr[n - 1];
 }
 
 //蹦床函数
@@ -1277,15 +1277,14 @@ function fib(n) {
 function debounce(fn, timeout, immediate = false) {
   let timer = null;
   return function (...rest) {
+    timer && clearTimeout(timer);
     if (immediate) {
       let isCallNow = !timer;
       timer = setTimeout(() => {
-        clearTimeout(timer);
         timer = null;
       }, timeout);
       if (isCallNow) fn.call(null, ...rest);
     } else {
-      timer && clearTimeout(timer);
       timer = setTimeout(() => {
         fn.call(null, ...rest);
       }, timeout);
@@ -1425,7 +1424,7 @@ function timer(delay = 50) {
 
   function instance() {
     let idealTime = count * delay,
-    realTime = Date.now() - startTime;
+      realTime = Date.now() - startTime;
 
     count++;
     diff = realTime - idealTime;
@@ -1443,6 +1442,282 @@ function timer(delay = 50) {
 timer();
 var len = 100000;
 while (len-- >= 0) {}
+
+
+// 生成随机色值
+`#${(~~(Math.random() * (1 << 24))).toString(16).padStart(6, '0')}`;
+
+// ----------------------start---------------------
+// 提供一个异步add函数，实现一个await sum(...args)函数
+function asyncAdd(a, b, callback) {
+  setTimeout(function () {
+    callback(null, a + b);
+  }, 1000);
+}
+
+function sumTow(res, cur) {
+  return new Promise((resolve, reject) => {
+    asyncAdd(res, cur, function (err, data) {
+      if (!err) {
+        resolve(data);
+      }
+    });
+  });
+}
+
+function sum(...args) {
+  return args
+    .reduce((prev, cur) => {
+      return prev.then((res) => {
+        return sumTow(res, cur);
+      });
+    }, Promise.resolve(0))
+    .then((data) => {
+      return data;
+    });
+}
+
+sum(1, 2, 3).then(console.log);
+// ----------------------end---------------------
+
+// ----------------------start---------------------
+// 精确settimeout时间
+function timer(delay = 50) {
+  let startTime = Date.now(),
+    count = 1;
+  function instance() {
+    let idealTime = count * delay;
+      realTime = Date.now() - startTime;
+    count++;
+    const diff = realTime - idealTime;
+    setTimeout(instance, delay - diff);
+  }
+  setTimeout(() => {
+    instance();
+  }, delay);
+}
+timer();
+let len = 10000;
+while (len-- > 0) {}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 函数防抖
+function debounce(fn, timeout = 50, immediate = false) {
+  let timer = null;
+  return function(...rest) {
+    timer && clearTimeout(timer);
+    if (immediate) {
+      const isCallNow = !timer;
+      timer = setTimeout(() => {
+        timer = null;
+      }, timeout);
+      isCallNow && fn.call(null, ...rest);
+    } else {
+      timer = setTimeout(() => {
+        fn.call(null, ...rest);
+      }, timeout);
+    }
+  }
+}
+// 函数节流
+// 1. 计时法
+function throttle(fn, timeout = 50) {
+  let startTime = Date.now();
+  return function(...rest) {
+    if (Date.now() - startTime >= timeout) {
+      fn.call(null, ...rest);
+      startTime = Date.now();
+    }
+  }
+}
+// 2. 定时器法
+function _throttle(fn, timeout = 50) {
+  let timer = null;
+  return function(...rest) {
+    if (timer) return;
+    timer = setTimeout(() => {
+      fn.call(null, ...rest);
+      clearTimeout(timer);
+      timer = null;
+    }, timeout);
+  }
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+var data = [
+  {userId: 8, title: 'title1'},
+  {userId: 11, title: 'other'},
+  {userId: 15, title: null},
+  {userId: 19, title: 'title2'}
+];
+
+var result = find(data).where({ title: /\d+/ }).orderBy('userId', 'desc');
+
+// 解析
+function find(o) {
+  function fn() {}
+  fn.where = function (filterRule) {
+    o = o.filter((item) => filterRule['title'].test(item.title));
+    return fn;
+  };
+  fn.orderBy = function (userId, desc) {
+    o = o.sort((a, b) => {
+      return desc === 'desc' ? b[userId] - a[userId] : a[userId] - b[userId];
+    });
+    return o;
+  };
+
+  return fn;
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 对象的深度比较
+function isEqual(o1, o2) {
+  if (
+    (typeof o1 !== 'object' && typeof o2 !== 'function') ||
+    (typeof o1 !== 'function' && typeof o2 !== 'object')
+  ) {
+    return false;
+  }
+  if (typeof o1 === typeof o2) {
+    return o1.toString() === o2.toString();
+  }
+  const o1Keys = Object.keys(o1);
+  const o2Keys = Object.keys(o2);
+  if (o1Keys.length !== o2Keys.length) {
+    return false;
+  }
+  for (let i = 0; i < o1Keys.length; i++) {
+    if (o2.hasOwnProperty(o1Keys[i])) {
+      // 基本数据类型
+      if (
+        typeof o1[o1Keys[i]] !== 'object' &&
+        typeof o1[o1Keys[i]] !== 'function'
+      ) {
+        if (o1[o1Keys[i]] !== o2[o1Keys[i]]) {
+          return false;
+        }
+      } else {
+        // 引用数据类型
+        return isEqual(o1[o1Keys[i]], o2[o1Keys[i]]);
+      }
+    } else {
+      return false;
+    }
+  }
+}
+var obj1 = {
+  a: 1,
+  b: 2,
+  c: function() {
+    console.log(1);
+  }
+}
+var obj1 = {
+  b: 2,
+  c: function() {
+    console.log(1);
+  },
+  a: 1
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+//是否存在循环引用
+var obj = {
+  a: 1,
+  b: 2,
+}
+obj.c = obj;
+isHasCircle(obj);
+function isHasCircle(o, map = new WeakMap()) {
+  if (map.has(o)) {
+    return true;
+  }
+  const keys = Object.keys(o);
+  if (!keys.length) return false;
+  map.set(o, true);
+  for (let i = 0; i < keys.length; i++) {
+    const element = keys[i];
+    if (typeof o[element] === 'object' && Object.keys(o[element]).length) {
+      return isHasCircle(o[element], map);
+    }
+  }
+  return false;
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+Object.myIs = function myIs(x, y) {
+  // 0, -0的情况
+  if (x === y) {
+    return x !== 0 || 1 / x === 1 / y;
+  } else {
+    return x !== x && y !==y;
+  }
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 时间切片
+function timeSlice(gen) {
+  if (typeof gen === 'function') g = gen();
+  if (!g || typeof g.next !== 'function') return;
+  return function next() {
+    // 协定一个切片阀值，切片代码执行超出时间则放入下次frame再执行
+    const start = performance.now();
+    let res = null;
+    do {
+      res = g.next();
+    } while (!res.done && performance.now() - start > 25);
+    if (res.done) return;
+    window.requestIdleCallback(next);
+  };
+}
+timeSlice(function *gen() {
+  // 协定一个终止条件
+  const start = performance.now();
+  while (performance.now() - start < 1000) {
+    console.log(11111);
+    yield;
+  }
+  console.log('终止done!!!');
+})();
+
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 参数不等的柯理化
+sum(1)(2)(3);
+sum(1, 2, 3)(4);
+function sum(...args) {
+  function compute(...arr) {
+    return arr.reduce((prev, cur) => {
+      return prev + cur;
+    });
+  }
+  let total = compute(...args);
+  function fn(...rest) {
+    total += compute(...rest);
+    return fn;
+  }
+  fn.toString = function () {
+    return total;
+  }
+  return fn;
+}
+// ----------------------end---------------------
+
+
+
+
+
+
+
+
 
 
 

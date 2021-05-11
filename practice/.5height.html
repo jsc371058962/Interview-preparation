@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>.5height</title>
+  <style>
+    /* 方式一 */
+    /* .hr1-height {
+      height: 1px;
+      transform: scaleY(0.5);
+      background-color: black;
+    } */
+
+    /* 方式2 */
+    .hr1-height::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      height: 1px;
+      width: 100%;
+      background-color: black;
+      transform: scaleY(0.5);
+      transform-origin: 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="hr1-height"></div>
+</body>
+</html>
