@@ -1,0 +1,30 @@
+{
+  "name": "network-request",
+  "version": "1.0.0",
+  "description": "network practice with koa.js",
+  "main": "index.js",
+  "dependencies": {
+    "koa": "^2.13.1",
+    "koa-router": "^10.0.0",
+    "nodemon": "^2.0.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jsc371058962/Interview-preparation.git"
+  },
+  "keywords": [
+    "network-request",
+    "koajs"
+  ],
+  "author": "jinsicao",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jsc371058962/Interview-preparation/issues"
+  },
+  "homepage": "https://github.com/jsc371058962/Interview-preparation#readme"
+}
