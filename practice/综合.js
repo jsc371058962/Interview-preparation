@@ -1664,14 +1664,14 @@ Object.myIs = function myIs(x, y) {
 // ----------------------start-------------------
 // 时间切片
 function timeSlice(gen) {
-  if (typeof gen === 'function') g = gen();
-  if (!g || typeof g.next !== 'function') return;
+  if (typeof gen === 'function') gen = gen();
+  if (!gen || typeof gen.next !== 'function') return;
   return function next() {
     // 协定一个切片阀值，切片代码执行超出时间则放入下次frame再执行
     const start = performance.now();
     let res = null;
     do {
-      res = g.next();
+      res = gen.next();
     } while (!res.done && performance.now() - start > 25);
     if (res.done) return;
     window.requestIdleCallback(next);
@@ -1686,7 +1686,6 @@ timeSlice(function *gen() {
   }
   console.log('终止done!!!');
 })();
-
 // ----------------------end---------------------
 
 // ----------------------start-------------------
@@ -1710,6 +1709,35 @@ function sum(...args) {
   return fn;
 }
 // ----------------------end---------------------
+
+// ----------------------start-------------------
+function timeSlice(gen) {
+  // 得到iterator对象
+  if (typeof gen === 'function') gen = gen();
+  if (!gen && typeof gen.next === 'function') throw new Error('error!');
+  return function next() {
+    const start = performance.now();
+    let res;
+    do {
+      res = gen.next();
+    } while (!res.done && (performance.now() - start < 25));
+
+    if (res.done) return;
+    window.requestIdleCallback(next);
+  }
+}
+timeSlice(function gen() {
+  const start = performance.now();
+  // 设定终止条件
+  while (performance.now() - start <= 10000) {
+    console.log(111);
+    yield;
+  }
+  console.log('done.');
+})();
+// ----------------------end---------------------
+
+
 
 
 
