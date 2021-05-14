@@ -26,6 +26,7 @@ Array.prototype.myMap = function (callback) {
   let arr = [];
   let length = this.length;
   for (let i = 0; i < length; i++) {
+    if (!this.hasOwnProperty(i)) continue;
     arr.push(callback(this[i], i, this));
   }
   return arr;
@@ -561,6 +562,82 @@ Promise.prototype.done = function () {
     }
   );
 }
+
+// ----------------------start-------------------
+Array.prototype.myMap1 = function (callback, thisArgs) {
+  const results = [];
+  for (let i = 0; i < this.length; i++) {
+    if (!this.hasOwnProperty(i)) continue;
+    const element = this[i];
+    results.push(callback(element, i, this));
+  }
+  return results;
+}
+
+Array.prototype.myFilter1 = function (callback) {
+  const results = [];
+  for (let i = 0; i < this.length; i++) {
+    if (!this.hasOwnProperty(i)) continue;
+    const element = this[i];
+    callback(element, i, this) && results.push(element);
+  }
+  return results;
+};
+
+Array.prototype.myReduce2 = function (callback, prev) {
+  let results = prev ? prev : this[0];
+  for (let i = prev ? 1 : 0; i < this.length; i++) {
+    if (!this.hasOwnProperty(i)) continue;
+    const element = array[i];
+    results = callback(result, element, i, this);
+  }
+  return results;
+};
+
+Array.prototype.myEvery1 = function (callback) {
+  for (let i = 0; i < this.length; i++) {
+    if (!this.hasOwnProperty(i)) continue;
+    const element = this[i];
+    if (!callback(element, i, this)) return false;
+  }
+  return true;
+};
+
+Array.prototype.mySome1 = function (callback) {
+  for (let i = 0; i < this.length; i++) {
+    if (!this.hasOwnProperty(i)) continue;
+    const element = this[i];
+    if (callback(element, i, this)) return true;
+  }
+  return false;
+};
+
+Array.prototype.find1 = function (callback) {
+  for (let i = 0; i < this.length; i++) {
+    if (!this.hasOwnProperty(i)) continue;
+    const element = this[i];
+    if (callback(element, i, this)) return element;
+  }
+}
+
+Array.prototype.myFlatInfinity = function () {
+  let arr = this;
+  while (arr.some((item) => Array.isArray(item))) {
+    arr = [].concat(...arr);
+  }
+  return arr;
+};
+
+Array.prototype.myFlatInfinity1 = function () {
+  let arr = this;
+  // 使用reduce
+  return arr.reduce(
+    (prev, cur) => prev.concat(Array.isArray(cur) ? cur.myFlatInfinity() : cur),
+    []
+  );
+};
+// ----------------------end---------------------
+
 
 
 

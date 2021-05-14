@@ -1737,6 +1737,30 @@ timeSlice(function gen() {
 })();
 // ----------------------end---------------------
 
+// ----------------------start-------------------
+function timeSlice1(gen) {
+  if (typeof gen === 'function') gen = gen();
+  if (!gen || typeof gen.next !== 'function') throw new TypeError('ERROR!');
+  let res = null;
+  return function next() {
+    const start = performance.now();
+    do {
+      res = gen.next();
+    } while (!res.done && performance.now() - start < 25)
+    if (res.done) return;
+    window.requestIdleCallback(next);
+  }
+}
+timeSlice1(function *gen() {
+  // 设定终止条件
+  const start = performance.now();
+  while (performance.now - start <= 1000) {
+    // doSomething();
+    yield;
+  }
+})();
+// ----------------------end---------------------
+
 
 
 
