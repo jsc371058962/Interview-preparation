@@ -16,13 +16,13 @@
 //   };
 // }
 
-// function currying(fn, ...args) {
-//   const length = fn.length;
-//   return function (...rest) {
-//     rest = [...args, ...rest];
-//     return length > rest.length ? currying(fn, ...rest) : fn.apply(null, rest)
-//   }
-// }
+function currying(fn, ...args) {
+  const length = fn.length;
+  return function f(...rest) {
+    rest = [...args, ...rest];
+    return length > rest.length ? currying(fn, ...rest) : fn.apply(null, rest);
+  }
+}
 
 // function currying(fn, ...args) {
 //   const length = fn.length;
@@ -125,9 +125,9 @@ function addBigNumber(a, b) {
   let t = 0;
   for (let i = length - 1; i >= 0; i--) {
     t = Number(a[i]) + Number(b[i]) + f;
-    f = Math.floor(t/10);
+    f = Math.floor(t / 10);
     // 决定字串的顺序
-    sum = t%10 + sum;
+    sum = t % 10 + sum;
   }
   if (f === 1) {
     sum = '1' + sum;
@@ -140,12 +140,12 @@ console.log(
   addBigNumber('7827598742389574938257934', '7827598742389574938257934')
 );
 
-new Promise((resolve, reject)=>{
-  Promise.resolve().then(()=>{
+new Promise((resolve, reject) => {
+  Promise.resolve().then(() => {
     resolve(1);
-    Promise.resolve().then(()=>{console.log(2)})
+    Promise.resolve().then(() => { console.log(2) })
   })
-}).then((value)=>{console.log(value)});
+}).then((value) => { console.log(value) });
 console.log(3);
 
 
@@ -171,7 +171,7 @@ function run(gen) {
     if (result.done) {
       return result;
     }
-    result.value.then(function(data){
+    result.value.then(function (data) {
       next(data);
     });
   }
@@ -179,7 +179,7 @@ function run(gen) {
   next();
 }
 
-function *gen() {
+function* gen() {
   yield Promise.resolve(1);
   yield Promise.resolve(2);
   yield Promise.resolve(3);
@@ -235,9 +235,9 @@ Promise.myRace = function (promises) {
       item.then((data) => {
         resolve(data);
       },
-      (err) => {
-        reject(err);
-      });
+        (err) => {
+          reject(err);
+        });
     })
   });
 }
@@ -367,7 +367,7 @@ const FULFILLED = 'fulfilled';
 const REJECTED = 'rejected';
 
 class MyPromise {
-  constructor (execute) {
+  constructor(execute) {
     this.status = 'pending';
     this.data = '';
     this.reason = '';
@@ -557,7 +557,7 @@ Object.create1 = function (o, properties = {}) {
   // Object.setPrototypeOf(obj, o);
   // Object.defineProperties(obj, properties);
   // return obj;
-  function Fn() {};
+  function Fn() { };
   Fn.prototype = o;
   return new Fn();
 }
@@ -654,7 +654,7 @@ const customEvent = {
 
 customEvent.addListener('msg', handler);
 customEvent.addListener('msg', handler1);
-customEvent.fireEvent('msg', {'name': 'jin'});
+customEvent.fireEvent('msg', { 'name': 'jin' });
 customEvent.removeListener('msg', handler);
 
 
@@ -694,7 +694,7 @@ class EventBus {
 var eventBus = new EventBus();
 eventBus.addListener('msg', handler);
 eventBus.addListener('msg', handler1);
-eventBus.fireEvent('msg', {'name': 'jin'});
+eventBus.fireEvent('msg', { 'name': 'jin' });
 eventBus.removeListener('msg', handler);
 
 
@@ -797,7 +797,7 @@ Number.prototype.plus = function (num) {
 Number.prototype.minus = function (num) {
   return this - num;
 }
-var a=(5).plus(3).minus(6);
+var a = (5).plus(3).minus(6);
 
 // 打印fibonacci数
 function fibonacci(n) {
@@ -1030,7 +1030,7 @@ var a = {
     return i++;
   }
 }
-a == 1 && a ==2;
+a == 1 && a == 2;
 
 function flatArray(arr) {
   return arr.reduce((prev, cur) => {
@@ -1056,7 +1056,7 @@ function insertSort(arr) {
 var quickSort = function (array, left, right) {
 
 };
-quickSort([3,44,38,5,47,15,36,26,27,2,46,4,19,50,48], 0, 15);
+quickSort([3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48], 0, 15);
 
 // 模拟new
 function createNew(Fn, ...args) {
@@ -1093,14 +1093,15 @@ Function.prototype.bind1 = function (context, ...args) {
 
   // 保存this, 这是一个function
   const selfFn = this;
-  const FNOP = function () {};
   const F = function (...rest) {
-    return selfFn.apply(this instanceof FNOP ? this : context ?? window, [
+    return selfFn.apply(this instanceof F ? this : context ?? window, [
       ...args,
       ...rest,
     ]);
   };
-  F.prototype = Object.create(FNOP.prototype);
+  if (this.prototype) {
+    F.prototype = this.prototype;
+  }
   return F;
 };
 
@@ -1187,7 +1188,7 @@ new Promise((resolve, reject) => {
 
 function currying(fn, ...args) {
   let len = fn.length;
-  return function (...rest) {
+  return function(...rest) {
     rest = [...args, ...rest];
     if (len > rest.length) {
       return currying(fn, ...rest);
@@ -1209,7 +1210,7 @@ function getTotal() {
 }
 function sum1(fn) {
   let args = Array.prototype.slice(arguments, 1);
-  function getArr (...rest) {
+  function getArr(...rest) {
     rest = [...rest, ...args];
     return sum1.call(null, fn, ...rest);
   }
@@ -1237,7 +1238,7 @@ function sum(...args) {
     total += getSum(...rest);
     return curried;
   }
-  curried.sumOf = function() {
+  curried.sumOf = function () {
     return total;
   }
   return curried;
@@ -1255,7 +1256,7 @@ function add(...args) {
     total += getSum(...rest);
     return fn;
   }
-  fn.toString = function() {
+  fn.toString = function () {
     return total;
   }
 
@@ -1400,13 +1401,13 @@ Promise.myAllSettled = function (promises) {
           resolve(results);
         }
       },
-      (reason) => {
-        results[index] = { status: 'rejected', reason };
-        count++;
-        if (count === promises.length) {
-          resolve(results);
-        }
-      });
+        (reason) => {
+          results[index] = { status: 'rejected', reason };
+          count++;
+          if (count === promises.length) {
+            resolve(results);
+          }
+        });
     });
   });
 }
@@ -1441,7 +1442,7 @@ function timer(delay = 50) {
 }
 timer();
 var len = 100000;
-while (len-- >= 0) {}
+while (len-- >= 0) { }
 
 
 // 生成随机色值
@@ -1487,7 +1488,7 @@ function timer(delay = 50) {
     count = 1;
   function instance() {
     let idealTime = count * delay;
-      realTime = Date.now() - startTime;
+    realTime = Date.now() - startTime;
     count++;
     const diff = realTime - idealTime;
     setTimeout(instance, delay - diff);
@@ -1498,14 +1499,14 @@ function timer(delay = 50) {
 }
 timer();
 let len = 10000;
-while (len-- > 0) {}
+while (len-- > 0) { }
 // ----------------------end---------------------
 
 // ----------------------start-------------------
 // 函数防抖
 function debounce(fn, timeout = 50, immediate = false) {
   let timer = null;
-  return function(...rest) {
+  return function (...rest) {
     timer && clearTimeout(timer);
     if (immediate) {
       const isCallNow = !timer;
@@ -1524,7 +1525,7 @@ function debounce(fn, timeout = 50, immediate = false) {
 // 1. 计时法
 function throttle(fn, timeout = 50) {
   let startTime = Date.now();
-  return function(...rest) {
+  return function (...rest) {
     if (Date.now() - startTime >= timeout) {
       fn.call(null, ...rest);
       startTime = Date.now();
@@ -1534,7 +1535,7 @@ function throttle(fn, timeout = 50) {
 // 2. 定时器法
 function _throttle(fn, timeout = 50) {
   let timer = null;
-  return function(...rest) {
+  return function (...rest) {
     if (timer) return;
     timer = setTimeout(() => {
       fn.call(null, ...rest);
@@ -1547,17 +1548,17 @@ function _throttle(fn, timeout = 50) {
 
 // ----------------------start-------------------
 var data = [
-  {userId: 8, title: 'title1'},
-  {userId: 11, title: 'other'},
-  {userId: 15, title: null},
-  {userId: 19, title: 'title2'}
+  { userId: 8, title: 'title1' },
+  { userId: 11, title: 'other' },
+  { userId: 15, title: null },
+  { userId: 19, title: 'title2' }
 ];
 
 var result = find(data).where({ title: /\d+/ }).orderBy('userId', 'desc');
 
 // 解析
 function find(o) {
-  function fn() {}
+  function fn() { }
   fn.where = function (filterRule) {
     o = o.filter((item) => filterRule['title'].test(item.title));
     return fn;
@@ -1612,13 +1613,13 @@ function isEqual(o1, o2) {
 var obj1 = {
   a: 1,
   b: 2,
-  c: function() {
+  c: function () {
     console.log(1);
   }
 }
 var obj1 = {
   b: 2,
-  c: function() {
+  c: function () {
     console.log(1);
   },
   a: 1
@@ -1656,7 +1657,7 @@ Object.myIs = function myIs(x, y) {
   if (x === y) {
     return x !== 0 || 1 / x === 1 / y;
   } else {
-    return x !== x && y !==y;
+    return x !== x && y !== y;
   }
 }
 // ----------------------end---------------------
@@ -1677,7 +1678,7 @@ function timeSlice(gen) {
     window.requestIdleCallback(next);
   };
 }
-timeSlice(function *gen() {
+timeSlice(function* gen() {
   // 协定一个终止条件
   const start = performance.now();
   while (performance.now() - start < 1000) {
@@ -1751,7 +1752,7 @@ function timeSlice1(gen) {
     window.requestIdleCallback(next);
   }
 }
-timeSlice1(function *gen() {
+timeSlice1(function* gen() {
   // 设定终止条件
   const start = performance.now();
   while (performance.now - start <= 1000) {
@@ -1759,6 +1760,75 @@ timeSlice1(function *gen() {
     yield;
   }
 })();
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 柯理化，new，原型
+// 1. 返回一个方法
+Function.prototype.myBind = function (o, ...args) {
+  if (typeof this !== 'function') {
+    // closest thing possible to the ECMAScript 5
+    // internal IsCallable function
+    throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+  }
+  const ctx = o ?? window;
+  const fToBind = this;
+  function Fn(...rest) {
+    return fToBind.apply(this instanceof Fn ? this : ctx, [...args, ...rest]);
+  }
+  Fn.prototype = this.prototype;
+  return Fn;
+}
+
+Function.prototype.myBind1 = function (o, ...args) {
+  if (typeof this !== 'function') {
+    throw new TypeError('not a function!');
+  }
+  const ctx = o ?? window;
+  const fToBind = this;
+  function fn(...rest) {
+    return fToBind.apply(this instanceof fn ? this : ctx, [...args, ...rest]);
+  }
+  if (this.prototype) {
+    fn.prototype = this.prototype;
+  }
+  return fn;
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 自记忆函数
+// 原理很简单，利用闭包特性缓存已经计算过的数据,典型的空间换时间
+function selfMemoStore(fn) {
+  const cache = {};
+  return function getCache(...args) {
+    const k = JSON.stringify(args);
+    if (cache[k]) return cache[k];
+    return cache[k] = fn.apply(null, ...args);
+  }
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 简易co模块
+function co(gen) {
+  const it = gen();
+  let result = it.next();
+
+  return new Promise((resolve, reject) => {
+    function next(result) {
+      if (result.done) resolve(result.value);
+      result.value = Promise.resolve(result.value);
+      result.value.then((res) => {
+        result = it.next(res);
+        next(result);
+      }).catch((err) => {
+        reject(err);
+      });
+    }
+    next(result);
+  });
+}
 // ----------------------end---------------------
 
 // ----------------------start-------------------
@@ -1773,6 +1843,8 @@ var o = {
   }
 }
 // ----------------------end---------------------
+
+
 
 
 

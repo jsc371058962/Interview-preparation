@@ -31,7 +31,7 @@ Array.prototype.myMap = function (callback) {
   }
   return arr;
 }
-console.log([1, 2, 3].myMap((value, index) => value * 2));
+console.log([1, 2, 3].myMap((value) => value * 2));
 
 // 实现filter方法
 Array.prototype.myFilter = function (callback) {
@@ -41,7 +41,7 @@ Array.prototype.myFilter = function (callback) {
   }
   return arr;
 }
-console.log([1, 2, 3].myFilter((value, index) => value > 2));
+console.log([1, 2, 3].myFilter((value) => value > 2));
 
 // 实现some方法
 // 一有符合条件的，便返回true
@@ -53,7 +53,7 @@ Array.prototype.mySome = function (callback) {
   }
   return false;
 }
-console.log([1, 2, 3].mySome((value, index) => value > 2)); // true
+console.log([1, 2, 3].mySome((value) => value > 2)); // true
 
 // 实现every方法
 // 必须所有都符合条件，否则返回false
@@ -65,8 +65,8 @@ Array.prototype.myEvery = function (callback) {
   }
   return true;
 }
-console.log([1, 2, 3].myEvery((value, index) => value > 2)); // false
-console.log([3, 5, 3].myEvery((value, index) => value > 2)); // true
+console.log([1, 2, 3].myEvery((value) => value > 2)); // false
+console.log([3, 5, 3].myEvery((value) => value > 2)); // true
 
 // 实现find方法
 // 找到符合条件的第一个元素
@@ -78,8 +78,8 @@ Array.prototype.myFind = function (callback) {
   }
   return;
 }
-console.log([1, 2, 3].myFind((value, index) => value > 2)); // false
-console.log([3, 5, 3].myFind((value, index) => value > 5));
+console.log([1, 2, 3].myFind((value) => value > 2)); // false
+console.log([3, 5, 3].myFind((value) => value > 5));
 
 // 实现findIndex方法
 Array.prototype.myFindIndex = function (callback) {
@@ -90,8 +90,8 @@ Array.prototype.myFindIndex = function (callback) {
   }
   return;
 }
-console.log([5, 2, 3].myFindIndex((value, index) => value > 2)); // false
-console.log([3, 5, 3].myFindIndex((value, index) => value > 5));
+console.log([5, 2, 3].myFindIndex((value) => value > 2)); // false
+console.log([3, 5, 3].myFindIndex((value) => value > 5));
 
 // 实现forEach方法
 // 循环执行某个方法就行
@@ -143,7 +143,7 @@ function instanceOf(left, right) {
   }
   return false;
 }
-class A{}
+class A {}
 var a = new A();
 
 console.log(instanceOf(a, A));
@@ -185,6 +185,7 @@ function curry(fn, ...args) {
     return args.length < length ? curry(fn, ...args) : fn.apply(null, args);
   };
 }
+
 function sum(a, b, c, d) {
   return a + b + c + d;
 }
@@ -217,6 +218,7 @@ function throttle1(fn, timeout = 500) {
     }, timeout);
   }
 }
+
 function logFn() {
   console.log(123);
 }
@@ -240,12 +242,15 @@ var doDebounce = debounce(logFn);
 function sum1(a, b) {
   return a + b;
 }
+
 function toUpper(str) {
   return str.toUpperCase();
 }
+
 function add(str) {
   return '===' + str + '===';
 }
+
 function compose(...rest) {
   return function (...args) {
     let lastfn = rest.pop();
@@ -289,7 +294,7 @@ console.log(unique1([2, 4, 2, 5, 7, 4, 5, 9]));
 
 // 3. filter
 function unique2(arr) {
-  return arr.filter((item, index) => arr.indexOf(item) === index );
+  return arr.filter((item, index) => arr.indexOf(item) === index);
 }
 console.log(unique2([2, 4, 2, 5, 7, 4, 5, 9]));
 
@@ -304,9 +309,11 @@ console.log(intersection([1, 2], [2, 2, 3]));
 function union(a, b) {
   return [...new Set([...new Set(a), ...new Set(b)])];
 }
+
 function union1(a, b) {
   return [...new Set(a)].concat(b.filter((item) => !a.includes(item)));
 }
+
 function union2(a, b) {
   return [...new Set(a.concat(b))];
 }
@@ -325,6 +332,7 @@ console.log(subtraction([1, 2, 10], [2, 2, 3]));
 function handler(msg) {
   console.log(msg)
 }
+
 function handler1(msg) {
   console.log(msg)
 }
@@ -354,7 +362,9 @@ var customEvent = {
 
 customEvent.add('msg', handler);
 customEvent.add('msg', handler1);
-customEvent.emit('msg', {'name': 'jin'});
+customEvent.emit('msg', {
+  'name': 'jin'
+});
 customEvent.remove('msg', handler);
 
 
@@ -363,17 +373,17 @@ customEvent.remove('msg', handler);
 // 被观察者
 class Subject {
 
-  constructor () {
+  constructor() {
     // 存储观察者
     this.observers = [];
   }
   // 提供接收观察者的方法
-  add (item) {
+  add(item) {
     this.observers.push(item);
   }
 
   // 删除某一观察者
-  remove (item) {
+  remove(item) {
     let len = this.observers.length;
     for (let i = 0; i < len; i++) {
       if (this.observers[i] === item) {
@@ -383,7 +393,7 @@ class Subject {
   }
 
   // 触发
-  notify () {
+  notify() {
     this.observers.map((item) => {
       item.update();
     })
@@ -392,11 +402,11 @@ class Subject {
 
 // 观察者
 class Observer {
-  constructor (name) {
+  constructor(name) {
     this.name = name;
   }
 
-  update () {
+  update() {
     console.log(`i'm ${this.name}`);
   }
 }
@@ -413,7 +423,7 @@ subject.notify();
 // 单例模式
 // 顾名思义，整个程序生命周期只有一个某类的实例
 class Person1 {
-  constructor (name) {
+  constructor(name) {
     this.name = name;
   }
 }
@@ -443,7 +453,7 @@ function deepClone(obj, map = new weakMap()) {
   if (typeof obj !== 'object') return obj;
   if (map.get(obj)) return obj;
   map.set(target, true);
-  const o = Array.isArray(target) ? []: {};
+  const o = Array.isArray(target) ? [] : {};
   // for (const key in obj) {
   //   // 没有当symbol属性时的值
   //   if (obj.hasOwnProperty(key)) {
@@ -466,8 +476,8 @@ var obj10 = {
   e: /^\d+$/,
   f: new Date,
   g: true,
-  arr: [10,20,30],
-  school:{
+  arr: [10, 20, 30],
+  school: {
     name: 'cherry',
   },
   2: 1234,
@@ -480,7 +490,7 @@ console.log(deepClone(obj10));
 
 // 非0非负最小值的索引
 // 例如：[10,21,0,-7,35,7,9,23,18] 输出 5, 7 最小
-function getIndex(arr){
+function getIndex(arr) {
   let index = null;
   let min = Math.min(...arr.filter((item) => item > 0));
   index = arr.indexOf(min);
@@ -491,7 +501,7 @@ console.log(getIndex([10, 21, 0, -7, 35, 7, 9, 23, 18]));
 
 const list = [1, 2, 3]
 const square = num => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(num * num)
     }, 1000)
@@ -532,14 +542,14 @@ Promise.prototype.finally = function (callback) {
       p.resolve(callback()).then(() => value);
     },
     (reason) =>
-      p.resolve(callback()).then(() => {
-        throw new Error(reason);
-      })
+    p.resolve(callback()).then(() => {
+      throw new Error(reason);
+    })
   );
 };
 
 // 最简code实现最小大于0的索引
-function getIndex1(arr){
+function getIndex1(arr) {
   let index;
   let min = [...arr].sort((a, b) => a - b).find((a) => a > 0);
   index = arr.indexOf(min);
@@ -564,7 +574,7 @@ Promise.prototype.done = function () {
 }
 
 // ----------------------start-------------------
-Array.prototype.myMap1 = function (callback, thisArgs) {
+Array.prototype.myMap1 = function (callback) {
   const results = [];
   for (let i = 0; i < this.length; i++) {
     if (!this.hasOwnProperty(i)) continue;
@@ -636,6 +646,75 @@ Array.prototype.myFlatInfinity1 = function () {
     []
   );
 };
+
+// 使用reduce实现数组map方法
+Array.prototype.myMap2 = function (callback) {
+  return this.reduce((prev, cur, i, this) => prev.concat(callback(cur, i, this)), []);
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 动态规划实现fib
+function fibonacci_dp(n) {
+  if (n === 1) return 0;
+  if (n === 2 || n === 3) return 1;
+  let prev = 0,
+    next = 1;
+  while (n > 3) {
+    [prev, next] = [next, prev + next];
+    n--;
+  }
+  return next;
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// Reflect实现单例模式
+function Singleton(fn) {
+  let instance;
+  const handler = {
+    construct(target, args) {
+      if (!instance) instance = Reflect.construct(target, args);
+      return instance;
+    }
+  }
+  return new Proxy(fn, handler);
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 洗牌算法
+function shuffle(array) {
+  for (let i = 0; i < array.length; i++) {
+    let randomIndex = i + (Math.floor(Math.random() * (array.length - i)));
+    [array[i], array[randomIndex]] = [array[randomIndex], array[i]];
+  }
+  return array;
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 0延时的settimeout
+window.setZeroTimeout = (function() {
+  const callbackArray = [];
+  const messageName = 'zero-timeout-message';
+  function zeroTimeout(callback) {
+    callbackArray.push(callback);
+    window.postMessage(messageName, '*');
+  }
+
+  function handler(evt) {
+    if (messageName === evt.data && window === evt.source) {
+      evt.stopPropagation();
+      if (callbackArray.length) {
+        const fn = callbackArray.shift();
+        fn();
+      }
+    }
+  }
+  window.addEventListener('message', handler, true);
+  return zeroTimeout;
+})();
 // ----------------------end---------------------
 
 

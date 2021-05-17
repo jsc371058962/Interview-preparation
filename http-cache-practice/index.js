@@ -25,7 +25,7 @@ window.addEventListener('load', function () {
   //     ) {
   //       node.src = node.dataset.src;
   //       node.dataset.isLoaded = true;
-  //       count--
+  //       count--;
   //     }
   //   });
   // }
@@ -145,28 +145,28 @@ window.addEventListener('load', function () {
   // window.addEventListener('scroll', lazyLoadImages);
 
 
-  // const input = document.querySelector('#input');
-  // function debounce(fn, delay, immediate = false) {
-  //   let timer = null;
-  //   return function (...args) {
-  //     if (timer) clearTimeout(timer);
-  //     if (immediate) {
-  //       let isCallNow = !timer;
-  //       timer = setTimeout(() => {
-  //         timer = null;
-  //       }, delay);
-  //       if (isCallNow) fn.call(this, ...args);
-  //     } else {
-  //       timer = setTimeout(() => {
-  //         fn.call(this, ...args);
-  //       }, delay);
-  //     }
-  //   }
-  // }
+  const input = document.querySelector('#input');
+  function debounce(fn, delay, immediate = false) {
+    let timer = null;
+    return function (...args) {
+      if (timer) clearTimeout(timer);
+      if (immediate) {
+        let isCallNow = !timer;
+        timer = setTimeout(() => {
+          timer = null;
+        }, delay);
+        if (isCallNow) fn.call(this, ...args);
+      } else {
+        timer = setTimeout(() => {
+          fn.call(this, ...args);
+        }, delay);
+      }
+    }
+  }
 
-  // function log() {
-  //   console.log(this);
-  // }
-  // let d = debounce(log, 1000);
-  // input.addEventListener('input', d);
+  function log() {
+    console.log(this);
+  }
+  let d = debounce(log, 1000);
+  input.addEventListener('input', d);
 });

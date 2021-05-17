@@ -201,7 +201,7 @@ var addf = createCurry(add);
 console.log(addf(1)(2)(4)(5));
 
 
-function curry(fn, args = []) {
+function curry(fn, ...args) {
   const paramLength = fn.length;
   return function () {
     const _args = [...arguments];
