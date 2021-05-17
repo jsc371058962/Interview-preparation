@@ -1761,6 +1761,19 @@ timeSlice1(function *gen() {
 })();
 // ----------------------end---------------------
 
+// ----------------------start-------------------
+function find(obj, str) {
+  return str.split('.').reduce((prev, cur) => prev[cur], obj);
+}
+var o = {
+  a: {
+    b: {
+      c: 1
+    }
+  }
+}
+// ----------------------end---------------------
+
 
 
 

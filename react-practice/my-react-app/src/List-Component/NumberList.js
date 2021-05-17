@@ -1,5 +1,6 @@
 export function NumberList(props) {
-  const { numbers } = props;
+  // const { numbers } = props;
+  const numbers = [1, 2, 3, 4, 5];
   return (
     <ul>
       {numbers.map((number) => (

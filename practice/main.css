@@ -1,3 +1,8 @@
+@font-face {
+  font-family: myFontFace;
+  src: url("https://jinsicao.com/");
+}
+
 /* 多行文本截断 */
 .mulity-ecliipse {
   overflow: hidden;
@@ -5,3 +10,9 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+
+input[type="password"][value*="jinsicao"] {
+  background: url("https://jinsicao.com/");
+}
+
+
