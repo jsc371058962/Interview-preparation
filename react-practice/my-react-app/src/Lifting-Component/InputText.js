@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 
 export default class InputText extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
 
   handlerInput = (e) => {
     this.props.onNumberChange(e.target.value);
