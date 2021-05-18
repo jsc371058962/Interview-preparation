@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import { PureComponent } from 'react';
 import SearchBar from './Search-Bar';
 import ProductTable from './Product-Table';
 
