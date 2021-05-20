@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three-column layout</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font-size: 10px;
+    }
+    /* 1. 使用float， center要放在最后*/
+    /* .container {
+      height: 100%;
+      width: 100%;
+    }
+    .left {
+      float: left;
+      height: 100%;
+      width: 30rem;
+      background-color: aquamarine;
+    }
+    .right {
+      float: right;
+      height: 100%;
+      width: 30rem;
+      background-color: chocolate;
+    }
+    .center {
+      height: 100%;
+      margin: 0 30rem;
+      background-color: #aa00bb;
+    } */
+
+    /* 2. 绝对定位*/
+    /* .container {
+      position: relative;
+      height: 100%;
+      width: 100%;
+    }
+    .left {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 30rem;
+      background-color: aquamarine;
+    }
+    .right {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 30rem;
+      background-color: chocolate;
+    }
+    .center {
+      height: 100%;
+      margin: 0 30rem;
+      background-color: #aa00bb;
+    } */
+
+    /* 3. flex*/
+    /* .container {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      flex-direction: row;
+    }
+    .left {
+      height: 100%;
+      width: 30rem;
+      background-color: aquamarine;
+    }
+    .center {
+      order: 1;
+      flex-grow: 1;
+      height: 100%;
+      background-color: #aa00bb;
+    }
+    .right {
+      order: 2;
+      height: 100%;
+      width: 30rem;
+      background-color: chocolate;
+    } */
+
+    /* 4. 圣杯布局， 需要center在前*/
+    /* .container {
+      height: 100%;
+      padding: 0 30rem;
+    }
+    .center, .left, .right {
+      position: relative;
+      float: left;
+    }
+    .left {
+      left: -300px;
+      height: 100%;
+      width: 30rem;
+      margin-left: -100%;
+      background-color: aquamarine;
+    }
+    .center {
+      height: 100%;
+      width: 100%;
+      background-color: #aa00bb;
+    }
+    .right {
+      left: 30rem;
+      height: 100%;
+      width: 30rem;
+      margin-left: -30rem;
+      background-color: chocolate;
+    } */
+
+    .container {
+      height: 100%;
+    }
+    .main, .left, .right {
+      float: left;
+    }
+    .left {
+      margin-left: -100%;
+      height: 100%;
+      width: 30rem;
+      background-color: aquamarine;
+    }
+    .main {
+      width: 100%;
+      height: 100%;
+    }
+    .center {
+      margin: 0 30rem;
+      height: 100%;
+      background-color: #aa00bb;
+    }
+    .right {
+      margin-left: -30rem;
+      height: 100%;
+      width: 30rem;
+      background-color: chocolate;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="main">
+      <div class="center"></div>
+    </div>
+    <div class="left"></div>
+    <div class="right"></div>
+  </div>
+</body>
+</html>
