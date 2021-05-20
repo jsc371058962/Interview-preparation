@@ -1894,7 +1894,42 @@ var o = {
 // ----------------------end---------------------
 
 // ----------------------start-------------------
+// settimeout实现setinterval
+function setTimeoutInteval(fn, timeout) {
+  setTimeout(() => {
+    fn();
+    setTimeoutInteval(fn, timeout);
+  }, timeout);
+};
+setTimeoutInteval(fn, 500);
+function printLog() {
+  console.log(1243);
+}
 // ----------------------end---------------------
+
+// ----------------------start-------------------
+//1. Hero("37er");执行结果为Hi! This is 37er
+//2. Hero("37er").kill(1).recover(30); 执行结果为Hi! This is 37er Kill 1 bug Recover 30 bloods 
+//3. Hero("37er").sleep(10).kill(2)执行结果为Hi! This is 37er //等待10s后  Kill 2 bugs //注意为bugs
+function Hero(name) {
+  console.log(`Hi! This is ${name}`);
+  return Hero;
+}
+Hero.kill = function (num) {
+  const bugsOrBug = num > 1 ? 'bugs' : 'bug';
+  console.log(`Kill ${num} ${bugsOrBug}`);
+  return Hero;
+}
+Hero.recover = function (count) {
+  console.log(`Recover ${count} bloods`);
+}
+Hero.sleep = function (time) {
+  const start = Date.now();
+  while (Date.now() - start < 1000 * time) {}
+  return Hero;
+}
+// ----------------------end---------------------
+
 
 
 
