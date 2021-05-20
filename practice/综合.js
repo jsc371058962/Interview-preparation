@@ -1760,6 +1760,30 @@ timeSlice1(function* gen() {
     yield;
   }
 })();
+
+function timeSlice2(gen) {
+  if (typeof gen === 'function') gen = gen();
+  if (!gen || typeof gen.next !== 'function')
+    throw new TypeError('Not a function!');
+  let res = null;
+  const start = performance.now();
+  function next() {
+    do {
+      res = gen.next();
+    } while (!res.done && performance.now() - start < 25);
+    if (res.done) return;
+    window.requestIdleCallback(next);
+  }
+  next();
+}
+timeSlice2(function *gen() {
+  // 设定终止条件
+  const start = performance.now();
+  while (performance.now() - start < 1000) {
+    yield;
+  }
+  console.log('End!');
+});
 // ----------------------end---------------------
 
 // ----------------------start-------------------
@@ -1782,7 +1806,7 @@ Function.prototype.myBind = function (o, ...args) {
 
 Function.prototype.myBind1 = function (o, ...args) {
   if (typeof this !== 'function') {
-    throw new TypeError('not a function!');
+    throw new TypeError('Not a function!');
   }
   const ctx = o ?? window;
   const fToBind = this;
@@ -1793,6 +1817,22 @@ Function.prototype.myBind1 = function (o, ...args) {
     fn.prototype = this.prototype;
   }
   return fn;
+}
+
+Function.prototype.myBind2 = function (o, ...args) {
+  if (typeof this !== 'function') {
+    throw new TypeError('Not a function!');
+  }
+  const ctx = o ?? window,
+    fToBind = this;
+  const Fn = function (...rest) {
+    return fToBind.apply(this instanceof Fn ? this : ctx, [...args, ...rest]);
+  };
+
+  if (this.prototype) {
+    Fn.prototype = this.prototype;
+  }
+  return Fn;
 }
 // ----------------------end---------------------
 
@@ -1805,6 +1845,15 @@ function selfMemoStore(fn) {
     const k = JSON.stringify(args);
     if (cache[k]) return cache[k];
     return cache[k] = fn.apply(null, ...args);
+  }
+}
+
+function selfMemoryStore(fn) {
+  const cache = {};
+  return function getCache(key) {
+    const k = JSON.stringify(key);
+    if (cache[k]) return cache[k];
+    return cache[k] = fn.apply(null, key);
   }
 }
 // ----------------------end---------------------
@@ -1843,6 +1892,11 @@ var o = {
   }
 }
 // ----------------------end---------------------
+
+// ----------------------start-------------------
+// ----------------------end---------------------
+
+
 
 
 

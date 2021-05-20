@@ -1,0 +1,62 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.circle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10rem;
+  height: 10rem;
+  line-height: 8rem;
+  border: 1rem solid rgb(160, 32, 32);
+  border-radius: 5rem;
+  background: #ffd000;
+  box-sizing: border-box;
+  text-align: center;
+  animation: scroll-circle 10s linear .2s infinite alternate;
+}
+
+.circle:hover {
+  animation-play-state: paused;
+}
+
+hr {
+  margin-top: 10rem;
+}
+
+@keyframes scroll-circle {
+  0% {
+    left: 0%;
+    transform: rotate(0);
+  }
+  25% {
+    left: 25%;
+    transform: rotate(90deg);
+  }
+  50% {
+    left: 50%;
+    transform: rotate(180deg);
+  }
+  75% {
+    left: 75%;
+    transform: rotate(270deg);
+  }
+  100% {
+    left: calc(100% - 10rem);
+    transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 60rem) {
+  html, body {
+    font-size: 5px;
+    overflow: hidden;
+  }
+}
