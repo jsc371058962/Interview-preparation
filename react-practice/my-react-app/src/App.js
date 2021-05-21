@@ -1,8 +1,3 @@
-import Router from './Router/Router';
-
-export default function App() {
-  return (
-    <Router>
-    </Router>
-  );
+export default function App(props) {
+  return <div className='main-layout'>{props.children}</div>;
 }

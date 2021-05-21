@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { NumberList } from '../List-Component/NumberList';
 import ErrorBoundary from '../Error-Boundary/Error-Boundary';
 import Home from '../Home/Home';
+import App from '../App';
 
 const Calculator = lazy(() => import('../Lifting-Component/Calculator'));
 const WelcomeDialog = lazy(() => import('../Welcome-Dialog-Component/WelcomeDialog'));
@@ -49,7 +50,7 @@ export default class Router extends PureComponent {
         <ErrorBoundary>
           <Suspense fallback={<div style={{ color: 'red' }}>Laoding...</div>}>
             <Switch>
-              {mapRoute(routes)}
+              <App>{mapRoute(routes)}</App>
             </Switch>
           </Suspense>
         </ErrorBoundary>
