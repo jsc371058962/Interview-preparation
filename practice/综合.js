@@ -1972,6 +1972,92 @@ onceFn();
 // ----------------------end---------------------
 
 
+// LRU算法
+class LRUCache {
+  constructor(limit) {
+    this.limit = limit;
+    // 进行缓存
+    this.map = new Map();
+  }
+
+  put(key, value) {
+    if (this.map.has(key)) {
+      this.map.delete(key);
+    } else {
+      if (this.map.size >= this.limit) {
+        const needRemoveKey = [...this.map.keys()][0];
+        this.map.delete(needRemoveKey);
+      }
+    }
+    this.map.set(key, value);
+  }
+
+  get(key) {
+    if (!this.map.has(key)) {
+      return -1;
+    }
+    const value = this.map.get(key);
+    this.map.delete(key);
+    this.map.set(key, value);
+    return value;
+  }
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 数组扁平化，排序，去重
+var arr = [
+  [1, 2, 2],
+  [3, 4, 5, 5],
+  [6, 7, 8, 9, [11, 12, [12, 13, [14]]]],
+];
+function compose(...fns) {
+  return function (arr) {
+    const lastFn = fns.pop();
+    return fns.reduceRight((prev, cur) => {
+      return cur(prev);
+    }, lastFn(arr));
+  };
+}
+function sort(arr) {
+  return arr.sort((a, b) => a - b);
+}
+function flat(arr) {
+  while (arr.some((item) => Array.isArray(item))) {
+    arr = [].concat(...arr);
+  }
+  return arr;
+}
+function unique(arr) {
+  return arr.reduce(
+    (prev, cur) => (prev.includes(cur) ? prev : prev.concat(cur)),
+    []
+  );
+}
+var composeMethods = compose(sort, unique, flat);
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 数组求交集
+function getIntersectionArr(arr1, arr2) {
+  return [...new Set(arr1.filter((item) => arr2.includes(item)))];
+}
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+// 编写一个函数计算多个数组的交集
+function getMutiIntersectionArr(...arrays) {
+  // 一个一个来
+  return arrays.reverse((prev, cur) => {
+    return [...new Set(prev.filter((item) => cur.includes(item)))];
+  }, []);
+}
+// ----------------------end---------------------
+
+
+
+
+
 
 
 

@@ -34,6 +34,7 @@ export default class Calculator extends PureComponent {
   }
 
   render() {
+    console.log(this.props);
     const { flag, number } = this.state;
     const number1 = 'n1' === flag ? number : getNumber(number);
     const number2 = 'n2' === flag ? number : getNumber(number);
@@ -41,6 +42,7 @@ export default class Calculator extends PureComponent {
       <>
         <InputText number={number1} onNumberChange={this.onInput1Change} />
         <InputText number={number2} onNumberChange={this.onInput2Change} />
+        <p>{this.props.match.params.number}</p>
       </>
     );
   }
