@@ -9,36 +9,48 @@ const Calculator = lazy(() => import('../Lifting-Component/Calculator'));
 const WelcomeDialog = lazy(() => import('../Welcome-Dialog-Component/WelcomeDialog'));
 const LoginController = lazy(() => import('../LoginController-Component/LoginController'));
 const FilterableProductTable = lazy(() => import('../Table-Product/Filterable-Product-Table'));
+const Forwardref = lazy(() => import('../Forwardref-Component/Forwardref'));
 
 const routes = [{
     path: '/',
-    component: Home,
+    Component: Home,
     exact: true
   },
   {
     path: '/table',
-    component: FilterableProductTable
+    Component: FilterableProductTable
   },
   {
     path: '/list',
-    component: NumberList
+    Component: NumberList
   },
   {
     path: '/dialog',
-    component: WelcomeDialog
+    Component: WelcomeDialog
   },
   {
     path: '/login',
-    component: LoginController
+    Component: LoginController
   },
   {
-    path: '/calculator',
-    component: Calculator
+    path: '/calculator/:number',
+    Component: Calculator
+  },
+  {
+    path: '/forwardref',
+    Component: Forwardref
   }
 ];
 function mapRoute(routes) {
-  return routes.map(({path, exact, component}) => {
-    return <Route path={path} exact={exact ? exact : ''} component={component}></Route>
+  return routes.map(({ path, exact, Component }, index) => {
+    return (
+      <Route
+        key={path}
+        path={path}
+        exact={exact ? exact : false}
+        render={(props) => <Component {...props} />}
+      />
+    );
   });
 }
 

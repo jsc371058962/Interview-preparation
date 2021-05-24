@@ -18,7 +18,10 @@ export default function Home() {
       <Link to="/login">Login</Link>
     </li>
     <li>
-      <Link to="/calculator">Calculator</Link>
+      <Link to="/calculator/10">Calculator</Link>
+    </li>
+    <li>
+      <Link to="/forwardref">Forwardref</Link>
     </li>
   </ul>
 }
