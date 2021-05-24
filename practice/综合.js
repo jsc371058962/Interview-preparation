@@ -1930,6 +1930,48 @@ Hero.sleep = function (time) {
 }
 // ----------------------end---------------------
 
+// ----------------------start-------------------
+function p(num) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(num);
+    }, 1000);
+  });
+}
+Promise.resolve().then(() => {
+    return p(1);
+  }).then((data) => {
+    console.log(data);
+    return p(2);
+  }).then(console.log);
+
+async function getAsyncNumber() {
+  console.log(await p(1));
+  console.log(await p(2)); 
+}
+
+// ----------------------end---------------------
+
+// ----------------------start-------------------
+function once(fn, ...args) {
+  let isCalled = false;
+  return function (...rest) {
+    if (!isCalled) {
+      fn.apply(null, args.concat(rest));
+      isCalled = true;
+    }
+  }
+}
+
+function logs() {
+  console.log(123);
+}
+var onceFn = once(logs);
+onceFn();
+
+// ----------------------end---------------------
+
+
 
 
 
