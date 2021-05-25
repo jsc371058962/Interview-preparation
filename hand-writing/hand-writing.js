@@ -233,8 +233,190 @@ function curry(fn, ...args) {
   }
 }
 
+// 手写观察者模式
+class Subject {
+  constructor() {
+    this.observser = [];
+    this.state = '';
+  }
+
+  add(instance) {
+    this.observser.push(instance);
+  }
+
+  remove(key) {
+    if (this.observser.includes(key)) {
+      const k = this.observser.indexOf(key);
+      this.observser.splice(k, 1);
+    }
+  }
+
+  notify(change) {
+    this.state = change;
+    this.observser.forEach((instance) => {
+      instance.update(this.state);
+    });
+  }
+}
+
+class Observer {
+  constructor(name) {
+    this.name = name;
+  }
+
+  update(change) {
+    console.log(this.name, change);
+  }
+}
+var subject = new Subject();
+var observer1 = new Observer('xiaoming');
+var observer2 = new Observer('xiaohong');
+subject.add(observer1);
+subject.add(observer2);
+subject.notify('abc');
 
 
+// 发布订阅模式
+class EventEmmit {
+  constructor() {
+    this.events = {};
+  }
+  addListener(type, cb) {
+    if (!this.events[type]) {
+      this.events[type] = [];
+    }
+    this.events[type].push(cb);
+  }
+  removeListener(type, cb) {
+    if (!this.events[type]) {
+      return;
+    }
+    for (const [key, item] of this.events[type].entries()) {
+      if (item === cb) {
+        this.events[type].splice(key, 1);
+      }
+    }
+  }
+  fireEvent(type, param) {
+    if (!this.events[type]) {
+      return;
+    }
+    this.events[type].forEach((cb) => {
+      cb(param);
+    });
+  }
+  once(type, callback) {
+    function clousure(param) {
+      callback(param);
+      this.removeListener(type);
+    }
+    this.addListener(type, clousure);
+  }
+}
+
+// 生成min~max之间的随机数
+function randomNumber(min, max) {
+  return ~~(Math.random() * (max - min)) + min;
+}
+
+// 数组随机排序
+function randomSort(a, b) {
+  return Math.random() > 0.5 ? a - b: b - a;
+}
+
+// 通用事件
+var EventUtils = {
+  addListener(element, type, handler) {
+    if (element.addEventListener) {
+      element.addEventListener(type, handler);
+    } else if (element.attachEvent) {
+      element.attachEvent(`on${type}`, handler);
+    } else {
+      element[`on${type}`] = handler;
+    }
+  },
+  removeListener(element, type, handler) {
+    if (element.removeEventListener) {
+      element.removeEventListener(type, handler);
+    } else if (element.detachEvent) {
+      element.detachEvent(type, handler);
+    } else {
+      element[`on${type}`] = null;
+    }
+  },
+  getTarget(event) {
+    return event.target || event.srcElement;
+  },
+  stopPropagation(event) {
+    if (event.stopPropagation) {
+      event.stopPropagation();
+    } else {
+      event.cancelBubble = true;
+    }
+  },
+  preventDefault(event) {
+    if (event.preventDefault) {
+      event.preventDefault();
+    } else {
+      event.returnValue = false;
+    }
+  }
+}
+
+// sleep函数
+function sleep(duration) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, duration);
+  });
+}
+(async function orderExec() {
+  console.log(1);
+  await sleep(duration);
+  console.log(2);
+})();
+
+// 模板引擎
+function render(template, data) {
+  const reg = /\{\{(.*?)\}\}/g;
+  return template.replace(reg, (match, key) => data[key]);
+}
+var template = "{{name}}很厉害，才{{age}}岁";
+var context = { name: "jin", age: "15" };
+console.log(render(template, context));
+
+// 转换成驼峰命名
+var s1 = 'get-element-by-id';
+function getCamerCase(s) {
+  return s.replace(/-\w/g, (match, str) => {
+    return str.slice(1).toUpperCase();
+  });
+}
+
+// 查找字符串出现最多的
+function getLargestStr(str) {
+  // 使用hashmap
+  const map = new Map();
+  for (const s of str) {
+    if (map.has(s)) {
+      let count = map.get(s);
+      map.set(s, ++count);
+    } else {
+      map.set(s, 1);
+    }
+  }
+  // 找最大数字
+  let max = 0;
+  let largestStr = '';
+  for (const [s, num] of map.entries()) {
+    if (num > max) {
+      max = num;
+      largestStr = s;
+    }
+  }
+  return [largestStr, max];
+}
 
 
 

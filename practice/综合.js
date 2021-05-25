@@ -2054,6 +2054,41 @@ function getMutiIntersectionArr(...arrays) {
 }
 // ----------------------end---------------------
 
+// ----------------------start-------------------
+// 实现一个repeat方法
+function repeat(fn, ...args) {
+  function sleep(timeout) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, timeout);
+    });
+  }
+  return async function (str) {
+    let [count, timeout] = args;
+    // 使用async/await最简单
+    // while (count--) {
+    //   await sleep(timeout);
+    //   fn(str);
+    // }
+
+    // 使用reduce+promise
+    let arr = new Array(count).fill(true);
+    return arr.reduce((prev) => {
+      return prev.then(() => {
+        return sleep(timeout);
+      }).then(() => {
+        return fn(str);
+      });
+    }, Promise.resolve());
+  }
+}
+var repeatFunc = repeat(console.log, 4, 3000);
+repeatFunc('hello world!');
+// ----------------------end---------------------
+
+
+
 
 
 
