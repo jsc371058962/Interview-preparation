@@ -66,9 +66,16 @@ SuperTye.prototype.sayName = function () {
 }
 
 function SubType(age, name) {
-  SuperTye.call(this, name);
   this.age = age;
 }
+
+function inheritPrototype(son, father) {
+  son.prototype = Object.create(father.prototype);
+  son.prototype.constructor = son;
+  Object.setPrototypeOf(son, father);
+  // 还有不能枚举
+}
+inheritPrototype(SubType, SuperTye);
 
 function inherit(son, father) {
   Object.setPrototypeOf(son, father);
