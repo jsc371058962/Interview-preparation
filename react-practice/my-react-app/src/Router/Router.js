@@ -10,6 +10,7 @@ const WelcomeDialog = lazy(() => import('../Welcome-Dialog-Component/WelcomeDial
 const LoginController = lazy(() => import('../LoginController-Component/LoginController'));
 const FilterableProductTable = lazy(() => import('../Table-Product/Filterable-Product-Table'));
 const Forwardref = lazy(() => import('../Forwardref-Component/Forwardref'));
+const Hooks = lazy(() => import('../Hooks-Component/Hooks'));
 
 const routes = [{
     path: '/',
@@ -39,6 +40,10 @@ const routes = [{
   {
     path: '/forwardref',
     Component: Forwardref
+  },
+  {
+    path: '/hooks',
+    Component: Hooks
   }
 ];
 function mapRoute(routes) {

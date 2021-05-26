@@ -425,6 +425,111 @@ function getLargestStr(str) {
   return [largestStr, max];
 }
 
+// 排序, 目前学习3种,冒泡选择插入
+// 冒泡排序
+var sortArray = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+function bubbleSort(array) {
+  const len = array.length;
+  // 控制循环次数
+  for (let i = 0; i < len; i++) {
+    // 控制内循环并交换
+    for (let j = 0; j < len - i; j++) {
+      if (array[j] > array[j + 1]) {
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+      }
+    }
+  }
+  return array;
+}
+bubbleSort(sortArray);
+
+// 选择排序
+var sortArray = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+function selectionSort(array) {
+  const len = array.length;
+  // 控制循环
+  for (let i = 0; i < len; i++) {
+    for (let j = i + 1; j < len; j++) {
+      if (array[i] > array[j]) {
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  }
+  return array;
+}
+selectionSort(sortArray);
+
+// 直接插入排序
+var sortArray = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+function insertSort(array) {
+  let len = array.length;
+  for (let i = 1; i < len; i++) {
+    const loopNumber = array[i];
+    let j = i - 1;
+    while (j >= 0 && array[j] > loopNumber) {
+      array[j + 1] = array[j];
+      j--;
+    }
+    array[j + 1] = loopNumber;
+  }
+  return array;
+}
+insertSort(sortArray);
+
+// 手写async/await
+function asyncFunc(gen) {
+  return new Promise((resolve, reject) => {
+    gen = gen();
+    function step(key, result) {
+      let generatorResult;
+      try {
+        generatorResult = gen[key](result);
+      } catch (error) {
+        reject(error);
+      }
+      const { value, done } = generatorResult;
+      if (done) return resolve(value);
+      return Promise.resolve(value).then(
+        (data) => {
+          step('next', data);
+        },
+        (error) => {
+          step('throw', error);
+        }
+      );
+    }
+    step('next');
+  });
+}
+var getData = () =>
+  new Promise((resolve) => setTimeout(() => resolve('data'), 1000));
+var test = asyncFunc(function* testG() {
+  const data = yield getData();
+  console.log('data: ', data);
+  const data2 = yield getData();
+  console.log('data2: ', data2);
+  return 'success';
+});
+test.then((res) => console.log(res));
+
+// 使用Proxy实现一个单例
+function singleton(Fn) {
+  let instance;
+  const handler = {
+    construct(target, args) {
+      if (!instance) instance = new target(...args);
+      return instance;
+    }
+  };
+  return new Proxy(Fn, handler);
+}
+function Person(name) {
+  this.name = name;
+}
+var PersonSingleTon = singleton(Person);
+var p1 = new PersonSingleTon('xiaohong');
+var p2 = new PersonSingleTon('xiaoming');
+
 
 
 

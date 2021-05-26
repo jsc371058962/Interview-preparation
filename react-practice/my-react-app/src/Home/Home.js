@@ -23,5 +23,8 @@ export default function Home() {
     <li>
       <Link to="/forwardref">Forwardref</Link>
     </li>
+    <li>
+      <Link to="/hooks">Hooks</Link>
+    </li>
   </ul>
 }
