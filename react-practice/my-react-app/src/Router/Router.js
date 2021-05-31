@@ -42,7 +42,7 @@ const routes = [{
     Component: Forwardref
   },
   {
-    path: '/hooks',
+    path: '/hooks/:number',
     Component: Hooks
   }
 ];

@@ -530,6 +530,31 @@ var PersonSingleTon = singleton(Person);
 var p1 = new PersonSingleTon('xiaohong');
 var p2 = new PersonSingleTon('xiaoming');
 
-
+// async/await手写实现
+function asyncGeneration(gen) {
+  if (typeof gen === 'function') gen = gen();
+  if (!gen || typeof gen.next !== 'function') throw new TypeError('Not a function!');
+  return new Promise((resolve, reject) => {
+    function step(type, val) {
+      let result;
+      try {
+        result = gen[type](val);
+      } catch (error) {
+        reject(error);
+      }
+      const { value, done } = result;
+      if (done) return resolve(value);
+      return Promise.resolve().then(
+        (value) => {
+          return step('next', value);
+        },
+        (error) => {
+          return step('throw', error);
+        }
+      );
+    }
+    step('next');
+  });
+}
 
 

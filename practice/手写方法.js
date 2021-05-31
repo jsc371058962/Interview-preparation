@@ -1,10 +1,6 @@
-var log = function (strings) {
-  console.log(strings);
-}
-
 // 节流
-
-// 频繁的操作下，只在固定的时间执行
+// 频繁操作下,按照固定时间执行代码,有稀释函数执行次数的特点.
+// 1.时间戳的方式
 function throttle(fn, time = 500) {
   let preDate = Date.now();
 
@@ -16,14 +12,24 @@ function throttle(fn, time = 500) {
     }
   }
 }
-
+// 2. settimeout的方式
+function throttle1(fn, timeout= 500) {
+  let timer = null;
+  return (...rest) => {
+    if (timer) return;
+    timer = setTimeout(() => {
+      fn.apply(null, rest);
+      timer = null;
+    }, timeout);
+  }
+}
 var fn = throttle(function name() {
   console.log(123);
 }, 1000);
 
+// 闭包
 var fn = function () {
   var n = 0;
-
   function add() {
     n++;
     console.log(n);
@@ -34,53 +40,57 @@ var fn = function () {
 
 var result = fn();
 var result1 = fn();
-result.add();
-result.add();
+result.add(); // 1
+result.add(); // 2
 
+// 手写myCall
 Function.prototype.myCall = function (o) {
+  // 还需要判断是否是一个函数
+  if (typeof this !== 'function') {
+    throw new TypeError('this not a function!');
+  }
+
   const context = o ?? window;
-  context.fn = this;
+  // 避免函数名重复
+  const symbol = Symbol('call');
+  context[symbol] = this;
 
   const args = [...arguments].slice(1);
-  const result = context.fn(...args);
-  delete context.fn;
+  const result = context[symbol](...args);
+  delete context[symbol];
   return result;
-}
+};
 
 Function.prototype.myApply = function (o) {
+  // 还需要判断是否是一个函数
+  if (typeof this !== 'function') {
+    throw new TypeError('this not a function!');
+  }
   const context = o ?? window;
-  context.fn = this;
+  const symbol = Symbol('apply');
+  context[symbol] = this;
+  const args = [...arguments].slice(1)[0];
+  const result = context[symbol](...args);
 
-  const args = [...arguments].slice(1);
-  const result = context.fn(args);
-
-  Reflect.deleteProperty(context, 'fn');
+  delete context[symbol];
   return result;
 }
-
-function log() {
-  console.log(this.name)
-}
-
 var obj = {name: 'abc'};
-
 // log.myCall(obj)
-log.myApply(obj);
+console.log.myApply(obj);
 
+// queueMicrotask新的一种微任务的测试
 console.log('123');
-
 queueMicrotask(() => {
   console.log(234);
-})
-
+});
 Promise.resolve().then(() => {
   console.log(34343);
 });
-
 console.log('end');
 
-
-var p = function (params) {
+// promise执行顺序练习
+var p = function () {
   return new Promise((resolve) => {
     var p = new Promise((resolve) => {
       resolve();
@@ -91,8 +101,7 @@ var p = function (params) {
     })
   });
 };
-
-p.then(() => {
+p().then(() => { // 1 2 3 4
   console.log('2');
   var p1 = new Promise((resolve) => {
     resolve();
@@ -104,71 +113,63 @@ p.then(() => {
   console.log(4);
 });
 
-
+// 输出[1, 2, 3]
 var timeout = ms => new Promise((resolve, reject) => {
   setTimeout(() => {
     resolve();
   }, ms);
 });
-
 var ajax1 = () => timeout(2000).then(() => {
   console.log('1');
   return 1;
 });
-
 var ajax2 = () => timeout(1000).then(() => {
   console.log('2');
   return 2;
 });
-
 var ajax3 = () => timeout(2000).then(() => {
   console.log('3');
   return 3;
 });
-
 var mergePromise = (ajaxArray) => {
-  // 在这里实现你的代码
-  var data = [];
-  var promise = Promise.resolve();
-
-  ajaxArray.forEach((ele) => {
-    promise = promise.then(ele).then((d) => {
-      data.push(d);
-      return data;
+  const promiseArray = [...ajaxArray];
+  const valueArray = [];
+  // 建议使用reduce, 万能
+  const results = promiseArray.reduce((prev, cur) => {
+    return prev.then(() => {
+      return cur().then((data) => {
+        valueArray.push(data);
+        return valueArray;
+      })
     });
-  });
-
-  return promise;
+  }, Promise.resolve());
+  return results;
 };
-
 mergePromise([ajax1, ajax2, ajax3]).then(data => {
   console.log('done');
   console.log(data); // data 为 [1, 2, 3]
 });
 
-
-function fn({ flag = true}) {
-  console.log(flag);
-}
-fn()
-
-setImmediate(() => {
-  console.log(2)
-}, 0)
+// 嵌套超过5层的settimeout才会默认将timeout设置为4ms
 setTimeout(() => {
-  console.log(1)
+  console.log(1);
+}, 1);
+setTimeout(() => {
+  console.log(0);
 }, 0);
+setTimeout(() => {
+  console.log(2);
+}, 2);
 
-
+// 无关联的函数使用并发执行
 async function foo() {
   const x = await new Promise((resolve) => {
     setTimeout(() => {
       resolve(1);
-    }, 500);
+    }, 1000);
   });
   return x;
 }
-
 async function bar() {
   const x = await new Promise((resolve) => {
     setTimeout(() => {
@@ -177,20 +178,17 @@ async function bar() {
   });
   return x;
 }
-
-async function foo1() {
+(async function foo1() {
   try {
     const foo1 = foo();
     const bar1 = bar();
     const tempFoo = await foo1;
     const tempBar = await bar1;
-    return { tempBar, tempFoo};
+    return { tempFoo, tempBar };
   } catch (error) {
     throw 'error';
   }
-}
-
-foo1();
+})();
 
 var p = () => {
   return new Promise((resolve) => {
@@ -206,61 +204,11 @@ async function asyncfn() {
     return 5;
   }
 }
-
 asyncfn().then((message) => {
   console.log(message);
 });
 
-
-var flag = true;
-
-var obj = {
-  flag: true,
-  content() {
-    return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log('content')
-      if (this.flag) {
-        resolve('web page content')
-      } else {
-        reject(new Error('error happens'))
-      }
-    })
-    })
-  },
-  close() {
-    console.log('close')
-
-    this.flag = false;
-  }
-}
-
-var f2 = async () => {
-  try {
-    return obj.content()
-  } finally {
-    obj.close()
-  }
-}
-
-var f3 = async () => {
-  try {
-    return await obj.content()
-  } finally {
-    obj.close()
-  }
-}
-
-var main = async () => {
-  var content = await f3()
-  console.log('got content')
-
-  console.log(content)
-}
-
-main();
-
-
+// 关于执行顺序(node中)
 const promise = Promise.resolve()
 setImmediate(() => {
   console.log('setImmediate');
@@ -272,7 +220,7 @@ process.nextTick(()=>{
   console.log('nextTick');
 })
 
-
+// 维持同时有3个请求在执行
 var urls = [
   'https://www.kkkk1000.com/images/getImgData/getImgDatadata.jpg',
   'https://www.kkkk1000.com/images/getImgData/gray.gif',
@@ -283,7 +231,6 @@ var urls = [
   'https://www.kkkk1000.com/images/getImgData/arithmetic.gif',
   'https://www.kkkk1000.com/images/wxQrCode2.png',
 ];
-
 function loadImg(url) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -295,83 +242,68 @@ function loadImg(url) {
     img.src = url;
   });
 };
-
-function loadImage1(handler, urls, limit) {
+function loadImage1(urls, handler, limit) {
   // 拷贝副本
   let tempUrls = [...urls];
   // first执行的3个urls
   let urlsLoadsFirst = tempUrls.splice(0, limit);
   let promises = urlsLoadsFirst.map((url, index) => {
-    return handler(url).then(() => {
-      return index;
-    });
+    return handler(url).then(() => index);
   });
-  return tempUrls.reduce((prev, cur, curIndex) => {
-    return prev.then(() => {
-      return Promise.race(promises);
-    }).catch((err) => {
-      console.error(err);
-    }).then((loadedIndex) => {
-      promises[loadedIndex] = handler(curIndex).then((index) => {
-        return index;
-      });
+  return tempUrls
+    .reduce((prev, cur) => {
+      return prev
+        .then(() => {
+          return Promise.race(promises);
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+        .then((idx) => {
+          promises[idx] = handler(cur).then((idx) => idx);
+        });
+    }, Promise.resolve())
+    .then(() => {
+      // 最后三个url
+      return Promise.all(promises);
     });
-  }, Promise.resolve()).then(() => {
-    // 最后三个url
-    return Promise.all(promises);
-  });
 }
+limitLoad(urls, loadImg, 3);
 
 function limitLoad(urls, handler, limit) {
-  // 对数组做一个拷贝
-  const sequence = [...urls];
-
-  let promises = [];
-
-  //并发请求到最大数
-  promises = sequence.splice(0, limit).map((url, index) => {
-    // 这里返回的 index 是任务在 promises 的脚标，用于在 Promise.race 之后找到完成的任务脚标
-    return handler(url).then(() => {
-      return index;
-    });
+  const urlsArray = [...urls];
+  const promises = urlsArray.splice(0, limit).map((item, index) => {
+    return handler(item).then(() => index);
   });
-
-  // 利用数组的 reduce 方法来以队列的形式执行
-  return sequence.reduce((last, url, currentIndex) => {
-    return last.then(() => {
-      // 返回最快改变状态的 Promise
-      return Promise.race(promises);
-    }).catch(err => {
-      // 这里的 catch 不仅用来捕获前面 then 方法抛出的错误
-      // 更重要的是防止中断整个链式调用
-      console.error(err);
-    }).then((res) => {
-      // 用新的 Promise 替换掉最快改变状态的 Promise
-      promises[res] = handler(sequence[currentIndex]).then(() => {
-        return res;
-      });
-    })
-  }, Promise.resolve()).then(() => {
-    return Promise.all(promises);
-  })
-
+  return urlsArray
+    .reduce((prev, cur) => {
+      return prev
+        .then(() => {
+          return Promise.race(promises);
+        })
+        .catch((error) => {
+          return error;
+        })
+        .then((idx) => {
+          return (promises[idx] = handler(cur).then(() => idx));
+        });
+    }, Promise.resolve())
+    .then(() => {
+      return Promise.all(promises);
+    });
 }
-
 limitLoad(urls, loadImg, 3);
 
 
 var numbers = [1, 2, 3, 4, 5, 6];
 var results = [];
-
 function async(arg, callback) {
   console.log('参数为 ' + arg +' , 1秒后返回结果');
   setTimeout(function () { callback(arg * 2); }, 1000);
 };
-
 function final(value) {
   console.log('完成: ', value);
 };
-
 // 并行
 numbers.forEach((element) => {
   async(element, function (result) {
@@ -381,7 +313,6 @@ numbers.forEach((element) => {
     }
   });
 });
-
 
 var numbers = [1, 2, 3, 4, 5, 6];
 var results = [];
@@ -412,7 +343,6 @@ function timer1() {
     }, 500);
   });
 }
-
 function timer2() {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -420,14 +350,7 @@ function timer2() {
     }, 500);
   });
 }
-
 Promise.all([timer1(), timer2()]).then(([a]) => {
   console.dir(a);
 });
 
-var set = new Set([1, 2, 3]);
-function test(set) {
-  console.log(set);
-}
-
-test.apply(null, set);

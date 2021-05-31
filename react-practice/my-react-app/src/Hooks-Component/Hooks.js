@@ -1,28 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
 
-export default function Count() {
-  console.log(123)
-  const [count, setCount] = useState(0);
-  const [fruit, setFruit] = useState('apple');
-
-  useEffect(() => {
-    document.title = `You clicked ${count} times.`
-  });
-
-  useEffect(() => {
-    console.log(fruit);
-  })
-
-  function setAllStates() {
-    setCount(count + 1);
-    setFruit('banana');
+function init(state) {
+  return { count: state.count };
+}
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increase':
+      return { count: state.count + 1 };
+    case 'decrease':
+      return { count: state.count - 1 };
+    default:
+      break;
   }
+}
+export default function Count() {
+  const [state, dispatch] = useReducer(reducer, { count: 1 }, init);
+
+  useEffect(() => {
+    // 请求数据,订阅,设置定时器,log上报
+    document.title = `You clicked ${state.count} times.`
+  });
 
   return (
     <div>
-      <p>You clicked {count} times.</p>
-      <button onClick={setAllStates} value='button'>
+      <p>You clicked {state.count} times.</p>
+      <button onClick={() => dispatch({type: 'increase'})} value='button'>
         count+1
+      </button>
+      <button onClick={() => dispatch({type: 'decrease'})} value='button2'>
+        count-1
       </button>
     </div>
   );

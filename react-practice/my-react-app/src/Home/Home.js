@@ -24,7 +24,7 @@ export default function Home() {
       <Link to="/forwardref">Forwardref</Link>
     </li>
     <li>
-      <Link to="/hooks">Hooks</Link>
+      <Link to="/hooks/1">Hooks</Link>
     </li>
   </ul>
 }
