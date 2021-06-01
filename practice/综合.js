@@ -1422,11 +1422,9 @@ Promise.myAllSettled([p1(), p2(), p3]).then((data) => {
 function timer(delay = 50) {
   let startTime = Date.now(),
     count = 1;
-
   function instance() {
     let idealTime = count * delay,
       realTime = Date.now() - startTime;
-
     count++;
     diff = realTime - idealTime;
 
@@ -1435,7 +1433,6 @@ function timer(delay = 50) {
       instance();
     }, delay - diff);
   }
-
   window.setTimeout(() => {
     instance();
   }, delay);
@@ -1947,7 +1944,7 @@ Promise.resolve().then(() => {
 
 async function getAsyncNumber() {
   console.log(await p(1));
-  console.log(await p(2)); 
+  console.log(await p(2));
 }
 
 // ----------------------end---------------------

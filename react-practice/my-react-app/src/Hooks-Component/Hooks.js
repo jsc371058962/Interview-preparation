@@ -1,35 +1,32 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useMemo, useCallback, useRef } from 'react';
 
-function init(state) {
-  return { count: state.count };
-}
-function reducer(state, action) {
-  switch (action.type) {
-    case 'increase':
-      return { count: state.count + 1 };
-    case 'decrease':
-      return { count: state.count - 1 };
-    default:
-      break;
-  }
+function usePrevValue(value) {
+  const preValue = useRef(0);
+  useEffect(() => {
+    preValue.current = value;
+  });
+  return preValue.current;
 }
 export default function Count() {
-  const [state, dispatch] = useReducer(reducer, { count: 1 }, init);
+  const [count, setCount] = useState(0);
+  const prevCount = usePrevValue(count);
 
   useEffect(() => {
-    // 请求数据,订阅,设置定时器,log上报
-    document.title = `You clicked ${state.count} times.`
-  });
+    const id = setTimeout(() => {
+      console.log(count);
+    }, 1000);
+    return () => {
+      clearInterval(id);
+    }
+  }, [count]);
 
   return (
-    <div>
-      <p>You clicked {state.count} times.</p>
-      <button onClick={() => dispatch({type: 'increase'})} value='button'>
-        count+1
-      </button>
-      <button onClick={() => dispatch({type: 'decrease'})} value='button2'>
-        count-1
-      </button>
-    </div>
+    <>
+      <h1>
+        Now: {count}, before: {prevCount}
+      </h1>
+      <button onClick={() => setCount(count + 1)}>add+1</button>
+      <button onClick={() => setCount(count - 1)}>minus-1</button>
+    </>
   );
 }
