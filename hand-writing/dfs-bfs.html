@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="root">
+    <ul>
+      <li>
+        <a href="">
+          <img src="" alt="">
+        </a>
+      </li>
+      <li>
+        <span></span>
+      </li>
+      <li>
+      </li>
+    </ul>
+    <p></p>
+    <button></button>
+  </div>
+</body>
+<script>
+  function bfs(treeNode) {
+  const nodeList = [];
+  const queue = [treeNode];
+  while (queue.length) {
+    const node = queue.shift();
+    nodeList.push(node);
+    const children = node.children;
+    for (let i = 0; i < children.length; i++) {
+      queue.push(children[i]);
+    }
+  }
+  return nodeList;
+}
+  console.log(bfs(document.querySelector('#root')));
+</script>
+</html>

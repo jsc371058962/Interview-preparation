@@ -692,4 +692,24 @@ function levelOrder(head) {
   }
 }
 
+// 通用getType方法
+function getType(param) {
+  return Object.prototype.toString
+    .call(param)
+    .match(/\[object (.*?)\]/)[1]
+    .toLowerCase();
+}
+console.log(getType(null));
+
+// 模板字符串
+function getString(string) {
+  return string.replace(/\{\{(\w+)\}\}/g, (match, key) => o[key]);
+}
+var o = {
+  name: 'jin',
+  age: 100
+}
+var string = 'my name is {{name}}, i\'m {{age}} years old.'
+getString(string);
+
 
