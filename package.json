@@ -1,0 +1,25 @@
+{
+  "name": "interview-preparation",
+  "version": "1.0.0",
+  "description": "A interview preparation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsc371058962/Interview-preparation.git"
+  },
+  "keywords": [
+    "interview"
+  ],
+  "author": "jinsicao",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jsc371058962/Interview-preparation/issues"
+  },
+  "homepage": "https://github.com/jsc371058962/Interview-preparation#readme",
+  "devDependencies": {
+    "prettier": "^2.3.0"
+  }
+}

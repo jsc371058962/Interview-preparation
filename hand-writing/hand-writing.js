@@ -8,7 +8,7 @@ Function.prototype.myCall = function (o, ...args) {
   const result = ctx[symbol](...args);
   delete ctx[symbol];
   return result;
-}
+};
 
 Function.prototype.myApply = function (o, args) {
   if (typeof this !== 'function') {
@@ -20,7 +20,7 @@ Function.prototype.myApply = function (o, args) {
   const result = ctx[symbol](...args);
   delete ctx[symbol];
   return result;
-}
+};
 
 Function.prototype.myBind = function (o, ...args) {
   if (typeof this !== 'function') {
@@ -35,7 +35,7 @@ Function.prototype.myBind = function (o, ...args) {
     Fn.prototype = this.prototype;
   }
   return Fn;
-}
+};
 
 // 寄生式组合继承
 function Person(name) {
@@ -43,7 +43,7 @@ function Person(name) {
 }
 Person.prototype.sayName = function () {
   console.log(this.name);
-}
+};
 
 function Man(age, name) {
   Person.call(this, name);
@@ -53,7 +53,7 @@ Man.prototype = Object.create(Person.prototype);
 Man.prototype.constructor = Man;
 Man.prototype.getAge = function () {
   console.log(this.age);
-}
+};
 
 var man = new Man(18, 'xiaoming');
 
@@ -63,7 +63,7 @@ function SuperTye(name) {
 }
 SuperTye.prototype.sayName = function () {
   console.log(this.name);
-}
+};
 
 function SubType(age, name) {
   this.age = age;
@@ -107,7 +107,7 @@ function myInstanceof(left, right) {
 
 // 实现myCreate
 function myCreate(o) {
-  function F() {};
+  function F() {}
   F.prototype = o;
   return new F();
 }
@@ -123,7 +123,7 @@ Object.myAssign = function (target, ...sources) {
     }
   }
   return o;
-}
+};
 
 // 实现防抖综合版本
 function debounce(fn, timeout, immidate = false) {
@@ -146,13 +146,13 @@ function debounce(fn, timeout, immidate = false) {
 
 // 实现节流时间戳+延时
 function throttle(fn, timeout) {
-  const start = +new Date();
+  let start = +new Date();
   return function (...args) {
     if (+new Date() - start >= timeout) {
       fn.apply(null, args);
       start = +new Date();
     }
-  }
+  };
 }
 function throttle1(fn, timeout) {
   let timer = null;
@@ -162,7 +162,7 @@ function throttle1(fn, timeout) {
       fn.apply(null, args);
       timer = null;
     }, timeout);
-  }
+  };
 }
 
 // 深拷贝
@@ -173,7 +173,7 @@ function deepClone(o, map = new WeakMap()) {
   if (typeof o !== 'object') return o;
   map.set(o, true);
 
-  const obj = new o.constructor;
+  const obj = new o.constructor();
   for (const key of Reflect.ownKeys(o)) {
     const element = o[key];
     if (typeof element === 'object') {
@@ -205,7 +205,7 @@ function flat2(arr) {
 }
 
 var array = [];
-function *flat3(arr) {
+function* flat3(arr) {
   for (const item of arr) {
     if (Array.isArray(item)) {
       yield* flat(item);
@@ -226,7 +226,6 @@ function flat4(arr) {
   }
 }
 
-
 // 柯理化
 function curry(fn, ...args) {
   const len = fn.length;
@@ -237,7 +236,7 @@ function curry(fn, ...args) {
     } else {
       return curry.apply(fn, ...rest);
     }
-  }
+  };
 }
 
 // 手写观察者模式
@@ -281,7 +280,6 @@ var observer2 = new Observer('xiaohong');
 subject.add(observer1);
 subject.add(observer2);
 subject.notify('abc');
-
 
 // 发布订阅模式
 class EventEmmit {
@@ -328,7 +326,7 @@ function randomNumber(min, max) {
 
 // 数组随机排序
 function randomSort(a, b) {
-  return Math.random() > 0.5 ? a - b: b - a;
+  return Math.random() > 0.5 ? a - b : b - a;
 }
 
 // 通用事件
@@ -368,7 +366,7 @@ var EventUtils = {
       event.returnValue = false;
     }
   }
-}
+};
 
 // sleep函数
 function sleep(duration) {
@@ -389,8 +387,8 @@ function render(template, data) {
   const reg = /\{\{(.*?)\}\}/g;
   return template.replace(reg, (match, key) => data[key]);
 }
-var template = "{{name}}很厉害，才{{age}}岁";
-var context = { name: "jin", age: "15" };
+var template = '{{name}}很厉害，才{{age}}岁';
+var context = { name: 'jin', age: '15' };
 console.log(render(template, context));
 
 // 转换成驼峰命名
@@ -427,7 +425,7 @@ function getLargestStr(str) {
 
 // 排序, 目前学习3种,冒泡选择插入
 // 冒泡排序
-var sortArray = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
 function bubbleSort(array) {
   const len = array.length;
   // 控制循环次数
@@ -444,7 +442,7 @@ function bubbleSort(array) {
 bubbleSort(sortArray);
 
 // 选择排序
-var sortArray = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
 function selectionSort(array) {
   const len = array.length;
   // 控制循环
@@ -460,7 +458,7 @@ function selectionSort(array) {
 selectionSort(sortArray);
 
 // 直接插入排序
-var sortArray = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
 function insertSort(array) {
   let len = array.length;
   for (let i = 1; i < len; i++) {
@@ -533,7 +531,8 @@ var p2 = new PersonSingleTon('xiaoming');
 // async/await手写实现
 function asyncGeneration(gen) {
   if (typeof gen === 'function') gen = gen();
-  if (!gen || typeof gen.next !== 'function') throw new TypeError('Not a function!');
+  if (!gen || typeof gen.next !== 'function')
+    throw new TypeError('Not a function!');
   return new Promise((resolve, reject) => {
     function step(type, val) {
       let result;
@@ -557,4 +556,49 @@ function asyncGeneration(gen) {
   });
 }
 
+// 直接插入排序
+function insertSort(array) {
+  const len = array.length;
+  for (let i = 1; i < len; i++) {
+    let loopNumber = array[i];
+    let j = i - 1;
+    while (j >= 0 && loopNumber < array[j]) {
+      array[j + 1] = array[j];
+      j--;
+    }
+    array[j + 1] = loopNumber;
+  }
+  return array;
+}
+var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
+console.log(insertSort(sortArray));
 
+// 选择排序
+function selectSort(array) {
+  const len = array.length;
+  for (let i = 0; i < len; i++) {
+    for (let j = i + 1; j < len; j++) {
+      if (array[i] > array[j]) {
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  }
+  return array;
+}
+var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
+console.log(selectSort(sortArray));
+
+// 冒泡排序
+function bubbleSort(array) {
+  const len = array.length;
+  for (let i = 0; i < len; i++) {
+    for (let j = 0; j < len - i; j++) {
+      if (array[j] > array[j + 1]) {
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+      }
+    }
+  }
+  return array;
+}
+var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
+console.log(bubbleSort(sortArray));
