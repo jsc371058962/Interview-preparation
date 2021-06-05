@@ -588,6 +588,160 @@ function selectSort(array) {
 var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
 console.log(selectSort(sortArray));
 
+// 组合函数
+function compose(...fns) {
+  const firstFn = fns.shift();
+  return function (...args) {
+    return fns.reduce((prev, cur) => {
+      return cur(prev);
+    }, firstFn(...args));
+  };
+}
+
+function compose1(...fns) {
+  const length = fns.length;
+  let i = length;
+  while (i) {
+    if (typeof fns[i] !== 'functio') {
+      throw new TypeError(`${fn[i]} is not a function!`);
+    }
+    i--;
+  }
+  return function (...args) {
+    let index = 0;
+    let result = fns[index].apply(null, args);
+    while (++index < length) {
+      result = fns[index].apply(null, result);
+    }
+    return result;
+  };
+}
+
+function compose2(...fns) {
+  return function (...args) {
+    return fns.reduce((prev, cur) => {
+      return typeof prev !== 'function' ? cur(prev) : cur(prev(...args));
+    });
+  };
+}
+function sum1(a, b) {
+  return a + b;
+}
+function toUpper(str) {
+  console.log(str);
+  return str.toUpperCase();
+}
+function add(str) {
+  return '===' + str + '===';
+}
+var comfn = compose2(sum1, toUpper, add);
+console.log(comfn('cherry', '27'));
+
+// 获取范围内的随机整数
+function getRandomNumber(min, max) {
+  return ~~(Math.random() * (max - min) + min);
+}
+
+// 回文数
+function isPalindromeNumber(number) {
+  if (number < 0 || (!(number % 10) && number)) {
+    return false;
+  }
+  let res = 0,
+    ret = number;
+  while (ret) {
+    res = res * 10 + (ret % 10);
+    ret = ~~(ret / 10);
+  }
+  return res === number;
+}
+
+// 二叉树的先序遍历
+// 递归
+var arr = [];
+function preOrder(node) {
+  if (!node) {
+    return;
+  }
+  arr.push(node.val);
+  preOrder(node.left);
+  preOrder(node.right);
+}
+
+// 迭代, 栈结构
+var arr = [];
+function preOrder1(head) {
+  if (!head) {
+    return;
+  }
+  let stack = [head];
+  while (stack.length) {
+    const node = stack.pop();
+    arr.push(node.val);
+    if (node.right) {
+      stack.push(node.right);
+    }
+    if (node.left) {
+      stack.push(node.left);
+    }
+  }
+}
+
+// 中序遍历, 深度优先, 递归
+var arr = [];
+function inOrder(node) {
+  if (!node) {
+    return;
+  }
+  inOrder(node.left);
+  arr.push(node.val);
+  inOrder(node.right);
+}
+
+// 后序遍历
+var arr = [];
+function backOrder(node) {
+  if (!node) {
+    return;
+  }
+  backOrder(node.left);
+  backOrder(node.right);
+  arr.push(node.val);
+}
+
+// 层次遍历, 迭代
+var arr = [];
+function levelOrder(head) {
+  if (!head) return;
+  let queue = [head];
+  while (queue.length) {
+    let node = queue.shift();
+    arr.push(node.val);
+    if (node.left) queue.push(node.left);
+    if (node.right) queue.push(node.right);
+  }
+}
+
+// 通用getType方法
+function getType(param) {
+  return Object.prototype.toString
+    .call(param)
+    .match(/\[object (.*?)\]/)[1]
+    .toLowerCase();
+}
+console.log(getType(null));
+
+// 模板字符串
+function getString(string) {
+  return string.replace(/\{\{(\w+)\}\}/g, (match, key) => o[key]);
+}
+var o = {
+  name: 'jin',
+  age: 100
+};
+var string = "my name is {{name}}, i'm {{age}} years old.";
+getString(string);
+
 // 冒泡排序
 function bubbleSort(array) {
   const len = array.length;

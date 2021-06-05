@@ -29,10 +29,27 @@ var numArray: number[] = [1, 2, 3];
 var greaterThan2: number = numArray.find((item) => item > 2) as any;
 
 
-function sayHello(word: string) {
+function sayHello(word: string | number): string | number {
   console.log(word);
+  return word;
 }
-sayHello('hello world!');
+sayHello(1);
+
+interface Person {
+  readonly id: string,
+  name: string,
+  age: number,
+  height?: string,
+  [propName: string]: any
+}
+let p1: Person = {
+  id: '123457',
+  name: 'tom',
+  age: 123,
+  height: '178cm'
+}
+
+
 // ----------------------end---------------------
 
 
