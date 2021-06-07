@@ -13,7 +13,7 @@ export default class Calculator extends PureComponent {
     super(props);
     this.state = {
       flag: 'n1',
-      number: '',
+      number: ''
     };
     this.onInput1Change = this.onInput1Change.bind(this);
     this.onInput2Change = this.onInput2Change.bind(this);
@@ -22,14 +22,18 @@ export default class Calculator extends PureComponent {
   onInput1Change(value) {
     this.setState({
       flag: 'n1',
-      number: value,
+      number: value
+    });
+    this.setState({
+      flag: 'n1',
+      number: '10'
     });
   }
 
   onInput2Change(value) {
     this.setState({
       flag: 'n2',
-      number: value,
+      number: value
     });
   }
 
@@ -47,5 +51,3 @@ export default class Calculator extends PureComponent {
     );
   }
 }
-
-

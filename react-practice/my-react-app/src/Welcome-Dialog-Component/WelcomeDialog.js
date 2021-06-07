@@ -5,11 +5,9 @@ export default function WelcomeDialog(props) {
 function FuncyBorder(props) {
   return (
     <>
-      {props.top}
-      {props.bottom}
+      {/* {props.top}
+      {props.bottom} */}
+      <img src="./logo192.png" alt="react icon" width="100" height="100" />
     </>
   );
 }
-
-
-

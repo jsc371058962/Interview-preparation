@@ -25,19 +25,47 @@
   </div>
 </body>
 <script>
-  function bfs(treeNode) {
-  const nodeList = [];
-  const queue = [treeNode];
-  while (queue.length) {
-    const node = queue.shift();
-    nodeList.push(node);
-    const children = node.children;
-    for (let i = 0; i < children.length; i++) {
-      queue.push(children[i]);
+  // 递归
+  // function dfs(treeNode, nodeList = []) {
+  //   if (!treeNode) return;
+  //   nodeList.push(treeNode);
+  //   let children = treeNode.children;
+  //   for (let i = 0; i < children.length; i++) {
+  //     dfs(children[i], nodeList);
+  //   }
+  //   return nodeList;
+  // }
+  // 迭代
+  function dfs(treeNode) {
+    if (!treeNode) return;
+    const nodeList = [];
+    const stack = [treeNode];
+    while (stack.length) {
+      const node = stack.pop();
+      nodeList.push(node);
+      const children = node.children;
+      for (let i = children.length - 1; i >= 0; i--) {
+        stack.push(children[i]);
+      }
     }
+    return nodeList;
   }
-  return nodeList;
-}
+
+  // 迭代, bfs
+  function bfs(treeNode) {
+    if (!treeNode) return;
+    const nodeList = [];
+    const queue = [treeNode];
+    while (queue.length) {
+      const node = queue.shift();
+      nodeList.push(node);
+      const children = node.children;
+      for (let i = 0; i < children.length; i++) {
+        queue.push(children[i]);
+      }
+    }
+    return nodeList;
+  }
   console.log(bfs(document.querySelector('#root')));
 </script>
 </html>

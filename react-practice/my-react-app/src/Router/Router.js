@@ -1,4 +1,4 @@
-import React, { PureComponent, Suspense, lazy } from 'react';
+import React, { PureComponent, Suspense, lazy, StrictMode } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { NumberList } from '../List-Component/NumberList';
 import ErrorBoundary from '../Error-Boundary/Error-Boundary';
@@ -6,13 +6,21 @@ import Home from '../Home/Home';
 import App from '../App';
 
 const Calculator = lazy(() => import('../Lifting-Component/Calculator'));
-const WelcomeDialog = lazy(() => import('../Welcome-Dialog-Component/WelcomeDialog'));
-const LoginController = lazy(() => import('../LoginController-Component/LoginController'));
-const FilterableProductTable = lazy(() => import('../Table-Product/Filterable-Product-Table'));
+const WelcomeDialog = lazy(() =>
+  import('../Welcome-Dialog-Component/WelcomeDialog')
+);
+const LoginController = lazy(() =>
+  import('../LoginController-Component/LoginController')
+);
+const FilterableProductTable = lazy(() =>
+  import('../Table-Product/Filterable-Product-Table')
+);
 const Forwardref = lazy(() => import('../Forwardref-Component/Forwardref'));
 const Hooks = lazy(() => import('../Hooks-Component/Hooks'));
+const Context = lazy(() => import('../Context-Component/Context'));
 
-const routes = [{
+const routes = [
+  {
     path: '/',
     Component: Home,
     exact: true
@@ -44,6 +52,10 @@ const routes = [{
   {
     path: '/hooks/:number',
     Component: Hooks
+  },
+  {
+    path: '/context',
+    Component: Context
   }
 ];
 function mapRoute(routes) {
@@ -63,15 +75,17 @@ function mapRoute(routes) {
 export default class Router extends PureComponent {
   render() {
     return (
-      <BrowserRouter>
-        <ErrorBoundary>
-          <Suspense fallback={<div style={{ color: 'red' }}>Laoding...</div>}>
-            <Switch>
-              <App>{mapRoute(routes)}</App>
-            </Switch>
-          </Suspense>
-        </ErrorBoundary>
-      </BrowserRouter>
+      <StrictMode>
+        <BrowserRouter>
+          <ErrorBoundary>
+            <Suspense fallback={<div style={{ color: 'red' }}>Laoding...</div>}>
+              <Switch>
+                <App>{mapRoute(routes)}</App>
+              </Switch>
+            </Suspense>
+          </ErrorBoundary>
+        </BrowserRouter>
+      </StrictMode>
     );
   }
 }
