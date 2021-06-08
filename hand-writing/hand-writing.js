@@ -756,3 +756,19 @@ function bubbleSort(array) {
 }
 var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
 console.log(bubbleSort(sortArray));
+
+function _reduce(...args) {
+  return args.reduce((prev, cur) => prev + cur, 0);
+}
+function add(...args) {
+  let total = _reduce(...args);
+  function f(...rest) {
+    total += _reduce(...rest);
+    return f;
+  }
+  f.toString = function () {
+    return total;
+  }
+  return f;
+}
+console.log(add(1)(2)(3)());
