@@ -12,7 +12,7 @@ function bubbleSort(array) {
   for (let i = 0; i < length; i++) {
     for (let j = 0; j < length - i; j++) {
       if (array[j] > array[j + 1]) {
-        [array[j + 1], array[j]] = [array[j], array[j + 1]];
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
       }
     }
   }
@@ -25,7 +25,7 @@ function selectSort(array) {
   for (let i = 0; i < length; i++) {
     for (let j = i + 1; j < length; j++) {
       if (array[i] > array[j]) {
-        [array[j], array[i]] = [array[i], array[j]];
+        [array[i], array[j]] = [array[j], array[i]];
       }
     }
   }
@@ -37,8 +37,8 @@ function insertSort(array) {
   const length = array.length;
   for (let i = 1; i < length; i++) {
     const loopNumber = array[i];
-    let j = i - 1;
-    while (j >= 0 && array[j] <= loopNumber) {
+    let j = i -  1;
+    while (j >= 0 && loopNumber > array[j]) {
       array[j + 1] = array[j];
       j--;
     }
@@ -49,18 +49,19 @@ function insertSort(array) {
 
 // 归并排序: 时间复杂度: O(nlogn); 空间复杂度: O(n); 稳定性: Y; Out-place(非原地算法)
 function mergeSort(array) {
-  if (array.length <= 1) return array;
+  if (array.length <= 0) return;
   const mid = ~~(array.length / 2);
-  const [leftArray, rightArray] = [array.slice(0, mid), array.slice(mid)];
+  const leftArray = array.slice(0, mid);
+  const rightArray = array.slice(mid);
   return merge(mergeSort(leftArray), mergeSort(rightArray));
 }
 function merge(left, right) {
   const result = [];
   while (left.length && right.length) {
-    if (left[0] < right[0]) {
-      result.push(left.shift());
-    } else {
+    if (left[0] > right[0]) {
       result.push(right.shift());
+    } else {
+      result.push(left.shift());
     }
   }
   left.length ? result.push(...left) : result.push(...right);
@@ -72,7 +73,7 @@ function quickSort(array, start = 0, end = array.length - 1) {
   if (end - start <= 0) return;
   const pivotIndex = partition(array, start, end);
   quickSort(array, start, pivotIndex - 1);
-  quickSort(array, pivotIndex + 1, end);
+  quickSort(array. pivotIndex + 1, end);
   return array;
 }
 function partition(array, start, end) {
@@ -89,19 +90,19 @@ function partition(array, start, end) {
 
 // 二分查找, 预置条件: 升序数组, 时间复杂度: O(logn), 空间复杂度: O(1)
 function binarySearch(array, target) {
-  let length = array.length,
-    left = 0, right = length - 1;
+  const length = array.length;
+  let left = 0, right = length - 1;
   while (left <= right) {
     const mid = ~~((left + right) / 2);
     if (array[mid] === target) {
       return mid;
-    } else if (array[mid] <= target) {
-      left = mid + 1;
-    } else {
+    } else if (array[mid] > target) {
       right = mid - 1;
+    } else {
+      left = mid + 1;
     }
   }
-  return -1;
+  return - 1;
 }
 
 /**
@@ -113,8 +114,8 @@ function binarySearch(array, target) {
 function preOrderTraverse(root, nodeList = []) {
   if (!root) return [];
   nodeList.push(root.val);
-  preorderTraverse(root.left, nodeList);
-  preorderTraverse(root.right, nodeList);
+  preOrderTraverse(root.left, nodeList);
+  preOrderTraverse(root.right, nodeList);
   return nodeList;
 }
 // 迭代, 栈结构
@@ -139,9 +140,9 @@ function preOrderTraverse(root) {
  */
 function inOrderTraverse(root, nodeList = []) {
   if (!root) return [];
-  inorderTraverse(root.left, nodeList);
+  inOrderTraverse(root.left, nodeList);
   nodeList.push(root.val);
-  inorderTraverse(root.right, nodeList);
+  inOrderTraverse(root.right, nodeList);
   return nodeList;
 }
 // 迭代, 栈结构
@@ -156,7 +157,7 @@ function inOrderTraverse(root) {
     } else {
       const pop = stack.pop();
       nodeList.push(pop.val);
-      if (pop.right) {
+      if (node.right) {
         node = node.right;
       }
     }
@@ -200,16 +201,15 @@ function levelTraverse(root, nodeList = []) {
   if (!root) return [];
   const queue = [];
   nodeList.push(root.val);
-  if (root.left) queue.push(root.left);
-  if (root.right) queue.push(root.right);
+  if (node.left) queue.push(node.left);
+  if (node.right) queue.push(node.right);
   levelTraverse(queue.shift(), nodeList);
   return nodeList;
 }
-// 迭代
+// 迭代, 队列
 function levelTraverse(root) {
   if (!root) return [];
-  const queue = [root];
-  const nodeList = [];
+  const queue = [root], nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node.val);
@@ -226,7 +226,7 @@ function levelTraverse(root) {
  * @returns Array
  */
 function dfs(root, nodeList = []) {
-  if (!root) return;
+  if (!root) return [];
   nodeList.push(root);
   const children = root.children;
   for (let i = 0; i < children.length; i++) {
@@ -236,15 +236,14 @@ function dfs(root, nodeList = []) {
 }
 // 迭代
 function dfs(root) {
-  if (!root) return;
-  const stack = [root];
-  const nodeList = [];
+  if (!root) return [];
+  const stack = [root], nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node);
     const children = node.children;
     for (let i = children.length - 1; i >= 0; i--) {
-      stack.push(children[i]);
+      stack.push(children);
     }
   }
   return nodeList;
@@ -257,42 +256,38 @@ function dfs(root) {
  * @returns Array
  */
 function bfs(root) {
-  if (!root) return;
-  const queue = [root];
-  const nodeList = [];
+  if (!root) return [];
+  const queue = [root], nodeList = [];
   while (queue.length) {
     const node = queue.shift();
-    nodeList.push(node.val);
+    nodeList.push(node);
     const children = node.children;
     for (let i = 0; i < children.length; i++) {
-      stack.push(children[i]);
+      queue.push(children[i]);
     }
   }
   return nodeList;
 }
 
 // Virtual DOM转真实DOM
-function _render(root) {
-  if (typeof root === 'number') {
-    root = String(root);
+function _render(vnode) {
+  if (typeof vnode === 'number') {
+    vnode = String(vnode);
   }
-  if (typeof root === 'string') {
-    return document.createTextNode(root);
+  if (typeof vnode === 'string') {
+    return document.createTextNode(vnode);
   }
-  const { attrs, tag, children } = root;
+  const { tag, attrs, children } = vnode;
   const dom = document.createElement(tag);
   if (attrs) {
     for (const key in attrs) {
-      if (Object.prototype.hasOwnProperty.call(root, key)) {
-        dom.setAttribute(key, attrs[key]);
+      if (Object.prototype.hasOwnProperty.call(attrs, key)) {
+        const val = attrs[key];
+        dom.setAttribute(key, val);
       }
     }
   }
-  children.forEach((vnode) => dom.appendChild(_render(vnode)));
+  children.forEach((item) => dom.appendChild(_render(item)));
   return dom;
 }
-
-
-
-
 

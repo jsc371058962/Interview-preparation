@@ -80,7 +80,7 @@ function quickSort(array, start = 0, end = array.length - 1) {
 function partition(array, start, end) {
   let j = start;
   let pivot = array[end];
-  for (let i = start; i < array.length; i++) {
+  for (let i = start; i <= end; i++) {
     if (array[i] <= pivot) {
       [array[i], array[j]] = [array[j], array[i]];
       j++;
@@ -181,7 +181,7 @@ function quickSort(array, start = 0, end = array.length - 1) {
 function partition(arr, start, end) {
   const pivot = arr[end];
   let j = start;
-  for (let i = start; i < arr.length; i++) {
+  for (let i = start; i <= end; i++) {
     if (arr[i] <= pivot) {
       [arr[j], arr[i]] = [arr[i], arr[j]];
       j++;
@@ -203,10 +203,9 @@ function quickSort(array, start = 0, end = array.length - 1) {
 }
 function partition(array, start, end) {
   // 基准值为最后一个
-  const length = array.length;
   const pivot = array[end];
   let j = start;
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i <= end; i++) {
     if (array[i] <= pivot) {
       [array[i], array[j]] = [array[j], array[i]];
       j++;
@@ -225,10 +224,9 @@ function quickSort(array, start = 0, end = array.length - 1) {
   return array;
 }
 function partition(array, start, end) {
-  const length = array.length;
   const pivot = array[end];
   let j = start;
-  for (let i = start; i < length; i++) {
+  for (let i = start; i <= end; i++) {
     if (array[i] <= pivot) {
       [array[i], array[j]] = [array[j], array[i]];
       j++;
@@ -252,8 +250,7 @@ function partition(array, start, end) {
   // 定基准
   const pivot = array[end];
   let j = start;
-  const length = array.length;
-  for (let i = start; i < length; i++) {
+  for (let i = start; i <= end; i++) {
     if (array[i] <= pivot) {
       [array[i], array[j]] = [array[j], array[i]];
       j++;
@@ -481,10 +478,9 @@ function quickSort(array, start = 0, end = array.length - 1) {
   return array;
 }
 function partition(array, start, end) {
-  const length = array.length;
   const pivot = array[end];
   let j = start;
-  for (let i = start; i < length; i++) {
+  for (let i = start; i <= end; i++) {
     if (array[i] <= pivot) {
       [array[i], array[j]] = [array[j], array[i]];
       j++;
@@ -680,10 +676,9 @@ function quickSort(array, start = 0, end = array.length - 1) {
   return array;
 }
 function partition(array, start, end) {
-  const length = array.length;
   const pivot = array[end];
   let j = start;
-  for (let i = start; i < length; i++) {
+  for (let i = start; i <= end; i++) {
     if (array[i] <= pivot) {
       [array[i], array[j]] = [array[j], array[i]];
       j++;
