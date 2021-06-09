@@ -44,7 +44,6 @@ function Person(name) {
 Person.prototype.sayName = function () {
   console.log(this.name);
 };
-
 function Man(age, name) {
   Person.call(this, name);
   this.age = age;
@@ -54,7 +53,6 @@ Man.prototype.constructor = Man;
 Man.prototype.getAge = function () {
   console.log(this.age);
 };
-
 var man = new Man(18, 'xiaoming');
 
 // class继承使用es5来实现///////没实现完全
@@ -64,25 +62,22 @@ function SuperTye(name) {
 SuperTye.prototype.sayName = function () {
   console.log(this.name);
 };
-
 function SubType(age, name) {
+  SuperTye.call(this, name);
   this.age = age;
 }
-
-function inheritPrototype(son, father) {
-  son.prototype = Object.create(father.prototype);
-  son.prototype.constructor = son;
-  Object.setPrototypeOf(son, father);
-  // 还有不能枚举
-}
-inheritPrototype(SubType, SuperTye);
-
 function inherit(son, father) {
+  son.prototype = Object.create(father.prototype, {
+    constructor: {
+      value: son,
+      enumerable: false,
+      configurable: false
+    }
+  });
   Object.setPrototypeOf(son, father);
-  Object.setPrototypeOf(son.prototype, father.prototype);
 }
-
 inherit(SubType, SuperTye);
+var p = new SubType(18, 'An');
 
 // 实现new
 function createNew(fn, ...args) {
@@ -772,3 +767,25 @@ function add(...args) {
   return f;
 }
 console.log(add(1)(2)(3)());
+
+// 已知如下数组：
+// 要求: 编写一个程序将数组扁平化去并除其中重复部分数据，最终得到一个升序且不重复的数组
+var arr = [ [1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14] ] ] ], 10];
+function getFlatAndSortedArray(array) {
+  // 先扁平化,再去重,最后排序
+  // 扁平化方法多样,使用最近了解的栈结构吧
+  const stack = [];
+  while (array.length) {
+    const pop = array.pop();
+    if (Array.isArray(pop)) {
+      array.push(...pop);
+    } else {
+      stack.unshift(pop);
+    }
+  }
+  return [...new Set(stack)].sort((a, b) => a - b);
+}
+console.log(getFlatAndSortedArray(arr));
+
+
+

@@ -1053,11 +1053,6 @@ function insertSort(arr) {
   return arr;
 }
 
-var quickSort = function (array, left, right) {
-
-};
-quickSort([3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48], 0, 15);
-
 // 模拟new
 function createNew(Fn, ...args) {
   if (typeof Fn !== 'function') {
