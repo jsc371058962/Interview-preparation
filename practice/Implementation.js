@@ -536,15 +536,10 @@ test();
 // 模拟实现Promise.finally
 // fimally中是一个callback, 无论成功还是失败都会执行
 Promise.prototype.finally = function (callback) {
-  const p = this.constructor;
+  let P = this.constructor;
   return this.then(
-    (value) => {
-      p.resolve(callback()).then(() => value);
-    },
-    (reason) =>
-    p.resolve(callback()).then(() => {
-      throw new Error(reason);
-    })
+    value  => P.resolve(callback()).then(() => value),
+    reason => P.resolve(callback()).then(() => { throw reason })
   );
 };
 

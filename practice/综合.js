@@ -259,15 +259,11 @@ Promise.myRace([
 });
 
 Promise.prototype.myFinally = function (callback) {
-  return this.then(
-    (data) => {
-      callback();
-      return data;
-    },
-    (err) => {
-      callback();
-      throw new Error(err);
-    }
+  const P = this.constructor;
+  return this.then((value) =>
+    P.resolve(callback()).then(() => value)
+  , (error) =>
+    P.resolve(callback()).then(() => { throw error })
   );
 };
 

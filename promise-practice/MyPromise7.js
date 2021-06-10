@@ -112,16 +112,10 @@ class MyPromise7 {
   }
 
   finally(callback) {
+    const P = this.constructor;
     return this.then(
-      (data) => {
-        callback();
-        return data;
-      },
-      (reason) => {
-        callback();
-        return reason;
-      }
-    );
+      (value) => P.resolve(callback()).then(() => value),
+      (error) => P.resolve(callback()).then(() => { throw error }));
   }
 
   done() {

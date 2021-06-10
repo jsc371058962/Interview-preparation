@@ -787,5 +787,24 @@ function getFlatAndSortedArray(array) {
 }
 console.log(getFlatAndSortedArray(arr));
 
+// 随机生成一个长度为 10 的整数类型的数组，例如 [2, 10, 3, 4, 5, 11, 10, 11, 20]
+// 将其排列成一个新数组，要求新数组形式如下，例如 [[2, 3, 4, 5], [10, 11], [20]]。
+function getNestArray(array) {
+  if (!array.length) return [];
+  // 1. 排序, 去重
+  array = [...new Set(array)].sort((a, b) => a - b);
+  let length = array.length;
+  const newArray = [];
+  let i = 0;
+  while (i < length) {
+    // 向下取整
+    const t = ~~(array[i] / 10);
+    if (!newArray[t]) newArray.push([]);
+    newArray[t].push(array[i++]);
+  }
+  return newArray;
+}
+console.log(getNestArray([2, 10, 3, 4, 5, 11, 10, 11, 20]));
+
 
 

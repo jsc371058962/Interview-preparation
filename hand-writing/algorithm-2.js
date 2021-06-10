@@ -12,35 +12,35 @@ function bubbleSort(array) {
   for (let i = 0; i < length; i++) {
     for (let j = 0; j < length - i; j++) {
       if (array[j] > array[j + 1]) {
-        [array[j + 1], array[j]] = [array[j], array[j + 1]];
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
       }
     }
   }
   return array;
 }
 
-// 选择排序: 时间复杂度: O(n^2); 空间复杂度: O(1); 稳定性: N; In-place
+// 选择排序: 时间复杂度: O(n^2), 空间复杂度: O(1), 稳定性: Y, In-place
 function selectSort(array) {
   const length = array.length;
   for (let i = 0; i < length; i++) {
     for (let j = i + 1; j < length; j++) {
       if (array[i] > array[j]) {
-        [array[j], array[i]] = [array[i], array[j]];
+        [array[i], array[j]] = [array[j], array[i]];
       }
     }
   }
   return array;
 }
 
-// 直接插入排序: 时间复杂度: O(n^2); 空间复杂度: O(1); 稳定性: Y; In-place
+// 直接插入排序: 时间复杂度: O(n^2), 空间复杂度: O(1), 稳定性: Y, In-place
 function insertSort(array) {
   const length = array.length;
   for (let i = 1; i < length; i++) {
     const loopNumber = array[i];
     let j = i - 1;
-    while (j >= 0 && array[j] <= loopNumber) {
+    while (j >= 0 && loopNumber > array[j]) {
       array[j + 1] = array[j];
-      j--;
+      j++;
     }
     array[j + 1] = loopNumber;
   }
@@ -51,16 +51,17 @@ function insertSort(array) {
 function mergeSort(array) {
   if (array.length <= 1) return array;
   const mid = ~~(array.length / 2);
-  const [leftArray, rightArray] = [array.slice(0, mid), array.slice(mid)];
+  const leftArray = array.slice(0, mid);
+  const rightArray = array.slice(mid);
   return merge(mergeSort(leftArray), mergeSort(rightArray));
 }
 function merge(left, right) {
   const result = [];
   while (left.length && right.length) {
-    if (left[0] < right[0]) {
-      result.push(left.shift());
-    } else {
+    if (left[0] > right[0]) {
       result.push(right.shift());
+    } else {
+      result.push(left.shift());
     }
   }
   left.length ? result.push(...left) : result.push(...right);
@@ -88,16 +89,18 @@ function partition(array, start, end) {
   }
   return j - 1;
 }
+var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
+console.log(quickSort(sortArray));
 
 // 二分查找, 预置条件: 升序数组, 时间复杂度: O(logn), 空间复杂度: O(1)
 function binarySearch(array, target) {
-  let length = array.length,
-    left = 0, right = length - 1;
+  const length = array.length;
+  let left = 0, right = length - 1;
   while (left <= right) {
     const mid = ~~((left + right) / 2);
     if (array[mid] === target) {
       return mid;
-    } else if (array[mid] <= target) {
+    } else if (array[mid] < target) {
       left = mid + 1;
     } else {
       right = mid - 1;
@@ -115,15 +118,15 @@ function binarySearch(array, target) {
 function preOrderTraverse(root, nodeList = []) {
   if (!root) return [];
   nodeList.push(root.val);
-  preorderTraverse(root.left, nodeList);
-  preorderTraverse(root.right, nodeList);
+  preOrderTraverse(root.left, nodeList);
+  preOrderTraverse(root.right, nodeList);
   return nodeList;
 }
-// 迭代, 栈结构
+// 迭代,栈结构
 function preOrderTraverse(root) {
   if (!root) return [];
-  const stack = [root];
   const nodeList = [];
+  const stack = [root];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node.val);
@@ -141,29 +144,29 @@ function preOrderTraverse(root) {
  */
 function inOrderTraverse(root, nodeList = []) {
   if (!root) return [];
-  inorderTraverse(root.left, nodeList);
+  inOrderTraverse(root.left, nodeList);
   nodeList.push(root.val);
-  inorderTraverse(root.right, nodeList);
+  inOrderTraverse(root.right, nodeList);
   return nodeList;
 }
-// 迭代, 栈结构
+// 迭代,栈结构
 function inOrderTraverse(root) {
   if (!root) return [];
+  const nodeList = [], stack = [];
   let node = root;
-  const stack = [], nodeList = [];
   while (stack.length || node) {
-    if (node) {
+    if(node) {
       stack.push(node);
       node = node.left;
     } else {
       const pop = stack.pop();
       nodeList.push(pop.val);
       if (pop.right) {
-        node = node.right;
+        stack.push(pop.right);
       }
     }
+    return nodeList;
   }
-  return nodeList;
 }
 
 /**
@@ -179,10 +182,11 @@ function postOrderTraverse(root, nodeList = []) {
   nodeList.push(root.val);
   return nodeList;
 }
-// 迭代, 栈结构
+// 迭代,栈结构
 function postOrderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const nodeList = [];
+  const stack = [root];
   while (stack.length) {
     const node = stack.pop();
     nodeList.unshift(node.val);
@@ -200,18 +204,17 @@ function postOrderTraverse(root) {
  */
 function levelTraverse(root, nodeList = []) {
   if (!root) return [];
-  const queue = [];
   nodeList.push(root.val);
+  const queue = [];
   if (root.left) queue.push(root.left);
   if (root.right) queue.push(root.right);
   levelTraverse(queue.shift(), nodeList);
   return nodeList;
 }
-// 迭代
+// 迭代,队列结构
 function levelTraverse(root) {
   if (!root) return [];
-  const queue = [root];
-  const nodeList = [];
+  const queue = [root], nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node.val);
@@ -228,7 +231,7 @@ function levelTraverse(root) {
  * @returns Array
  */
 function dfs(root, nodeList = []) {
-  if (!root) return;
+  if (!root) return [];
   nodeList.push(root);
   const children = root.children;
   for (let i = 0; i < children.length; i++) {
@@ -236,11 +239,10 @@ function dfs(root, nodeList = []) {
   }
   return nodeList;
 }
-// 迭代
+// 迭代, 栈结构
 function dfs(root) {
-  if (!root) return;
-  const stack = [root];
-  const nodeList = [];
+  if (!root) return [];
+  const stack = [root], nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node);
@@ -259,42 +261,38 @@ function dfs(root) {
  * @returns Array
  */
 function bfs(root) {
-  if (!root) return;
-  const queue = [root];
-  const nodeList = [];
+  if (!root) return [];
+  const nodeList = [], queue = [root];
   while (queue.length) {
     const node = queue.shift();
-    nodeList.push(node.val);
+    nodeList.push(node);
     const children = node.children;
     for (let i = 0; i < children.length; i++) {
-      stack.push(children[i]);
+      queue.push(children[i]);
     }
   }
   return nodeList;
 }
 
 // Virtual DOM转真实DOM
-function _render(root) {
-  if (typeof root === 'number') {
-    root = String(root);
+function _render(vnode) {
+  if (typeof vnode === 'number') {
+    vnode = String(vnode);
   }
-  if (typeof root === 'string') {
-    return document.createTextNode(root);
+  if (typeof vnode === 'string') {
+    return document.createTextNode(vnode);
   }
-  const { attrs, tag, children } = root;
+  const { tag, attrs, children } = vnode;
   const dom = document.createElement(tag);
   if (attrs) {
     for (const key in attrs) {
-      if (Object.prototype.hasOwnProperty.call(root, key)) {
-        dom.setAttribute(key, attrs[key]);
+      if (Object.prototype.hasOwnProperty.call(attrs, key)) {
+        const val = object[key];
+        dom.setAttribute(key, val);
       }
     }
   }
-  children.forEach((vnode) => dom.appendChild(_render(vnode)));
+  children.forEach((node) => dom.appendChild(_render(node)));
   return dom;
 }
-
-
-
-
 

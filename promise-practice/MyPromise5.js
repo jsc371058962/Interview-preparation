@@ -216,15 +216,10 @@ class MyPromise5 {
   }
 
   finally(callback) {
+    let P = this.constructor;
     return this.then(
-      (data) => {
-        callback();
-        return data;
-      },
-      (error) => {
-        callback();
-        return error;
-      }
+      value  => P.resolve(callback()).then(() => value),
+      reason => P.resolve(callback()).then(() => { throw reason })
     );
   }
 
