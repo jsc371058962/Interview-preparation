@@ -752,6 +752,7 @@ function bubbleSort(array) {
 var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
 console.log(bubbleSort(sortArray));
 
+// 不定参求和
 function _reduce(...args) {
   return args.reduce((prev, cur) => prev + cur, 0);
 }
@@ -763,14 +764,57 @@ function add(...args) {
   }
   f.toString = function () {
     return total;
-  }
+  };
   return f;
 }
 console.log(add(1)(2)(3)());
 
+// 比较版本号
+var arr = [
+  '1.1',
+  '2.3.3',
+  '4.3.5',
+  '0.3.1',
+  '0.302.1',
+  '4.20.0',
+  '4.3.5.1',
+  '1.2.3.4.5'
+];
+function _sort(array) {
+  const maxLen = Math.max(...array.map((item) => item.split('.').length));
+  function gen(string) {
+    return string.split('.').reduce((prev, cur, idx) => {
+      return (
+        BigInt(prev) + BigInt(cur) * BigInt(1e3) ** BigInt(maxLen - idx - 1)
+      );
+    }, 0);
+  }
+  return array.sort((a, b) => (gen(a) - gen(b) ? -1 : 1));
+}
+_sort(arr);
+
+function _sort(array) {
+  return array.sort((a, b) => {
+    const arr1 = a.split('.');
+    const arr2 = b.split('.');
+    let i = 0;
+    while (true) {
+      const a1 = arr1[i];
+      const a2 = arr2[i];
+      i++;
+      if (a1 === undefined || a2 === undefined) {
+        return arr2.length - arr1.length;
+      }
+      if (a1 === a2) continue;
+      return a2 - a1;
+    }
+  });
+}
+_sort(arr);
+
 // 已知如下数组：
 // 要求: 编写一个程序将数组扁平化去并除其中重复部分数据，最终得到一个升序且不重复的数组
-var arr = [ [1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14] ] ] ], 10];
+var arr = [[1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14]]]], 10];
 function getFlatAndSortedArray(array) {
   // 先扁平化,再去重,最后排序
   // 扁平化方法多样,使用最近了解的栈结构吧
