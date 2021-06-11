@@ -538,7 +538,7 @@ function asyncGeneration(gen) {
       }
       const { value, done } = result;
       if (done) return resolve(value);
-      return Promise.resolve().then(
+      return Promise.resolve(value).then(
         (value) => {
           return step('next', value);
         },
@@ -850,5 +850,30 @@ function getNestArray(array) {
 }
 console.log(getNestArray([2, 10, 3, 4, 5, 11, 10, 11, 20]));
 
-
-
+// 手写async/await
+function asyncFunc(gen) {
+  if (typeof gen === 'function') gen = gen();
+  if (!gen || typeof gen.next !== 'function')
+    throw new TypeError('Next not a function!');
+  return new Promise((resolve, reject) => {
+    function step(type, val) {
+      let result;
+      try {
+        result = gen[type](val);
+      } catch (error) {
+        reject(error);
+      }
+      const { value, done } = result;
+      if (done) return resolve(value);
+      return Promise.resolve(value).then(
+        (data) => {
+          return step('next', data);
+        },
+        (error) => {
+          return step('throw', error);
+        }
+      );
+    }
+    step('next');
+  });
+}
