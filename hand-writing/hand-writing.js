@@ -784,14 +784,12 @@ function _sort(array) {
   const maxLen = Math.max(...array.map((item) => item.split('.').length));
   function gen(string) {
     return string.split('.').reduce((prev, cur, idx) => {
-      return (
-        BigInt(prev) + BigInt(cur) * BigInt(1e3) ** BigInt(maxLen - idx - 1)
-      );
+      return prev + +cur * 1e3 ** (maxLen - idx - 1);
     }, 0);
   }
-  return array.sort((a, b) => (gen(a) - gen(b) ? -1 : 1));
+  return array.sort((a, b) => (gen(a) > gen(b) ? -1 : 1));
 }
-_sort(arr);
+console.log(_sort(arr));
 
 function _sort(array) {
   return array.sort((a, b) => {
