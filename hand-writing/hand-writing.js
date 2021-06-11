@@ -84,7 +84,8 @@ function createNew(fn, ...args) {
   const o = {};
   Object.setPrototypeOf(o, fn.prototype);
   const result = fn.apply(null, args);
-  return typeof result === 'object' || typeof result === 'function'
+  return (typeof result === 'object' && result !== null) ||
+    typeof result === 'function'
     ? result
     : o;
 }

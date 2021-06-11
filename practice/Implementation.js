@@ -1,14 +1,19 @@
 // 手撕方法
 
 // new关键字
-function createNew(fn, param) {
+function createNew(fn, ...param) {
+  if (typeof Fn !== 'function') {
+    throw new TypeError('Not a valid function!');
+  }
   //新建一个对象
   const o = new Object();
   // 关联到fn的原型链
   Object.setPrototypeOf(o, fn.prototype);
   // 执行方法，将参数赋值
-  const result = fn.call(o, ...param);
-  return typeof result === 'object' ? result : o;
+  const result = fn.apply(o, param);
+  const isObject = typeof result === 'object' && result !== null;
+  const isFunction = typeof result === 'function';
+  return isObject || isFunction ? result : o;
 }
 
 function Person(name) {

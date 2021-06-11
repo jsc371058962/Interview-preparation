@@ -21,7 +21,7 @@ function currying(fn, ...args) {
   return function f(...rest) {
     rest = [...args, ...rest];
     return length > rest.length ? currying(fn, ...rest) : fn.apply(null, rest);
-  }
+  };
 }
 
 // function currying(fn, ...args) {
@@ -43,7 +43,7 @@ function currying(fn, ...args) {
   return function (...rest) {
     rest = [...args, ...rest];
     return length < rest.length ? currying(fn, ...rest) : fn.apply(null, rest);
-  }
+  };
 }
 
 function sum(a, b, c, d) {
@@ -51,7 +51,6 @@ function sum(a, b, c, d) {
 }
 var add = currying(sum);
 // console.log(add(1, 2)(3)(4));
-
 
 function fn1(a) {
   console.log('fn1: ', a);
@@ -104,11 +103,10 @@ function compose(...fns) {
     return fns.reduceRight((prev, cur) => {
       return cur(prev);
     }, lastFn(...rest));
-  }
+  };
 }
 
 console.log(compose(fn1, fn2, fn3, fn4)(1));
-
 
 // 大数相加
 function addBigNumber(a, b) {
@@ -127,7 +125,7 @@ function addBigNumber(a, b) {
     t = Number(a[i]) + Number(b[i]) + f;
     f = Math.floor(t / 10);
     // 决定字串的顺序
-    sum = t % 10 + sum;
+    sum = (t % 10) + sum;
   }
   if (f === 1) {
     sum = '1' + sum;
@@ -143,19 +141,21 @@ console.log(
 new Promise((resolve, reject) => {
   Promise.resolve().then(() => {
     resolve(1);
-    Promise.resolve().then(() => { console.log(2) })
-  })
-}).then((value) => { console.log(value) });
+    Promise.resolve().then(() => {
+      console.log(2);
+    });
+  });
+}).then((value) => {
+  console.log(value);
+});
 console.log(3);
 
-
-
 var abc = {
-  '2': 'a',
-  '3': 'b',
+  2: 'a',
+  3: 'b',
   length: 2,
   push: Array.prototype.push
-}
+};
 
 // generator自执行函数
 // 基于Thunk函数
@@ -214,33 +214,33 @@ var p1 = function () {
       resolve(1);
     }, 500);
   });
-}
+};
 var p2 = function () {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(2);
     }, 1000);
   });
-}
+};
 var p3 = 3;
 Promise.myAll([p1(), p2(), p3]).then((data) => {
   console.log(data);
 });
 
-
-
 Promise.myRace = function (promises) {
   return new Promise((resolve, reject) => {
     promises.forEach((item, index) => {
-      item.then((data) => {
-        resolve(data);
-      },
+      item.then(
+        (data) => {
+          resolve(data);
+        },
         (err) => {
           reject(err);
-        });
-    })
+        }
+      );
+    });
   });
-}
+};
 
 Promise.myRace([
   new Promise((resolve) => {
@@ -253,17 +253,19 @@ Promise.myRace([
     setTimeout(() => {
       resolve(3);
     }, 2000);
-  }),
+  })
 ]).then((data) => {
   console.log(data);
 });
 
 Promise.prototype.myFinally = function (callback) {
   const P = this.constructor;
-  return this.then((value) =>
-    P.resolve(callback()).then(() => value)
-  , (error) =>
-    P.resolve(callback()).then(() => { throw error })
+  return this.then(
+    (value) => P.resolve(callback()).then(() => value),
+    (error) =>
+      P.resolve(callback()).then(() => {
+        throw error;
+      })
   );
 };
 
@@ -287,7 +289,7 @@ Promise.prototype.myDone = function () {
       throw new Error(err);
     }, 0);
   });
-}
+};
 
 function factorial(n, total = 1) {
   if (n <= 1) return total;
@@ -326,7 +328,7 @@ function sum(x, y) {
 }
 trampoline(sum(1, 100000));
 
-sum(1).sumOf()
+sum(1).sumOf();
 sum(1)(2)(3).sumOf();
 sum(1, 2, 3).sumOf();
 sum(1, 2)(3, 4).sumOf();
@@ -348,14 +350,13 @@ function sum(...args) {
 
   func.sumOf = function () {
     return s;
-  }
+  };
 
   return func;
 }
 
 sum(1)(2)(3).sumOf();
 sum(1).sumOf();
-
 
 // 手写promise
 const PENDING = 'pending';
@@ -378,7 +379,7 @@ class MyPromise {
           f(this.data);
         });
       }
-    }
+    };
 
     const reject = (reason) => {
       if (this.status === PENDING) {
@@ -388,7 +389,7 @@ class MyPromise {
           f(this.reason);
         });
       }
-    }
+    };
 
     execute(resolve, reject);
   }
@@ -420,18 +421,21 @@ MyPromise.all = function (promises) {
   let count = 0;
   return new Promise((resolve, reject) => {
     promises.forEach((fn, index) => {
-      Promise.resolve(fn).then((data) => {
-        dataArr[index] = data;
-        if (count === promises.length - 1) {
-          resolve(dataArr);
+      Promise.resolve(fn).then(
+        (data) => {
+          dataArr[index] = data;
+          if (count === promises.length - 1) {
+            resolve(dataArr);
+          }
+          i++;
+        },
+        (err) => {
+          reject(err);
         }
-        i++;
-      }, (err) => {
-        reject(err);
-      });
+      );
     });
   });
-}
+};
 
 Function.prototype.myCall = function (o) {
   if (typeof this !== 'function') {
@@ -444,7 +448,7 @@ Function.prototype.myCall = function (o) {
   let result = ctx[symbol](...args);
   delete ctx[symbol];
   return result;
-}
+};
 
 Function.prototype.myApply = function (o) {
   if (typeof this !== 'function') {
@@ -456,7 +460,7 @@ Function.prototype.myApply = function (o) {
   const result = ctx[symbol](...args);
   delete ctx[symbol];
   return result;
-}
+};
 Function.prototype.myBind = function (o, ...args) {
   if (typeof this !== 'function') {
     throw new TypeError('not a function');
@@ -468,15 +472,15 @@ Function.prototype.myBind = function (o, ...args) {
     const result = ctx[symbol](...args, ...rest);
     delete ctx[symbol];
     return result;
-  }
-}
+  };
+};
 function sum() {
   return this.a + this.b;
 }
 var obj = {
   a: 1,
   b: 2
-}
+};
 sum.myCall(obj);
 
 // settimeout节流
@@ -488,7 +492,7 @@ function throttle(fn, timeout) {
       fn.call(this, ...rest);
       clearTimeout(timer);
     }, timeout);
-  }
+  };
 }
 
 function throttle1(fn, timeout) {
@@ -499,7 +503,7 @@ function throttle1(fn, timeout) {
       fn.call(null, ...args);
       prevTime = nowDate;
     }
-  }
+  };
 }
 
 function debounce(fn, timeout, immediate = false) {
@@ -527,9 +531,8 @@ function debounce(fn, timeout, immediate = false) {
         fn.call(this, ...rest);
       }, timeout);
     }
-  }
+  };
 }
-
 
 // instanceof原理: 查找构造函数的原型是否存在于目标对象的原型链上
 function instanceof1(left, right) {
@@ -553,10 +556,10 @@ Object.create1 = function (o, properties = {}) {
   // Object.setPrototypeOf(obj, o);
   // Object.defineProperties(obj, properties);
   // return obj;
-  function Fn() { };
+  function Fn() {}
   Fn.prototype = o;
   return new Fn();
-}
+};
 
 function currying(fn, ...args) {
   const len = fn.length;
@@ -567,7 +570,7 @@ function currying(fn, ...args) {
     } else {
       return fn.call(null, ...rest);
     }
-  }
+  };
 }
 
 function sum(a, b, c, d) {
@@ -575,7 +578,6 @@ function sum(a, b, c, d) {
 }
 
 currying(sum)(1)(2)(3)(4);
-
 
 // 不定参数的一种方式
 function compute(arr) {
@@ -593,10 +595,10 @@ function sum(...args) {
 
   fn.sumOf = function () {
     return total;
-  }
+  };
   return fn;
 }
-sum(1, 2, 3)(4).sumOf()
+sum(1, 2, 3)(4).sumOf();
 
 // 不定参数的另一种方式
 // sum1(1, 2, 4)()/sum1(1)(2)()
@@ -607,14 +609,14 @@ function sum1(...args) {
     } else {
       return sum1.call(null, ...args, ...rest);
     }
-  }
+  };
 }
 
 function handler(msg) {
-  console.log(msg)
+  console.log(msg);
 }
 function handler1(msg) {
-  console.log(msg)
+  console.log(msg);
 }
 const customEvent = {
   // 一个对象存储事件类型和handler
@@ -646,13 +648,12 @@ const customEvent = {
       }
     }
   }
-}
+};
 
 customEvent.addListener('msg', handler);
 customEvent.addListener('msg', handler1);
-customEvent.fireEvent('msg', { 'name': 'jin' });
+customEvent.fireEvent('msg', { name: 'jin' });
 customEvent.removeListener('msg', handler);
-
 
 class EventBus {
   constructor() {
@@ -690,13 +691,12 @@ class EventBus {
 var eventBus = new EventBus();
 eventBus.addListener('msg', handler);
 eventBus.addListener('msg', handler1);
-eventBus.fireEvent('msg', { 'name': 'jin' });
+eventBus.fireEvent('msg', { name: 'jin' });
 eventBus.removeListener('msg', handler);
-
 
 // 简易双向绑定
 var input = document.getElementById('input');
-var obj = {}
+var obj = {};
 Object.defineProperty(obj, 'name', {
   enumerable: true,
   configurable: true,
@@ -714,7 +714,6 @@ document.addEventListener('click', function (evt) {
   obj.name = evt.target.value;
 });
 
-
 // 使用 reduce 方法实现 forEach、map、filter
 // forEach执行回到函数即可，没有返回值
 // 但是这第一个参数确实没法处理了，只能放在这不使用
@@ -722,18 +721,18 @@ Array.prototype.myForEach = function (callback) {
   return this.reduce((prev, cur, index) => {
     callback(cur, index);
   }, 0);
-}
+};
 Array.prototype.myMap = function (callback) {
   return this.reduce((prev, cur, index) => {
     return prev.concat(callback(cur, index));
   }, []);
-}
+};
 Array.prototype.myFilter = function (callback) {
   return this.reduce((prev, cur, index) => {
     return prev.concat(callback(cur, index) ? callback(cur, index) : []);
   }, []);
-}
-var a = []
+};
+var a = [];
 var b = [1, 2, 3];
 b.myFilter((value, index) => {
   return value > 2 ? value : false;
@@ -767,7 +766,6 @@ function myIndexOf(o, s) {
 myIndexOf('abcd', 'c');
 myIndexOf([1, 3, 6, 4], 4);
 
-
 // 设计一个简单的任务队列，要求分别在 1,3,4 秒后打印出 "1", "2", "3"
 // Promise实现
 function timeouter(value, time) {
@@ -778,21 +776,24 @@ function timeouter(value, time) {
     }, time);
   });
 }
-Promise.resolve().then(() => {
-  return timeouter('1', 1000);
-}).then(() => {
-  return timeouter('2', 3000);
-}).then(() => {
-  return timeouter('3', 4000);
-});
+Promise.resolve()
+  .then(() => {
+    return timeouter('1', 1000);
+  })
+  .then(() => {
+    return timeouter('2', 3000);
+  })
+  .then(() => {
+    return timeouter('3', 4000);
+  });
 
 //JavaScript 实现如下语法的功能 var a=(5).plus(3).minus(6);
 Number.prototype.plus = function (num) {
   return this + num;
-}
+};
 Number.prototype.minus = function (num) {
   return this - num;
-}
+};
 var a = (5).plus(3).minus(6);
 
 // 打印fibonacci数
@@ -815,9 +816,8 @@ function loadImage(url) {
     image.src = url;
     image.width = 50;
     image.height = 50;
-  }
+  };
 }
-
 
 // 数组实现栈
 // LIFO
@@ -870,8 +870,7 @@ class Queue {
 var queue = new Queue();
 queue.push(123);
 queue.push(234);
-queue.pop()
-
+queue.pop();
 
 // 0-59依次循环
 function timer() {
@@ -888,7 +887,7 @@ function timer() {
  * 页面上有三个按钮，分别为 A、B、C，点击各个按钮都会发送异步请求且互不影响，
  * 每次请求回来的数据都为按钮的名字。
  * 请实现当用户依次点击 A、B、C、A、C、B 的时候，最终获取的数据为 ABCACB。
-*/
+ */
 function handlerClick(tag, timeout) {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -918,7 +917,6 @@ getResult('B');
 // popstage事件， 在调用back(), go(), forward()时会触发
 // hashchange事件, 1. location.hash = 'edit';
 // 2. pushState({}, title, url); replaceState({}, title, url), back(), go(), forward()会触发
-
 
 // 观察者模式
 class Subject {
@@ -963,16 +961,17 @@ subject.add(observer1);
 subject.add(observer2);
 subject.notify();
 
-
 // rgb转换为大写16进制
 function rgb2Hex(str) {
   let rgbArr = str.match(/\d+/g);
   const hex = (val) => {
     return Number(val).toString(16).padStart(2, '0');
   };
-  return rgbArr.reduce((prev, cur) => {
-    return prev + hex(cur);
-  }, '#').toUpperCase();
+  return rgbArr
+    .reduce((prev, cur) => {
+      return prev + hex(cur);
+    }, '#')
+    .toUpperCase();
 }
 
 // 递归实现1-100的累加和
@@ -1025,7 +1024,7 @@ var a = {
   valueOf() {
     return i++;
   }
-}
+};
 a == 1 && a == 2;
 
 function flatArray(arr) {
@@ -1057,7 +1056,9 @@ function createNew(Fn, ...args) {
   const o = new Object();
   Object.setPrototypeOf(o, Fn.prototype);
   const result = Fn.call(o, ...args);
-  return typeof result === 'object' ? result : o;
+  const isObject = typeof result === 'object' && result !== null;
+  const isFunction = typeof result === 'function';
+  return isObject || isFunction ? result : o;
 }
 
 Function.prototype.bind = function (o, ...args) {
@@ -1071,8 +1072,8 @@ Function.prototype.bind = function (o, ...args) {
     const result = context[symbol](...args, ...rest);
     delete context[symbol];
     return result;
-  }
-}
+  };
+};
 
 Function.prototype.bind1 = function (context, ...args) {
   // 异常处理
@@ -1087,7 +1088,7 @@ Function.prototype.bind1 = function (context, ...args) {
   const F = function (...rest) {
     return selfFn.apply(this instanceof F ? this : context ?? window, [
       ...args,
-      ...rest,
+      ...rest
     ]);
   };
   if (this.prototype) {
@@ -1106,7 +1107,7 @@ Function.prototype.call = function (o, ...args) {
   const result = context[symbol](...args);
   delete context[symbol];
   return result;
-}
+};
 
 Function.prototype.apply = function (o, args) {
   if (typeof this !== 'function') {
@@ -1118,7 +1119,7 @@ Function.prototype.apply = function (o, args) {
   const result = context[symbol](...args);
   delete context[symbol];
   return result;
-}
+};
 
 // 深拷贝，可解决循环引用问题
 function deepClone(obj, map = new WeakMap()) {
@@ -1179,20 +1180,19 @@ new Promise((resolve, reject) => {
 
 function currying(fn, ...args) {
   let len = fn.length;
-  return function(...rest) {
+  return function (...rest) {
     rest = [...args, ...rest];
     if (len > rest.length) {
       return currying(fn, ...rest);
     } else {
       return fn.apply(null, rest);
     }
-  }
+  };
 }
 
 // sort和reserve是返回原数组的引用
 // -/*/\//%在计算时能转数字的才转换数字，不然就是NaN
 // https://www.cnblogs.com/zhenjianyu/p/12965561.html, 关于cdn讲挺好。
-
 
 function getTotal() {
   return [...arguments].reduce((prev, cur) => {
@@ -1208,7 +1208,7 @@ function sum1(fn) {
 
   getArr.toString = function () {
     return fn.call(null, ...args);
-  }
+  };
 
   return getArr;
 }
@@ -1231,7 +1231,7 @@ function sum(...args) {
   }
   curried.sumOf = function () {
     return total;
-  }
+  };
   return curried;
 }
 
@@ -1249,7 +1249,7 @@ function add(...args) {
   }
   fn.toString = function () {
     return total;
-  }
+  };
 
   return fn;
 }
@@ -1258,7 +1258,8 @@ function add(...args) {
 function fib(n) {
   if (n === 0) return 0;
   if (n === 1) return 1;
-  let p1 = 0, p2 = 1;
+  let p1 = 0,
+    p2 = 1;
   for (let i = 2; i < n; i++) {
     [p1, p2] = [p2, p1 + p2];
   }
@@ -1281,7 +1282,7 @@ function debounce(fn, timeout, immediate = false) {
         fn.call(null, ...rest);
       }, timeout);
     }
-  }
+  };
 }
 
 // LRUCache简单实现
@@ -1385,23 +1386,25 @@ Promise.myAllSettled = function (promises) {
   const results = [];
   return new Promise((resolve, reject) => {
     promises.forEach((item, index) => {
-      Promise.resolve(item).then((value) => {
-        results[index] = { status: 'fulfilled', value };
-        count++;
-        if (count === promises.length) {
-          resolve(results);
-        }
-      },
+      Promise.resolve(item).then(
+        (value) => {
+          results[index] = { status: 'fulfilled', value };
+          count++;
+          if (count === promises.length) {
+            resolve(results);
+          }
+        },
         (reason) => {
           results[index] = { status: 'rejected', reason };
           count++;
           if (count === promises.length) {
             resolve(results);
           }
-        });
+        }
+      );
     });
   });
-}
+};
 Promise.myAllSettled([p1(), p2(), p3]).then((data) => {
   console.log(data);
 });
@@ -1430,8 +1433,7 @@ function timer(delay = 50) {
 }
 timer();
 var len = 100000;
-while (len-- >= 0) { }
-
+while (len-- >= 0) {}
 
 // 生成随机色值
 `#${(~~(Math.random() * (1 << 24))).toString(16).padStart(6, '0')}`;
@@ -1487,7 +1489,7 @@ function timer(delay = 50) {
 }
 timer();
 let len = 10000;
-while (len-- > 0) { }
+while (len-- > 0) {}
 // ----------------------end---------------------
 
 // ----------------------start-------------------
@@ -1507,7 +1509,7 @@ function debounce(fn, timeout = 50, immediate = false) {
         fn.call(null, ...rest);
       }, timeout);
     }
-  }
+  };
 }
 // 函数节流
 // 1. 计时法
@@ -1518,7 +1520,7 @@ function throttle(fn, timeout = 50) {
       fn.call(null, ...rest);
       startTime = Date.now();
     }
-  }
+  };
 }
 // 2. 定时器法
 function _throttle(fn, timeout = 50) {
@@ -1530,7 +1532,7 @@ function _throttle(fn, timeout = 50) {
       clearTimeout(timer);
       timer = null;
     }, timeout);
-  }
+  };
 }
 // ----------------------end---------------------
 
@@ -1546,7 +1548,7 @@ var result = find(data).where({ title: /\d+/ }).orderBy('userId', 'desc');
 
 // 解析
 function find(o) {
-  function fn() { }
+  function fn() {}
   fn.where = function (filterRule) {
     o = o.filter((item) => filterRule['title'].test(item.title));
     return fn;
@@ -1604,22 +1606,22 @@ var obj1 = {
   c: function () {
     console.log(1);
   }
-}
+};
 var obj1 = {
   b: 2,
   c: function () {
     console.log(1);
   },
   a: 1
-}
+};
 // ----------------------end---------------------
 
 // ----------------------start-------------------
 //是否存在循环引用
 var obj = {
   a: 1,
-  b: 2,
-}
+  b: 2
+};
 obj.c = obj;
 isHasCircle(obj);
 function isHasCircle(o, map = new WeakMap()) {
@@ -1647,7 +1649,7 @@ Object.myIs = function myIs(x, y) {
   } else {
     return x !== x && y !== y;
   }
-}
+};
 // ----------------------end---------------------
 
 // ----------------------start-------------------
@@ -1694,7 +1696,7 @@ function sum(...args) {
   }
   fn.toString = function () {
     return total;
-  }
+  };
   return fn;
 }
 // ----------------------end---------------------
@@ -1709,11 +1711,11 @@ function timeSlice(gen) {
     let res;
     do {
       res = gen.next();
-    } while (!res.done && (performance.now() - start < 25));
+    } while (!res.done && performance.now() - start < 25);
 
     if (res.done) return;
     window.requestIdleCallback(next);
-  }
+  };
 }
 timeSlice(function gen() {
   const start = performance.now();
@@ -1735,10 +1737,10 @@ function timeSlice1(gen) {
     const start = performance.now();
     do {
       res = gen.next();
-    } while (!res.done && performance.now() - start < 25)
+    } while (!res.done && performance.now() - start < 25);
     if (res.done) return;
     window.requestIdleCallback(next);
-  }
+  };
 }
 timeSlice1(function* gen() {
   // 设定终止条件
@@ -1764,7 +1766,7 @@ function timeSlice2(gen) {
   }
   next();
 }
-timeSlice2(function *gen() {
+timeSlice2(function* gen() {
   // 设定终止条件
   const start = performance.now();
   while (performance.now() - start < 1000) {
@@ -1781,7 +1783,9 @@ Function.prototype.myBind = function (o, ...args) {
   if (typeof this !== 'function') {
     // closest thing possible to the ECMAScript 5
     // internal IsCallable function
-    throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+    throw new TypeError(
+      'Function.prototype.bind - what is trying to be bound is not callable'
+    );
   }
   const ctx = o ?? window;
   const fToBind = this;
@@ -1790,7 +1794,7 @@ Function.prototype.myBind = function (o, ...args) {
   }
   Fn.prototype = this.prototype;
   return Fn;
-}
+};
 
 Function.prototype.myBind1 = function (o, ...args) {
   if (typeof this !== 'function') {
@@ -1805,7 +1809,7 @@ Function.prototype.myBind1 = function (o, ...args) {
     fn.prototype = this.prototype;
   }
   return fn;
-}
+};
 
 Function.prototype.myBind2 = function (o, ...args) {
   if (typeof this !== 'function') {
@@ -1821,7 +1825,7 @@ Function.prototype.myBind2 = function (o, ...args) {
     Fn.prototype = this.prototype;
   }
   return Fn;
-}
+};
 // ----------------------end---------------------
 
 // ----------------------start-------------------
@@ -1832,8 +1836,8 @@ function selfMemoStore(fn) {
   return function getCache(...args) {
     const k = JSON.stringify(args);
     if (cache[k]) return cache[k];
-    return cache[k] = fn.apply(null, ...args);
-  }
+    return (cache[k] = fn.apply(null, ...args));
+  };
 }
 
 function selfMemoryStore(fn) {
@@ -1841,8 +1845,8 @@ function selfMemoryStore(fn) {
   return function getCache(key) {
     const k = JSON.stringify(key);
     if (cache[k]) return cache[k];
-    return cache[k] = fn.apply(null, key);
-  }
+    return (cache[k] = fn.apply(null, key));
+  };
 }
 // ----------------------end---------------------
 
@@ -1856,12 +1860,14 @@ function co(gen) {
     function next(result) {
       if (result.done) resolve(result.value);
       result.value = Promise.resolve(result.value);
-      result.value.then((res) => {
-        result = it.next(res);
-        next(result);
-      }).catch((err) => {
-        reject(err);
-      });
+      result.value
+        .then((res) => {
+          result = it.next(res);
+          next(result);
+        })
+        .catch((err) => {
+          reject(err);
+        });
     }
     next(result);
   });
@@ -1878,7 +1884,7 @@ var o = {
       c: 1
     }
   }
-}
+};
 // ----------------------end---------------------
 
 // ----------------------start-------------------
@@ -1888,7 +1894,7 @@ function setTimeoutInteval(fn, timeout) {
     fn();
     setTimeoutInteval(fn, timeout);
   }, timeout);
-};
+}
 setTimeoutInteval(fn, 500);
 function printLog() {
   console.log(1243);
@@ -1897,7 +1903,7 @@ function printLog() {
 
 // ----------------------start-------------------
 //1. Hero("37er");执行结果为Hi! This is 37er
-//2. Hero("37er").kill(1).recover(30); 执行结果为Hi! This is 37er Kill 1 bug Recover 30 bloods 
+//2. Hero("37er").kill(1).recover(30); 执行结果为Hi! This is 37er Kill 1 bug Recover 30 bloods
 //3. Hero("37er").sleep(10).kill(2)执行结果为Hi! This is 37er //等待10s后  Kill 2 bugs //注意为bugs
 function Hero(name) {
   console.log(`Hi! This is ${name}`);
@@ -1907,15 +1913,15 @@ Hero.kill = function (num) {
   const bugsOrBug = num > 1 ? 'bugs' : 'bug';
   console.log(`Kill ${num} ${bugsOrBug}`);
   return Hero;
-}
+};
 Hero.recover = function (count) {
   console.log(`Recover ${count} bloods`);
-}
+};
 Hero.sleep = function (time) {
   const start = Date.now();
   while (Date.now() - start < 1000 * time) {}
   return Hero;
-}
+};
 // ----------------------end---------------------
 
 // ----------------------start-------------------
@@ -1926,12 +1932,15 @@ function p(num) {
     }, 1000);
   });
 }
-Promise.resolve().then(() => {
+Promise.resolve()
+  .then(() => {
     return p(1);
-  }).then((data) => {
+  })
+  .then((data) => {
     console.log(data);
     return p(2);
-  }).then(console.log);
+  })
+  .then(console.log);
 
 async function getAsyncNumber() {
   console.log(await p(1));
@@ -1948,7 +1957,7 @@ function once(fn, ...args) {
       fn.apply(null, args.concat(rest));
       isCalled = true;
     }
-  }
+  };
 }
 
 function logs() {
@@ -1958,7 +1967,6 @@ var onceFn = once(logs);
 onceFn();
 
 // ----------------------end---------------------
-
 
 // LRU算法
 class LRUCache {
@@ -1997,7 +2005,7 @@ class LRUCache {
 var arr = [
   [1, 2, 2],
   [3, 4, 5, 5],
-  [6, 7, 8, 9, [11, 12, [12, 13, [14]]]],
+  [6, 7, 8, 9, [11, 12, [12, 13, [14]]]]
 ];
 function compose(...fns) {
   return function (arr) {
@@ -2063,38 +2071,16 @@ function repeat(fn, ...args) {
     // 使用reduce+promise
     let arr = new Array(count).fill(true);
     return arr.reduce((prev) => {
-      return prev.then(() => {
-        return sleep(timeout);
-      }).then(() => {
-        return fn(str);
-      });
+      return prev
+        .then(() => {
+          return sleep(timeout);
+        })
+        .then(() => {
+          return fn(str);
+        });
     }, Promise.resolve());
-  }
+  };
 }
 var repeatFunc = repeat(console.log, 4, 3000);
 repeatFunc('hello world!');
 // ----------------------end---------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
