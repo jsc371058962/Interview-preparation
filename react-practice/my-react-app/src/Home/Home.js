@@ -30,6 +30,9 @@ export default function Home() {
       <li>
         <Link to="/context">Context</Link>
       </li>
+      <li>
+        <Link to="/mouse">Mouse</Link>
+      </li>
     </ul>
   );
 }

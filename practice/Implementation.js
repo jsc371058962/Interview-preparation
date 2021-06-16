@@ -238,7 +238,7 @@ function debounce(fn, timeout = 500) {
       clearTimeout(timer);
     }
     timer = setTimeout(() => {
-      fn.call(null, ...rest);
+      fn(...rest);
     }, timeout);
   }
 }

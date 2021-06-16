@@ -18,6 +18,7 @@ const FilterableProductTable = lazy(() =>
 const Forwardref = lazy(() => import('../Forwardref-Component/Forwardref'));
 const Hooks = lazy(() => import('../Hooks-Component/Hooks'));
 const Context = lazy(() => import('../Context-Component/Context'));
+const Mouse = lazy(() => import('../Render-Props-Component/Mouse-With-Track'));
 
 const routes = [
   {
@@ -56,6 +57,10 @@ const routes = [
   {
     path: '/context',
     Component: Context
+  },
+  {
+    path: '/mouse',
+    Component: Mouse
   }
 ];
 function mapRoute(routes) {

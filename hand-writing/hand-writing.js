@@ -134,7 +134,7 @@ function debounce(fn, timeout, immidate = false) {
       if (isCallNow) fn.apply(null, args);
     } else {
       timer = setTimeout(() => {
-        fn.apply(null, args);
+        fn(...args);
       }, timeout);
     }
   };
@@ -876,3 +876,213 @@ function asyncFunc(gen) {
     step('next');
   });
 }
+
+// 1.写一个 mySetInterVal(fn, a, b),每次间隔 a,a+b,a+2b 的时间，
+// 然后写一个 myClear，停止上面的 mySetInterVal
+(function mySetInterValClosure() {
+  let count = 0,
+    timer = null;
+  function mySetInterVal(fn, a, b) {
+    timer = setTimeout(function () {
+      count++;
+      fn();
+      mySetInterVal(fn, a, b);
+    }, a + count * b);
+  }
+  function myClear() {
+    clearTimeout(timer);
+    timer = null;
+    count = 0;
+  }
+
+  window.mySetInterVal = mySetInterVal;
+  window.myClear = myClear;
+})();
+function log() {
+  console.log(123);
+}
+mySetInterVal(log, 1000, 1000);
+
+// 2.合并二维有序数组成一维有序数组，归并排序的思路
+// 先扁平化再用归并
+var newArray = array.flat(2);
+function mergeSort(array) {
+  if (array.length <= 1) return array;
+  const mid = ~~array.length / 2;
+  const leftArray = array.slice(0, mid);
+  const rightArray = array.slice(mid);
+  return merge(mergeSort(leftArray), mergeSort(rightArray));
+}
+function merge(left, right) {
+  const result = [];
+  while (left.length && right.length) {
+    if (left[0] < right[0]) {
+      result.push(left.shift());
+    } else {
+      result.push(right.shift());
+    }
+  }
+  left.length ? result.push(...left) : result.push(...right);
+  return result;
+}
+
+// 3.斐波那契数列
+function fib(n, p1 = 0, p2 = 1) {
+  if (n <= 1) return p2;
+  return fib(n - 1, p2, p1 + p2);
+}
+
+// 4.防抖&节流
+function debounce(fn, timeout, immediate = false) {
+  let timer = null;
+  return function (...rest) {
+    if (timer) clearTimeout(timer);
+    if (immediate) {
+      const isCallNow = !timer;
+      timer = setTimeout(() => {
+        timer = null;
+      }, timeout);
+      if (isCallNow) fn.apply(null, rest);
+    } else {
+      timer = setTimeout(() => {
+        fn(...rest);
+      }, timeout);
+    }
+  };
+}
+function throttle(fn, timeout) {
+  let start = Date.now();
+  return function (...rest) {
+    if (Date.now() - start >= timeout) {
+      fn.apply(null, rest);
+      start = Date.now();
+    }
+  };
+}
+function throttle1(fn, timeout) {
+  let timer = null;
+  return function (...rest) {
+    if (timer) return;
+    timer = setTimeout(() => {
+      fn(...rest);
+      timer = null;
+    }, timeout);
+  };
+}
+
+// 实现_.get
+function get(obj, param, defaultValue) {
+  if (!Array.isArray(param)) return defaultValue;
+  return param.reduce((a, b) => a[b], obj);
+}
+get(object, ['a', '0', 'b', 'c']);
+
+// 15.实现 add(1)(2)(3)
+function currying(fn, ...args) {
+  const length = fn.length;
+  return function (...rest) {
+    rest = [...args, ...rest];
+    if (rest.length === length) {
+      return fn.apply(null, rest);
+    } else {
+      return currying(fn, ...rest);
+    }
+  };
+}
+function compute(a, b, c) {
+  return a + b + c;
+}
+add = currying(compute);
+add(1)(2)(3);
+
+// 24.实现 Promise.all
+Promise.myAll = function myAll(promises) {
+  if (Array.isArray(promises))
+    throw new TypeError(`${promises} is not an array!`);
+  return new Promise((resolve, reject) => {
+    if (!promises.length) resolve([]);
+    const result = [];
+    let count = 0;
+    promises.forEach((item, index) => {
+      Promise.resolve(item).then(
+        (value) => {
+          result[index] = value;
+          count++;
+          if (count === promises.length) {
+            resolve(result);
+          }
+        },
+        (reason) => {
+          reject(reason);
+        }
+      );
+    });
+  });
+};
+
+// 30.手写用 ES6proxy 如何实现 arr[-1] 的访问
+function createArray(...rest) {
+  const handler = {
+    get(target, prop) {
+      prop = Number(prop);
+      if (Number.isNaN(prop)) return -1;
+      if (prop >= 0) return Reflect.get(target, prop);
+
+      return Reflect.get(target, target.length + prop);
+    }
+  };
+  let arr = [...rest];
+  return new Proxy(arr, handler);
+}
+var arr = createArray(0, 2, 3, 5);
+
+// JS实现一个带并发限制的异步调度器Scheduler
+// 保证同时运行的任务数最多有俩个
+// 完善代码中Scheduler类
+
+//要求
+// ouput : 2 3 1 4
+//一开始1,2俩个任务进入队列
+//500ms时,2完成,输出2,任务3进入队列
+//800ms时,3完成,输出3,任务4进入队列
+//1000ms时,1完成,输出1
+//1200ms时,4完成,输出4
+class Scheduler {
+  constructor() {
+    this.limit = 2;
+    this.tasks = [];
+    this.doingTasks = [];
+  }
+
+  add(task) {
+    if (this.doingTasks.length < this.limit) {
+      this.run(task);
+    } else {
+      this.tasks.push(task);
+    }
+  }
+
+  run(promise) {
+    this.doingTasks.push(promise);
+    const index = this.doingTasks.length - 1;
+    promise().then(() => {
+      this.doingTasks.splice(index, 1);
+      if (this.tasks.length) {
+        this.run(this.tasks.shift());
+      }
+    });
+  }
+}
+function timeout(time) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+}
+var scheduler = new Scheduler();
+function addTask(time, order) {
+  scheduler.add(() => timeout(time).then(() => console.log(order)));
+}
+addTask(1000, 1);
+addTask(500, 2);
+addTask(300, 3);
+addTask(400, 4);
