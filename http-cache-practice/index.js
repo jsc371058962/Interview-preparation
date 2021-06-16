@@ -158,7 +158,7 @@ window.addEventListener('load', function () {
         if (isCallNow) fn.call(this, ...args);
       } else {
         timer = setTimeout(() => {
-          fn.call(this, ...args);
+          fn(...args);
         }, delay);
       }
     }

@@ -528,7 +528,7 @@ function debounce(fn, timeout, immediate = false) {
       if (isCallNow) fn.call(this, ...rest);
     } else {
       timer = setTimeout(() => {
-        fn.call(this, ...rest);
+        fn(...rest);
       }, timeout);
     }
   };
@@ -1279,7 +1279,7 @@ function debounce(fn, timeout, immediate = false) {
       if (isCallNow) fn.call(null, ...rest);
     } else {
       timer = setTimeout(() => {
-        fn.call(null, ...rest);
+        fn(...rest);
       }, timeout);
     }
   };
@@ -1506,7 +1506,7 @@ function debounce(fn, timeout = 50, immediate = false) {
       isCallNow && fn.call(null, ...rest);
     } else {
       timer = setTimeout(() => {
-        fn.call(null, ...rest);
+        fn(...rest);
       }, timeout);
     }
   };
