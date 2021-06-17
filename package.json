@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/jsc371058962/Interview-preparation#readme",
   "devDependencies": {
-    "prettier": "^2.3.0"
+    "prettier": "^2.3.1"
   }
 }

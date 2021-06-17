@@ -454,7 +454,7 @@ function deepClone(obj, map = new weakMap()) {
   if (obj == null) return obj;
   if (obj instanceof Date) return new Date(obj);
   if (obj instanceof RegExp) return new RegExp(obj);
-  // 基本类型/方法
+  // 方法
   if (typeof obj !== 'object') return obj;
   if (map.get(obj)) return obj;
   map.set(target, true);

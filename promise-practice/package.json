@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "promises-aplus-tests MyPromise7"
+    "test": "promises-aplus-tests MyPromise8"
   },
   "author": "",
   "license": "ISC",

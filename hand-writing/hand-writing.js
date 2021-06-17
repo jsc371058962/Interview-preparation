@@ -164,6 +164,7 @@ function throttle1(fn, timeout) {
 // 深拷贝
 function deepClone(o, map = new WeakMap()) {
   if (map.has(o)) return o;
+  if (o == null) return o;
   if (o instanceof Date) return new Date(o);
   if (o instanceof RegExp) return new RegExp(o);
   if (typeof o !== 'object') return o;
@@ -907,7 +908,7 @@ mySetInterVal(log, 1000, 1000);
 var newArray = array.flat(2);
 function mergeSort(array) {
   if (array.length <= 1) return array;
-  const mid = ~~array.length / 2;
+  const mid = ~~(array.length / 2);
   const leftArray = array.slice(0, mid);
   const rightArray = array.slice(mid);
   return merge(mergeSort(leftArray), mergeSort(rightArray));
@@ -1031,4 +1032,30 @@ function createArray(...rest) {
   return new Proxy(arr, handler);
 }
 var arr = createArray(0, 2, 3, 5);
+console.log(arr[-1]);
+
+// 洗牌算法, 原地
+function shuffle(array) {
+  for (let i = 0; i < array.length; i++) {
+    const randomIdx = i + ~~(Math.random() * (array.length - i));
+    [array[i], array[randomIdx]] = [array[randomIdx], array[i]]
+  }
+  return array;
+}
+
+// 深拷贝
+function deepClone(obj, map = new WeakMap()) {
+  if (map.has(obj)) return obj;
+  if (obj == null) return obj;
+  if (obj instanceof Date) return new Date(obj);
+  if (obj instanceof RegExp) return new RegExp(obj);
+  if (typeof obj !== 'object') return obj;
+  map.set(obj, true);
+  const o = new obj.constructor();
+  for (const key of Reflect.ownKeys(o)) {
+    o[key] = typeof obj[key] === 'object' ? deepClone(obj[key], map) : obj[key];
+  }
+
+  return o;
+}
 
