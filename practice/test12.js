@@ -1,4 +1,5 @@
-function deepClone(obj) {
+function deepClone(obj, map = new WeakMap()) {
+  if (map.has(obj)) return obj;
   // null, nudefined直接返回
   if (obj == null) {
     return obj;
@@ -13,17 +14,18 @@ function deepClone(obj) {
   if (typeof obj !== 'object') {
     return obj;
   }
+  map.set(obj, true);
   const o = new obj.constructor();
   // for (const key in obj) {
   //   // 没有当symbol属性时的值
   //   if (obj.hasOwnProperty(key)) {
   //     const element = obj[key];
-  //     o[key] = typeof element === 'object' ? deepClone(element) : element;
+  //     o[key] = typeof element === 'object' ? deepClone(element, map) : element;
   //   }
   // }
   for (const key of Reflect.ownKeys(obj)) {
     const element = obj[key];
-    o[key] = typeof element === 'object' ? deepClone(element) : element;
+    o[key] = typeof element === 'object' ? deepClone(element, map) : element;
   }
   return o;
 }

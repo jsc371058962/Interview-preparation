@@ -5,7 +5,7 @@ const REJECTED = 'rejected';
 class MyPromise7 {
   static resolve(param) {
     if (param instanceof MyPromise7) {
-      return resolve(param);
+      return param;
     }
     return new MyPromise7((resolve, reject) => {
       resolve(param);
@@ -252,7 +252,7 @@ function resolvePromise(promise, x, resolve, reject) {
         );
       } catch (error) {
         if (isCalled) return;
-        isCalled = false;
+        isCalled = true;
         reject(error);
       }
     } else {
