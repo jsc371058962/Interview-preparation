@@ -6,6 +6,7 @@
  * 4. 深度优先遍历(DFS)和广度优先遍历(BFS)
  * 5. Virtual DOM转真实DOM
  * 6. 版本号排序
+ * 7. rgb(xxx, xxx, xxx)转16进制颜色
  */
 
 // 冒泡排序
@@ -42,7 +43,7 @@ function insertSort(array) {
     let j = i - 1;
     while (j >= 0 && loopNumber > array[j]) {
       array[j + 1] = array[j];
-      j--
+      j--;
     }
     array[j + 1] = loopNumber;
   }

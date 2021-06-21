@@ -42,7 +42,7 @@ function insertSort(array) {
     let j = i - 1;
     while (j >= 0 && loopNumber > array[j]) {
       array[j + 1] = array[j];
-      j++;
+      j--;
     }
     array[j + 1] = loopNumber;
   }
