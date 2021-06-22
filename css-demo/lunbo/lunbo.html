@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>轮播</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-size: 10px;
+    }
+
+    .main {
+      position: relative;
+      height: 30rem;
+      width: 30rem;
+      background: rgb(100, 104, 104);
+      font-size:0;
+      overflow: hidden;
+    }
+
+    .container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 120rem;
+      height: 30rem;
+      transform: translateX(0);
+      animation: scroll-png 10s linear infinite;
+    }
+
+    img {
+      width: 30rem;
+      height: 30rem;
+    }
+
+    @keyframes scroll-png {
+      0%, 25% {
+        transform: translateX(0);
+      }
+      26%, 50% {
+        transform: translateX(-30rem);
+      }
+      51%, 75% {
+        transform: translateX(-60rem);
+      }
+      76%, 100% {
+        transform: translateX(-90rem);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <div class="container">
+      <img src="./assets/gengengengen.jpeg" alt="genji1">
+      <img src="./assets/genji3.jpg" alt="genji3">
+      <img src="./assets/GENJI1.jpg" alt="GENJI1">
+      <img src="./assets/genji5.png" alt="genji5">
+    </div>
+  </div>
+</body>
+</html>

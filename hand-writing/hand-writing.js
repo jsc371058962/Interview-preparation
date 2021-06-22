@@ -391,8 +391,8 @@ console.log(render(template, context));
 // 转换成驼峰命名
 var s1 = 'get-element-by-id';
 function getCamerCase(s) {
-  return s.replace(/-\w/g, (match, str) => {
-    return str.slice(1).toUpperCase();
+  return s.replace(/-\w/g, (match) => {
+    return match.slice(1).toUpperCase();
   });
 }
 

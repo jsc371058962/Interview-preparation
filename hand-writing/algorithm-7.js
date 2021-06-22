@@ -9,6 +9,7 @@
  * 7. rgb(xxx, xxx, xxx)转16进制颜色(大写)
  * 8. 异步调度器Scheduler
  * 9. 栈结构实现flat数组
+ * 10. 下划线/中划线命名转小驼峰命名
  */
 
 // 冒泡排序
@@ -317,3 +318,24 @@ function flat(array) {
 }
 var arr = [[1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14]]]], 10];
 console.log(flat(arr));
+
+// 下划线/中划线命名转小驼峰命名
+function trans2CamelCase(string) {
+  return string.replace(/(_|-)\w/g, function (match) {
+    return match.slice(1).toUpperCase();
+  });
+}
+console.log(trans2CamelCase('get_name_and_value'));
+
+// 实现bind
+Function.prototype.myBind = function myBind(obj, ...args) {
+  const o = obj ?? window,
+    fToBind = this;
+  function f(...rest) {
+    return fToBind.apply(this instanceof f ? this : o, [...args, ...rest]);
+  }
+  if (this.prototype) {
+    f.prototype = this.prototype;
+  }
+  return f;
+}
