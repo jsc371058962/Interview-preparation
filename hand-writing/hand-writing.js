@@ -1113,3 +1113,32 @@ function deepClone(obj, map = new WeakMap()) {
 
   return o;
 }
+
+// 封装一个jsonp
+function jsonp({ url, params }) {
+  function getCallbackName() {
+    return Math.random().toString(16).slice(2);
+  }
+  const getRandomName = 'get' + getCallbackName();
+  function spliceParams(args) {
+    let pStrings = '';
+    for (const key in args) {
+      if (Object.hasOwnProperty.call(args, key)) {
+        pStrings += `${key}=${encodeURIComponent(args[key])}&`
+      }
+    }
+    return url.includes('?')
+      ? `${url}${pStrings}callback=${getRandomName}`
+      : `${url}?${pStrings}callback=${getRandomName}`;
+  }
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = spliceParams(params);
+    window[getCallbackName] = function (data) {
+      document.body.removeChild(script);
+      resolve(data);
+    }
+    document.body.appendChild(script);
+  });
+}
+
