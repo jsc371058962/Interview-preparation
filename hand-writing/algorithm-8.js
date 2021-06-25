@@ -11,9 +11,14 @@
  * 9. 栈结构实现flat数组
  * 10. 下划线/中划线命名转小驼峰命名
  * 11. 实现bind
+ * 12. 洗牌算法, 原地
+ * 13. 手写用 ES6proxy 如何实现 arr[-1] 的访问
+ * 14. 写一个 mySetInterVal(fn, a, b),每次间隔 a, a + b, a + 2b的时间
+ * 15. 手写async/await
+ * 16. 模板字符串
  */
 
-// 冒泡排序
+// 冒泡
 function bubbleSort(array) {
   const length = array.length;
   for (let i = 0; i < length; i++) {
@@ -25,8 +30,7 @@ function bubbleSort(array) {
   }
   return array;
 }
-
-// 选择排序
+// 选择
 function selectSort(array) {
   const length = array.length;
   for (let i = 0; i < length; i++) {
@@ -38,14 +42,13 @@ function selectSort(array) {
   }
   return array;
 }
-
-// 直接插入排序
+// 插入
 function insertSort(array) {
   const length = array.length;
-  for (let i = 0; i < length; i++) {
+  for (let i = 1; i < length; i++) {
     const loopNumber = array[i];
     let j = i - 1;
-    while (j >= 0 && loopNumber < array[j]) {
+    while (j >= 0 && array[j] < loopNumber) {
       array[j + 1] = array[j];
       j--;
     }
@@ -53,8 +56,7 @@ function insertSort(array) {
   }
   return array;
 }
-
-// 归并排序
+// 归并
 function mergeSort(array) {
   if (array.length <= 1) return array;
   const mid = ~~(array.length / 2);
@@ -74,8 +76,7 @@ function merge(left, right) {
   left.length ? result.push(...left) : result.push(...right);
   return result;
 }
-
-// 快速排序
+// 快排
 function quickSort(array, start = 0, end = array.length - 1) {
   if (end - start < 1) return;
   const pivotIndex = partition(array, start, end);
@@ -95,11 +96,18 @@ function partition(array, start, end) {
   return j - 1;
 }
 
-// 二叉树的遍历, 均迭代
-// 先序遍历
+// 先序,递归
+function preorderTraverse(root, nodeList = []) {
+  if (!root) return [];
+  nodeList.push(root.val);
+  preorderTraverse(root.left, nodeList);
+  preorderTraverse(root.right, nodeList);
+  return nodeList;
+}
+// 迭代
 function preorderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [], nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node.val);
@@ -108,8 +116,15 @@ function preorderTraverse(root) {
   }
   return nodeList;
 }
-
-// 中序遍历
+// 中序, 递归
+function inorderTraverse(root, nodeList = []) {
+  if (!root) return [];
+  inorderTraverse(root.left, nodeList);
+  nodeList.push(root.val);
+  inorderTraverse(root.right, nodeList);
+  return nodeList;
+}
+// 迭代
 function inorderTraverse(root) {
   if (!root) return [];
   const stack = [], nodeList = [];
@@ -128,8 +143,15 @@ function inorderTraverse(root) {
   }
   return nodeList;
 }
-
-// 后序遍历
+// 后序,递归
+function postorderTraverse(root, nodeList = []) {
+  if (!root) return [];
+  postorderTraverse(root.left, nodeList);
+  postorderTraverse(root.right, nodeList);
+  nodeList.push(root.val);
+  return nodeList;
+}
+// 迭代
 function postorderTraverse(root) {
   if (!root) return [];
   const stack = [root], nodeList = [];
@@ -139,10 +161,9 @@ function postorderTraverse(root) {
     node.left && stack.push(node.left);
     node.right && stack.push(node.right);
   }
-  return array;
+  return nodeList;
 }
-
-// 层序遍历, 递归
+// 层序,递归
 function levelTraverse(root, nodeList = []) {
   if (!root) return [];
   nodeList.push(root.val);
@@ -159,8 +180,8 @@ function levelTraverse(root) {
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node.val);
-    node.left && stack.push(node.left);
-    node.right && stack.push(node.right);
+    node.left && queue.push(node.left);
+    node.right && queue.push(node.right);
   }
   return nodeList;
 }
@@ -172,7 +193,7 @@ function dfs(root, nodeList = []) {
   nodeList.push(root);
   const children = root.children;
   for (let i = 0; i < children.length; i++) {
-    dfs(children[i], nodeList);
+    dfs(children[i], dfs);
   }
   return nodeList;
 }
@@ -190,7 +211,6 @@ function dfs(root) {
   }
   return nodeList;
 }
-
 // bfs, 迭代
 function bfs(root) {
   if (!root) return [];
@@ -206,7 +226,7 @@ function bfs(root) {
   return nodeList;
 }
 
-// 虚拟DOM转化
+// Virtual DOM转真实DOM
 function _render(vnode) {
   if (typeof vnode === 'number') {
     vnode = String(vnode);
@@ -223,7 +243,7 @@ function _render(vnode) {
       }
     }
   }
-  children.forEach((node) => dom.appendChild(_render(node)));
+  children.forEach((node) => dom.appedChild(_render(node)));
   return dom;
 }
 
@@ -246,17 +266,18 @@ function versionSort(array) {
   });
 }
 
-// rgb(xxx, xxx, xxx)转换16进制
+// rgb(xxx, xxx, xxx)转16进制颜色(大写)
 function transform2Hex(string) {
-  const arr = string.match(/\d+/g);
-  const toHex = (s) => Number(s).toString(16).padStart('0', 2);
+  const arr = string.match(/\w+/g);
+  const toHex = (str) => Number(str).toString(16).padStart('0', 2);
   return arr.reduce((prev, cur) => prev + toHex(cur), '#').toUpperCase();
 }
 
+// 异步调度器Scheduler
 // JS实现一个带并发限制的异步调度器Scheduler
 // 保证同时运行的任务数最多有俩个
 // 完善代码中Scheduler类
-//要求
+// 要求
 // ouput : 2 3 1 4
 //一开始1,2俩个任务进入队列
 //500ms时,2完成,输出2,任务3进入队列
@@ -271,7 +292,7 @@ class Scheduler {
   }
 
   add(task) {
-    if (this.doingTasks.length < this.limit) {
+    if (this.doingTasks.length < 2) {
       this.run(task);
     } else {
       this.tasks.push(task);
@@ -304,39 +325,124 @@ addTask(300, 3);
 addTask(400, 4);
 
 // 栈结构实现flat数组
-function flat(array) {
-  const stack = [...array];
-  const result = [];
-  while (stack.length) {
-    const pop = stack.pop();
+function flatten(array) {
+  const stack = [];
+  while (array.length) {
+    const pop = array.pop();
     if (Array.isArray(pop)) {
-      stack.push(...pop);
+      array.push(...pop);
     } else {
-      result.unshift(pop);
+      stack.unshift(pop);
     }
   }
-  return result;
+  return stack;
 }
-var arr = [[1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14]]]], 10];
-console.log(flat(arr));
 
 // 下划线/中划线命名转小驼峰命名
-function trans2CamelCase(string) {
-  return string.replace(/(_|-)\w/g, function (match) {
-    return match.slice(1).toUpperCase();
-  });
+function transform2CamelCase(string) {
+  return string.replace(/(_|-)\w/g, (match) => match.slice(1).toUpperCase());
 }
-console.log(trans2CamelCase('get_name_and_value'));
 
 // 实现bind
 Function.prototype.myBind = function myBind(obj, ...args) {
-  const o = obj ?? window,
-    fToBind = this;
-  function f(...rest) {
-    return fToBind.apply(this instanceof f ? this : o, [...args, ...rest]);
-  }
-  if (this.prototype) {
-    f.prototype = this.prototype;
-  }
-  return f;
+  const o = obj ?? window;
+  const fToBind = this,
+    fNOP = function () {}
+    Fn = function (...rest) {
+      return fToBind.apply(fNOP.prototype.isPrototypeOf(this) ? this : o, [...args, ...rest]);
+    }
+    if (this.prototype) {
+      fNOP.prototype = this.prototype;
+    }
+    Fn.prototype = fNOP.prototype;
+    return Fn;
 }
+
+// 洗牌算法, 原地
+function shuffle(array) {
+  const length = array.length;
+  for (let i = 0; i < length; i++) {
+    const randomIdx = ~~(Math.random() * (length - i)) + 1;
+    [array[i], array[randomIdx]] = [array[randomIdx], array[i]];
+  }
+  return array;
+}
+
+// 手写用 ES6proxy 如何实现 arr[-1] 的访问
+function createArray(...rest) {
+  const arr = [...rest];
+  const handler = {
+    get(target, index) {
+      index = Number(index);
+      if (Number.isNaN(index)) return -1;
+      if (index < 0) {
+        return Reflect.get(target, target.length + index);
+      }
+      return Reflect.get(target, index);
+    }
+  };
+  return new Proxy(arr, handler);
+}
+
+// 写一个 mySetInterVal(fn, a, b),每次间隔 a, a + b, a + 2b的时间
+// 然后写一个 myClear，停止上面的 mySetInterVal
+(function(exports) {
+  let timer = null, count = 0;
+  function mySetInterVal(f, a, b) {
+    timer = setTimeout(() => {
+      count++;
+      f();
+      mySetInterVal(f, a, b);
+    }, a + b * count);
+  }
+  function myClear() {
+    clearTimeout(timer);
+    timer = null;
+    count = 0;
+  }
+  exports.mySetInterVal = mySetInterVal;
+  exports.myClear = myClear;
+})(window);
+
+// 手写async/await,其实就是简易co
+function asyncFunction(gen) {
+  if (typeof gen === 'function') gen = gen();
+  if (!gen || typeof gen.next !== 'function')
+    throw new TypeError(`${gen.next} is not a function!`);
+  return new Promise((resolve, reject) => {
+    function step(type, val) {
+      let result;
+      try {
+        result = gen[type](val);
+      } catch (error) {
+        reject(error);
+      }
+      const { done, value } = result;
+      if (done) resolve(value);
+      return Promise.resolve(value).then(
+        (data) => {
+          return step('next', data);
+        },
+        (error) => {
+          return step('throw', error);
+        },
+      );
+    }
+    step('next');
+  });
+}
+
+// 模板字符串
+var o = {
+  name: 'jin',
+  age: 100
+};
+var string = "my name is {{name}}, i'm {{age}} years old.";
+getString(string, o);
+function getString(string, o) {
+  return string.replace(/\{\{(.*?)\}\}/g, (match, key) => o[key]);
+}
+
+
+
+

@@ -55,7 +55,7 @@ Man.prototype.getAge = function () {
 };
 var man = new Man(18, 'xiaoming');
 
-// class继承使用es5来实现///////没实现完全
+// class继承使用es5来实现
 function SuperTye(name) {
   this.name = name;
 }
@@ -92,6 +92,8 @@ function createNew(fn, ...args) {
 
 // 实现instanceof
 function myInstanceof(left, right) {
+  // 基本数据类型
+  if (typeof left !== 'object' || left === null) return false;
   let l = Object.getPrototypeOf(left);
   const r = right.prototype;
   while (l) {
@@ -222,6 +224,29 @@ function flat4(arr) {
     }
   }
 }
+// 有深度控制
+function flat5(arr, depth = 1) {
+  return arr.reduce(
+    (prev, cur) =>
+      prev.concat(
+        depth > 1 && Array.isArray(cur) ? flat5(cur, depth - 1) : cur,
+      ),
+    [],
+  );
+}
+//使用栈结构
+function flat6(arr) {
+  const stack = [];
+  while (arr.length) {
+    const pop = arr.pop();
+    if (Array.isArray(pop)) {
+      arr.push(...pop);
+    } else {
+      stack.unshift(pop);
+    }
+  }
+  return stack;
+}
 
 // 柯理化
 function curry(fn, ...args) {
@@ -310,13 +335,13 @@ class EventEmmit {
   once(type, callback) {
     function clousure(param) {
       callback(param);
-      this.removeListener(type);
+      this.removeListener(type, clousure);
     }
     this.addListener(type, clousure);
   }
 }
 
-// 生成min~max之间的随机数
+// 生成min ~ max之间的随机数
 function randomNumber(min, max) {
   return ~~(Math.random() * (max - min)) + min;
 }
@@ -655,14 +680,12 @@ function isPalindromeNumber(number) {
 
 // 二叉树的先序遍历
 // 递归
-var arr = [];
-function preOrder(node) {
-  if (!node) {
-    return;
-  }
-  arr.push(node.val);
-  preOrder(node.left);
-  preOrder(node.right);
+function preOrderTraverse(node, nodeList = []) {
+  if (!node) return [];
+  nodeList.push(node.val);
+  preOrderTraverse(node.left, nodeList);
+  preOrderTraverse(node.right, nodeList);
+  return nodeList;
 }
 
 // 迭代, 栈结构
@@ -685,38 +708,78 @@ function preOrder1(head) {
 }
 
 // 中序遍历, 深度优先, 递归
-var arr = [];
-function inOrder(node) {
+function inOrder(node, nodeList = []) {
   if (!node) {
-    return;
+    return [];
   }
-  inOrder(node.left);
-  arr.push(node.val);
-  inOrder(node.right);
+  inOrder(node.left, nodeList);
+  nodeList.push(node.val);
+  inOrder(node.right, nodeList);
+  return nodeList;
+}
+// 迭代
+function inorderTraverse(root) {
+  if (!root) return [];
+  const stack = [], nodeList = [];
+  let node = root;
+  while (stack.length || node) {
+    if (node) {
+      stack.push(node);
+      node = node.left;
+    } else {
+      const pop = stack.pop();
+      nodeList.push(pop.val);
+      if (pop.right) {
+        node = pop.right;
+      }
+    }
+  }
+  return nodeList;
 }
 
-// 后序遍历
-var arr = [];
-function backOrder(node) {
-  if (!node) {
-    return;
+// 后序遍历, 递归
+function postorderTraverse(root, nodeList = []) {
+  if (!root) {
+    return [];
   }
-  backOrder(node.left);
-  backOrder(node.right);
-  arr.push(node.val);
+  postorderTraverse(root.left, nodeList);
+  postorderTraverse(root.right, nodeList);
+  nodeList.push(root.val);
+  return nodeList;
+}
+// 迭代
+function postorderTraverse(root) {
+  if (!root) return [];
+  const stack = [root], nodeList = [];
+  while (stack.length) {
+    const node = stack.pop();
+    nodeList.unshift(node.val);
+    node.left && stack.push(node.left);
+    node.right && stack.push(node.right);
+  }
+  return nodeList;
 }
 
+// 层序遍历, 递归
+function levelTraverse(root, nodeList = []) {
+  if (!root) return [];
+  nodeList.push(root.val);
+  if (root.left) queue.push(root.left);
+  if (root.right) queue.push(root.right);
+  levelTraverse(queue.shift(), nodeList);
+  return nodeList;
+}
 // 层次遍历, 迭代
-var arr = [];
-function levelOrder(head) {
-  if (!head) return;
-  let queue = [head];
+function levelTraverse(root) {
+  if (!root) return [];
+  const queue = [root], nodeList = [];
   while (queue.length) {
     let node = queue.shift();
-    arr.push(node.val);
+    nodeList.push(node.val);
     if (node.left) queue.push(node.left);
     if (node.right) queue.push(node.right);
   }
+  return nodeList;
 }
 
 // 通用getType方法
@@ -771,7 +834,7 @@ function add(...args) {
 }
 console.log(add(1)(2)(3)());
 
-// 比较版本号
+// 版本号排序
 var arr = [
   '1.1',
   '2.3.3',
