@@ -16,6 +16,8 @@
  * 14. 写一个 mySetInterVal(fn, a, b),每次间隔 a, a + b, a + 2b的时间
  * 15. 手写async/await
  * 16. 模板字符串
+ * 17. LRU算法
+ * 18. 页面上有三个按钮，分别为 A、B、C，点击各个按钮都会发送异步请求且互不影响
  */
 
 // 冒泡
@@ -107,7 +109,8 @@ function preorderTraverse(root, nodeList = []) {
 // 迭代
 function preorderTraverse(root) {
   if (!root) return [];
-  const stack = [], nodeList = [];
+  const stack = [],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node.val);
@@ -127,7 +130,8 @@ function inorderTraverse(root, nodeList = []) {
 // 迭代
 function inorderTraverse(root) {
   if (!root) return [];
-  const stack = [], nodeList = [];
+  const stack = [],
+    nodeList = [];
   let node = root;
   while (stack.length || node) {
     if (node) {
@@ -154,7 +158,8 @@ function postorderTraverse(root, nodeList = []) {
 // 迭代
 function postorderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.unshift(node.val);
@@ -176,7 +181,8 @@ function levelTraverse(root, nodeList = []) {
 // 迭代
 function levelTraverse(root) {
   if (!root) return [];
-  const queue = [root], nodeList = [];
+  const queue = [root],
+    nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node.val);
@@ -200,7 +206,8 @@ function dfs(root, nodeList = []) {
 // 迭代
 function dfs(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node);
@@ -214,7 +221,8 @@ function dfs(root) {
 // bfs, 迭代
 function bfs(root) {
   if (!root) return [];
-  const queue = [root], nodeList = [];
+  const queue = [root],
+    nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node);
@@ -347,16 +355,19 @@ function transform2CamelCase(string) {
 Function.prototype.myBind = function myBind(obj, ...args) {
   const o = obj ?? window;
   const fToBind = this,
-    fNOP = function () {}
-    Fn = function (...rest) {
-      return fToBind.apply(fNOP.prototype.isPrototypeOf(this) ? this : o, [...args, ...rest]);
-    }
-    if (this.prototype) {
-      fNOP.prototype = this.prototype;
-    }
-    Fn.prototype = fNOP.prototype;
-    return Fn;
-}
+    fNOP = function () {};
+  Fn = function (...rest) {
+    return fToBind.apply(fNOP.prototype.isPrototypeOf(this) ? this : o, [
+      ...args,
+      ...rest
+    ]);
+  };
+  if (this.prototype) {
+    fNOP.prototype = this.prototype;
+  }
+  Fn.prototype = fNOP.prototype;
+  return Fn;
+};
 
 // 洗牌算法, 原地
 function shuffle(array) {
@@ -386,8 +397,9 @@ function createArray(...rest) {
 
 // 写一个 mySetInterVal(fn, a, b),每次间隔 a, a + b, a + 2b的时间
 // 然后写一个 myClear，停止上面的 mySetInterVal
-(function(exports) {
-  let timer = null, count = 0;
+(function (exports) {
+  let timer = null,
+    count = 0;
   function mySetInterVal(f, a, b) {
     timer = setTimeout(() => {
       count++;
@@ -425,7 +437,7 @@ function asyncFunction(gen) {
         },
         (error) => {
           return step('throw', error);
-        },
+        }
       );
     }
     step('next');
@@ -443,6 +455,73 @@ function getString(string, o) {
   return string.replace(/\{\{(.*?)\}\}/g, (match, key) => o[key]);
 }
 
+// LRU算法
+class LRUCache {
+  constructor(limit) {
+    this.limit = limit;
+    this.map = new Map();
+  }
 
+  put(key, value) {
+    if (this.map.has(key)) {
+      this.map.delete(key);
+    } else {
+      if (this.map.size >= this.limit) {
+        this.map.delete([...this.map.keys()][0]);
+      }
+    }
+    this.map.set(key, value);
+  }
 
+  get(key) {
+    if (this.map.has(key)) {
+      const value = this.map.get(key);
+      this.map.delete(key);
+      this.map.set(key, value);
+      return value;
+    }
+    return -1;
+  }
+}
 
+/**
+ * 页面上有三个按钮，分别为 A、B、C，点击各个按钮都会发送异步请求且互不影响，
+ * 每次请求回来的数据都为按钮的名字。
+ * 请实现当用户依次点击 A、B、C、A、C、B 的时候，最终获取的数据为 ABCACB。
+ */
+function handlerClick(tag, timeout) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(tag);
+    }, 500 * timeout);
+  });
+}
+var p = Promise.resolve();
+function queue(tag) {
+  p = p.then(() => {
+    return handlerClick(tag, ~~(Math.random() * 3) + 1);
+  });
+  return p;
+}
+async function getResult(tag) {
+  const result = await queue(tag);
+  console.log(result);
+}
+getResult('A');
+getResult('B');
+getResult('C');
+getResult('A');
+getResult('C');
+getResult('B');
+
+// 非含7或7倍数的数的集合
+function getExcept7Array(n = 100) {
+  const nums = [];
+  for (let i = 0; i <= n; i++) {
+    if (i % 10 === 7 || !(i % 7)) {
+      continue;
+    }
+    nums.push(i);
+  }
+  return nums;
+}
