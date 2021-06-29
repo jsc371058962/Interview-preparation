@@ -22,49 +22,49 @@
  */
 
 // 冒泡
-function bubbleSort(array) {
-  const length = array.length;
+function bubbleSort(arr) {
+  const length = arr.length;
   for (let i = 0; i < length; i++) {
     for (let j = 0; j < length - i; j++) {
-      if (array[j] < array[j + 1]) {
-        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+      if (arr[j] > arr[j + 1]) {
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
       }
     }
   }
-  return array;
+  return arr;
 }
 // 选择
-function selectSort(array) {
-  const length = array.length;
+function selectSort(arr) {
+  const length = arr.length;
   for (let i = 0; i < length; i++) {
     for (let j = i + 1; j < length; j++) {
-      if (array[i] < array[j]) {
-        [array[i], array[j]] = [array[j], array[i]];
+      if (arr[i] > arr[j]) {
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
     }
   }
-  return array;
+  return arr;
 }
 // 插入
-function insertSort(array) {
-  const length = array.length;
+function insertSort(arr) {
+  const length = arr.length;
   for (let i = 1; i < length; i++) {
     const loopNumber = array[i];
     let j = i - 1;
-    while (j >= 0 && array[j] < loopNumber) {
-      array[j + 1] = array[j];
+    while (j >= 0 && loopNumber > arr[j]) {
+      arr[j + 1] = arr[i];
       j--;
     }
-    array[j + 1] = loopNumber;
+    arr[j + 1] = loopNumber;
   }
-  return array;
+  return arr;
 }
 // 归并
-function mergeSort(array) {
-  if (array.length <= 1) return array;
-  const mid = ~~(array.length / 2);
-  const leftArray = array.slice(0, mid);
-  const rightArray = array.slice(mid);
+function mergeSort(arr) {
+  if (arr.length <= 1) return arr;
+  const mid = ~~(arr.length / 2);
+  const leftArray = arr.slice(0, mid);
+  const rightArray = arr.slice(mid);
   return merge(mergeSort(leftArray), mergeSort(rightArray));
 }
 function merge(left, right) {
@@ -80,38 +80,28 @@ function merge(left, right) {
   return result;
 }
 // 快排
-function quickSort(array, start = 0, end = array.length - 1) {
-  if (end - start < 1) return;
-  const pivotIndex = partition(array, start, end);
-  quickSort(array, start, pivotIndex - 1);
-  quickSort(array, pivotIndex + 1, end);
-  return array;
+function quickSort(arr, start = 0, end = arr.length - 1) {
+  if (end - start <= 0) return;
+  const pivotIndex = partition(arr, start, end);
+  quickSort(arr, start, pivotIndex - 1);
+  quickSort(arr, pivotIndex + 1, end);
+  return arr;
 }
-function partition(array, start, end) {
-  const pivot = array[end];
+function partition(arr, start, end) {
+  const pivot = arr[end];
   let j = start;
-  for (let i = start; i <= end; i++) {
-    if (array[i] <= pivot) {
-      [array[i], array[j]] = [array[j], array[i]];
+  for (let i = start; i <= arr[end] ; i++) {
+    if (arr[i] <= pivot) {
+      [arr[i], arr[j]] = [arr[j], arr[i]];
       j++;
     }
   }
   return j - 1;
 }
-
-// 先序,递归
-function preorderTraverse(root, nodeList = []) {
-  if (!root) return [];
-  nodeList.push(root.val);
-  preorderTraverse(root.left, nodeList);
-  preorderTraverse(root.right, nodeList);
-  return nodeList;
-}
-// 迭代
+// 先序遍历
 function preorderTraverse(root) {
   if (!root) return [];
-  const stack = [],
-    nodeList = [];
+  const stack = [root], nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node.val);
@@ -120,19 +110,10 @@ function preorderTraverse(root) {
   }
   return nodeList;
 }
-// 中序, 递归
-function inorderTraverse(root, nodeList = []) {
-  if (!root) return [];
-  inorderTraverse(root.left, nodeList);
-  nodeList.push(root.val);
-  inorderTraverse(root.right, nodeList);
-  return nodeList;
-}
-// 迭代
+// 中序遍历
 function inorderTraverse(root) {
   if (!root) return [];
-  const stack = [],
-    nodeList = [];
+  const stack = [], nodeList = [];
   let node = root;
   while (stack.length || node) {
     if (node) {
@@ -148,19 +129,10 @@ function inorderTraverse(root) {
   }
   return nodeList;
 }
-// 后序,递归
-function postorderTraverse(root, nodeList = []) {
-  if (!root) return [];
-  postorderTraverse(root.left, nodeList);
-  postorderTraverse(root.right, nodeList);
-  nodeList.push(root.val);
-  return nodeList;
-}
-// 迭代
+// 后序遍历
 function postorderTraverse(root) {
   if (!root) return [];
-  const stack = [root],
-    nodeList = [];
+  const stack = [root], nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.unshift(node.val);
@@ -169,7 +141,7 @@ function postorderTraverse(root) {
   }
   return nodeList;
 }
-// 层序,递归
+// 层序遍历
 function levelTraverse(root, nodeList = []) {
   if (!root) return [];
   nodeList.push(root.val);
@@ -179,11 +151,9 @@ function levelTraverse(root, nodeList = []) {
   levelTraverse(queue.shift(), nodeList);
   return nodeList;
 }
-// 迭代
 function levelTraverse(root) {
   if (!root) return [];
-  const queue = [root],
-    nodeList = [];
+  const queue = [root], nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node.val);
@@ -192,23 +162,19 @@ function levelTraverse(root) {
   }
   return nodeList;
 }
-
-// 树的遍历
-// dfs, 递归
+// dfs
 function dfs(root, nodeList = []) {
   if (!root) return [];
   nodeList.push(root);
   const children = root.children;
   for (let i = 0; i < children.length; i++) {
-    dfs(children[i], dfs);
+    dfs(children[i], nodeList);
   }
   return nodeList;
 }
-// 迭代
 function dfs(root) {
   if (!root) return [];
-  const stack = [root],
-    nodeList = [];
+  const stack = [root], nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node);
@@ -219,11 +185,10 @@ function dfs(root) {
   }
   return nodeList;
 }
-// bfs, 迭代
+// bfs
 function bfs(root) {
   if (!root) return [];
-  const queue = [root],
-    nodeList = [];
+  const queue = [root], nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node);
@@ -234,7 +199,6 @@ function bfs(root) {
   }
   return nodeList;
 }
-
 // Virtual DOM转真实DOM
 function _render(vnode) {
   if (typeof vnode === 'number') {
@@ -247,18 +211,17 @@ function _render(vnode) {
   const dom = document.createElement(tag);
   if (attrs) {
     for (const key in attrs) {
-      if (Object.prototype.hasOwnProperty.call(attrs, key)) {
+      if (Object.hasOwnProperty.call(attrs, key)) {
         dom.setAttribute(key, attrs[key]);
       }
     }
   }
-  children.forEach((node) => dom.appedChild(_render(node)));
+  children.forEach((node) => dom.appendChild(_render(node)));
   return dom;
 }
-
 // 版本号排序
-function versionSort(array) {
-  return array.sort((a, b) => {
+function versionSort(arr) {
+  return arr.sort((a, b) => {
     const arr1 = a.split('.');
     const arr2 = b.split('.');
     let i = 0;
@@ -267,52 +230,37 @@ function versionSort(array) {
       const s2 = arr2[i];
       i++;
       if (s1 === undefined || s2 === undefined) {
-        return s2.length - s1.length;
+        return arr2.length - arr1.length;
       }
       if (s1 === s2) continue;
       return s2 - s1;
     }
   });
 }
-
 // rgb(xxx, xxx, xxx)转16进制颜色(大写)
 function transform2Hex(string) {
-  const arr = string.match(/\w+/g);
+  const arr = string.match(/\d+/g);
   const toHex = (str) => Number(str).toString(16).padStart('0', 2);
   return arr.reduce((prev, cur) => prev + toHex(cur), '#').toUpperCase();
 }
-
-// 异步调度器Scheduler
-// JS实现一个带并发限制的异步调度器Scheduler
-// 保证同时运行的任务数最多有俩个
-// 完善代码中Scheduler类
-// 要求
-// ouput : 2 3 1 4
-//一开始1,2俩个任务进入队列
-//500ms时,2完成,输出2,任务3进入队列
-//800ms时,3完成,输出3,任务4进入队列
-//1000ms时,1完成,输出1
-//1200ms时,4完成,输出4
+// 异步调度器Scheduler(输出2, 3, 1, 4)
 class Scheduler {
   constructor() {
     this.limit = 2;
     this.tasks = [];
     this.doingTasks = [];
   }
-
   add(task) {
-    if (this.doingTasks.length < 2) {
+    if (this.doingTasks.length < this.limit) {
       this.run(task);
     } else {
       this.tasks.push(task);
     }
   }
-
   run(promise) {
-    this.doingTasks.push(promise);
-    const index = this.doingTasks.length - 1;
+    const idx = this.doingTasks.push(promise);
     promise().then(() => {
-      this.doingTasks.splice(index, 1);
+      this.doingTasks.splice(idx, 1);
       if (this.tasks.length) {
         this.run(this.tasks.shift());
       }
@@ -332,44 +280,49 @@ addTask(1000, 1);
 addTask(500, 2);
 addTask(300, 3);
 addTask(400, 4);
-
 // 栈结构实现flat数组
 function flatten(array) {
-  const stack = [];
-  while (array.length) {
-    const pop = array.pop();
-    if (Array.isArray(pop)) {
-      array.push(...pop);
+  const stack = [...array], result = [];
+  while (stack.length) {
+    const item = stack.shift();
+    if (Array.isArray(item)) {
+      stack.push(...item);
     } else {
-      stack.unshift(pop);
+      result.unshift(item);
     }
   }
-  return stack;
+  return result;
 }
-
+// 深度控制的flatten
+function flatten(array, depth = 1) {
+  return array.reduce((prev, cur) => {
+    return prev.concat(
+      depth > 1 && Array.isArray(cur) ? flatten(cur, depth - 1) : cur,
+    );
+  }, []);
+}
 // 下划线/中划线命名转小驼峰命名
 function transform2CamelCase(string) {
-  return string.replace(/(_|-)\w/g, (match) => match.slice(1).toUpperCase());
+  return string.replace(/(_\-)\w/g, (match) => match.slice(1).toUpperCase());
 }
-
 // 实现bind
-Function.prototype.myBind = function myBind(obj, ...args) {
-  const o = obj ?? window;
-  const fToBind = this,
-    fNOP = function () {};
-  Fn = function (...rest) {
-    return fToBind.apply(fNOP.prototype.isPrototypeOf(this) ? this : o, [
-      ...args,
-      ...rest
-    ]);
-  };
-  if (this.prototype) {
-    fNOP.prototype = this.prototype;
+Function.prototype.myBind = function myBind(o, ...args) {
+  if (typeof this !== 'function') {
+    throw new TypeError('Not a function!');
   }
-  Fn.prototype = fNOP.prototype;
-  return Fn;
-};
+  const obj = null == o ? window : Object(o),
+    function fn() {}
+  fToBind = this;
 
+  function F(...rest) {
+    return fToBind.apply(this instanceof F ? this : obj, [...args, ...rest]);
+  }
+  if (this.prototype) {
+    fn.prototype = this.prototype;
+  }
+  F.prototype = new fn();
+  return F;
+}
 // 洗牌算法, 原地
 function shuffle(array) {
   const length = array.length;
@@ -379,23 +332,21 @@ function shuffle(array) {
   }
   return array;
 }
-
 // 手写用 ES6proxy 如何实现 arr[-1] 的访问
-function createArray(...rest) {
+function createArr(...rest) {
   const arr = [...rest];
   const handler = {
-    get(target, index) {
-      index = Number(index);
+    get(target, key) {
+      key = Number(key);
       if (Number.isNaN(index)) return -1;
-      if (index < 0) {
-        return Reflect.get(target, target.length + index);
+      if (key < 0) {
+        return Reflect.get(target, target.length + key);
       }
-      return Reflect.get(target, index);
+      return Reflect.get(key);
     }
   };
   return new Proxy(arr, handler);
 }
-
 // 写一个 mySetInterVal(fn, a, b),每次间隔 a, a + b, a + 2b的时间
 // 然后写一个 myClear，停止上面的 mySetInterVal
 (function (exports) {
@@ -416,12 +367,12 @@ function createArray(...rest) {
   exports.mySetInterVal = mySetInterVal;
   exports.myClear = myClear;
 })(window);
-
-// 手写async/await,其实就是简易co
+// 手写async/await
 function asyncFunction(gen) {
   if (typeof gen === 'function') gen = gen();
-  if (!gen || typeof gen.next !== 'function')
+  if (!gen || typeof gen.next !== 'function') {
     throw new TypeError(`${gen.next} is not a function!`);
+  }
   return new Promise((resolve, reject) => {
     function step(type, val) {
       let result;
@@ -430,66 +381,57 @@ function asyncFunction(gen) {
       } catch (error) {
         reject(error);
       }
-      const { done, value } = result;
-      if (done) resolve(value);
-      return Promise.resolve(value).then(
-        (data) => {
-          return step('next', data);
-        },
-        (error) => {
-          return step('throw', error);
-        }
-      );
+      const {
+        done,
+        value
+      } = result;
+      if (done) return resolve(value);
+      return Promise.resolve(value).then((data) => {
+        step('next', data);
+      }, (error) => {
+        step('throw', error);
+      });
     }
     step('next');
   });
 }
-
 // 模板字符串
 var o = {
   name: 'jin',
   age: 100
 };
 var string = "my name is {{name}}, i'm {{age}} years old.";
-getString(string, o);
-function getString(string, o) {
-  return string.replace(/\{\{(.*?)\}\}/g, (match, key) => o[key]);
+console.log(getString(string, o));
+function getString(string) {
+  return string.replace(/\{\{(.*?)\}\}/g, (match, $1) => o[$1]);
 }
-
 // LRU算法
 class LRUCache {
   constructor(limit) {
     this.limit = limit;
     this.map = new Map();
   }
-
-  put(key, value) {
+  push(key, value) {
     if (this.map.has(key)) {
       this.map.delete(key);
     } else {
       if (this.map.size >= this.limit) {
-        this.map.delete([...this.map.keys()][0]);
+        this.map.delete([...map.keys][0]);
       }
     }
     this.map.set(key, value);
   }
-
   get(key) {
     if (this.map.has(key)) {
-      const value = this.map.get(key);
+      const res = this.map.get(key);
       this.map.delete(key);
-      this.map.set(key, value);
-      return value;
+      this.map.set(key, res);
+      return res;
     }
     return -1;
   }
 }
-
-/**
- * 页面上有三个按钮，分别为 A、B、C，点击各个按钮都会发送异步请求且互不影响，
- * 每次请求回来的数据都为按钮的名字。
- * 请实现当用户依次点击 A、B、C、A、C、B 的时候，最终获取的数据为 ABCACB。
- */
+// 页面上有三个按钮，分别为 A、B、C，点击各个按钮都会发送异步请求且互不影响
 function handlerClick(tag, timeout) {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -514,7 +456,6 @@ getResult('C');
 getResult('A');
 getResult('C');
 getResult('B');
-
 // 非含7或7倍数的数的集合
 function getExcept7Array(n = 100) {
   const nums = [];
