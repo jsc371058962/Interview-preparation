@@ -256,7 +256,7 @@ function curry(fn, ...args) {
     if (len >= rest.length) {
       return fn.apply(null, rest);
     } else {
-      return curry.apply(fn, ...rest);
+      return curry(fn, ...rest);
     }
   };
 }

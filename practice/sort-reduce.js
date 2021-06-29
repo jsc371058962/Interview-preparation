@@ -209,8 +209,11 @@ function curry(fn, ...args) {
     if (args.length >= paramLength) {
       return fn(...args);
     }
-    return curry(fn, args);
+    return curry(fn, ...args);
   }
+}
+function add(a, b, c, d) {
+  return a + b + c + d;
 }
 var addf1 = curry(add);
 console.log(addf1(1)(2)(4)(3));

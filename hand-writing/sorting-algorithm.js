@@ -877,24 +877,22 @@ function bfs(treeNode, nodeList = []) {
 // 虚拟dom生成真实dom
 var vnode = {
   tag: 'DIV',
-  attrs:{
-  id:'app'
+  attrs: {
+    id: 'app',
   },
   children: [
     {
       tag: 'SPAN',
-      children: [
-        { tag: 'A', children: [] }
-      ]
+      children: [{ tag: 'A', children: [] }],
     },
     {
       tag: 'SPAN',
       children: [
         { tag: 'A', children: [] },
-        { tag: 'A', children: [] }
-      ]
-    }
-  ]
+        { tag: 'A', children: [] },
+      ],
+    },
+  ],
 };
 
 function _render(vnode) {
@@ -913,4 +911,20 @@ function _render(vnode) {
   vnode.children.forEach((child) => dom.appendChild(_render(child)));
   return dom;
 }
+
+
+const { setSimuInterval, cancelSimuInterval }= (function () {
+  let timer = null;
+  function setSimuInterval(callback, timeout) {
+    timer = setTimeout(() => {
+      callback();
+      setSimuInterval(callback, timeout);
+    }, timeout);
+  }
+  function cancelSimuInterval() {
+    clearTimeout(timer);
+    timer = null;
+  }
+  return { setSimuInterval, cancelSimuInterval };
+})();
 
