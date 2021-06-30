@@ -17,8 +17,13 @@
  * 15. 手写async/await
  * 16. 模板字符串
  * 17. LRU算法
- * 18. 页面上有三个按钮，分别为 A、B、C，点击各个按钮都会发送异步请求且互不影响
+ * 18. 页面上有三个按钮，分别为 A、B、C，点击各个按钮都会发送异步请求且互不影响******
  * 19. 非含7或7倍数的数的集合
+ * 20. 防抖节流
+ * 21. 实现一个 add 方法(不定参数的柯理化)
+ * 22. 请实现 DOM2JSON 一个函数，可以把一个 DOM 节点输出 JSON 的格式
+ * 23. Object.is手动实现
+ * 24. 列表转成树形结构
  */
 
 // 冒泡
@@ -467,3 +472,93 @@ function getExcept7Array(n = 100) {
   }
   return nums;
 }
+// 防抖(支持立即执行版本)
+function debounce(fn, timeout, immediate = false) {
+  let timer = null;
+  return function(...rest) {
+    if (timer) clearTimeout(timer);
+    if (immediate) {
+      const isCallNow = !timer;
+      timer = setTimeout(() => {
+        timer = null;
+      }, timeout);
+      if (isCallNow) fn.call(this, ...rest);
+    } else {
+      timer = setTimeout(() => {
+        fn(...rest);
+        timer = null;
+      });
+    }
+  }
+}
+// 节流(时间戳 + 定时器)
+function throttle(fn, timeout) {
+  let prevTime = +new Date();
+  return function(...rest) {
+    if (+new Date() - prevTime >= timeout) {
+      fn.call(this, ...rest);
+      prevTime = +new Date();
+    }
+  }
+}
+function throttle1(fn, timeout) {
+  let timer = null;
+  return function(...rest) {
+    if (timer) return;
+    timer = setTimeout(() => {
+      fn(...rest);
+      timer = null;
+    }, timeout);
+  }
+}
+// 实现一个 add 方法(不定参数的柯理化)
+function currying(fn, ...args) {
+  return function(...rest) {
+    if (rest.length) {
+      rest = [...args, ...rest];
+      return currying(fn, ...rest);
+    }
+    return fn(...args);
+  }
+}
+function f(...arr) {
+  return arr.reduce((prev, cur) => prev + cur);
+}
+var add = currying(f);
+add(1)(2, 3)(4)()
+// 方法2
+function add(...rest) {
+  function compute(nums) {
+    return nums.reduce((prev, cur) => prev + cur);
+  }
+  let total = compute(rest);
+  function f(...args) {
+    if (!args.length) return f;
+    total += compute(args);
+    return f;
+  }
+  f.toString = function() {
+    return total;
+  }
+  return f;
+}
+// 22. 请实现 DOM2JSON 一个函数，可以把一个 DOM 节点输出 JSON 的格式
+function dom2JSON(root) {
+  const res = {
+    tag: root.tagName,
+    children: []
+  }
+  for (const item of res.children) {
+    res.children.push(dom2JSON(item));
+  }
+  return res;
+}
+// 23. Object.is手动实现
+Object.is = function(x, y) {
+  if (x === y) {
+    return x !== 0 || 1 / x === 1 / y;
+  }
+  return x !== x && y !== y;
+}
+// 24. 列表转成树形结构
+
