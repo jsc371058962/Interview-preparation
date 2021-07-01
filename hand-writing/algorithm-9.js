@@ -24,6 +24,7 @@
  * 22. 请实现 DOM2JSON 一个函数，可以把一个 DOM 节点输出 JSON 的格式
  * 23. Object.is手动实现
  * 24. 列表转成树形结构
+ * 25. 树转数组
  */
 
 // 冒泡
@@ -561,4 +562,84 @@ Object.is = function(x, y) {
   return x !== x && y !== y;
 }
 // 24. 列表转成树形结构
+// 迭代
+function toTree(list, parId = 0) {
+  const result = [], obj = {};
+  list.forEach((el) => obj[el.id] = el);
+  for (let i = 0, len = list.length; i < len; i++) {
+    const pId = list[i].parentId;
+    if (pId === parId) {
+      result.push(list[i]);
+      continue;
+    }
+    if (obj[id].children.length) {
+      obj[id].children.push(list[i]);
+    } else {
+      obj[i].children = [list[i]];
+    }
+  }
+  return result;
+}
+// 递归
+function toTree(list, parId = 0) {
+  const len = list.length;
+  function loop(parId) {
+    const res = [];
+    for (let i = 0; i < len; i++) {
+      const item = list[i];
+      if (parId === item.parentId) {
+        item.children = loop(item.id);
+        res.push(item);
+      }
+    }
+    return res;
+  }
+  return loop(parId);
+}
+// 25. 树转数组
+// dfs, 迭代
+function transformTree2Array(root) {
+  if (!root) return [];
+  const stack = [root], nodeList = [];
+  while (stack.length) {
+    const item = stack.pop();
+    const { id, text, parentId } = item;
+    nodeList.push({ id, text, parentId });
+    const children = item.children;
+    if (children) {
+      for (let i = children.length - 1; i >= 0; i--) {
+        stack.push(children[i]);
+      }
+    }
+  }
+  return nodeList;
+}
+// dfs, 递归
+function transformTree2Array(root, nodeList = []) {
+  if (!root) return [];
+  const { id, text, parentId, children } = root;
+  nodeList.push({ id, text, parentId });
+  if (children) {
+    for (let i = 0; i < children.length; i++) {
+      transformTree2Array(children[i], nodeList);
+    }
+  }
+  return nodeList;
+}
+// bfs, 迭代
+function transformTree2Array(root) {
+  if (!root) return [];
+  const queue = [root], nodeList = [];
+  while (queue.length) {
+    const item = queue.shift();
+    const { id, text, parentId, children } = item;
+    nodeList.push({ id, text, parentId });
+    if (children) {
+      for (let i = 0; i < children.length; i++) {
+        queue.push(children[i]);
+      }
+    }
+  }
+  return nodeList;
+}
 
