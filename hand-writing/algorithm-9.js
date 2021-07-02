@@ -549,7 +549,7 @@ function dom2JSON(root) {
     tag: root.tagName,
     children: []
   }
-  for (const item of res.children) {
+  for (const item of root.children) {
     res.children.push(dom2JSON(item));
   }
   return res;
