@@ -42,7 +42,7 @@ function insert(newElement, baseNode) {
 
 function findPrev(item) {
   let curNode = this.head;
-  while ((curNode.next !== null) && (curNode.next.val !== item)) {
+  while (curNode.next !== null && curNode.next.val !== item) {
     curNode = curNode.next;
   }
   return curNode;
@@ -64,13 +64,10 @@ function display() {
 
 var fruits = new LinkedList();
 
-fruits.insert('Apple' , 'head');
-fruits.insert('Banana' , 'Apple');
-fruits.insert('Pear' , 'Banana');
+fruits.insert('Apple', 'head');
+fruits.insert('Banana', 'Apple');
+fruits.insert('Pear', 'Banana');
 console.log(fruits.display());
-
-
-
 
 // 双向链表
 
@@ -118,7 +115,7 @@ function dInsert(newElement, baseNode) {
 
 function dFindPrev(item) {
   let curNode = this.head;
-  while ((curNode.next !== null) && (curNode.next.val !== item)) {
+  while (curNode.next !== null && curNode.next.val !== item) {
     curNode = curNode.next;
   }
   return curNode;
@@ -161,29 +158,8 @@ function dReverseDisplay() {
 
 var fruits = new DLinkedList();
 
-fruits.insert('Apple' , 'head');
-fruits.insert('Banana' , 'Apple');
-fruits.insert('Pear' , 'Banana');
+fruits.insert('Apple', 'head');
+fruits.insert('Banana', 'Apple');
+fruits.insert('Pear', 'Banana');
 fruits.orderDisplay();
 fruits.reverseDisplay();
-
-
-// 判断链表是否有环
-// 遍历链表，存入hash，has做判断
-function hasDumplicate(fruits) {
-  const set = new Set();
-  // linkedList的head可以在构造函数中写出： get head() { return this.head; }
-  const curNode = fruits.head;
-  while (curNode.next !== null) {
-    if (set.has(curNode.next.val)) {
-      return true;
-    }
-    curNode = curNode.next;
-    set.add(curNode.val);
-  }
-  return false;
-}
-
-
-
-

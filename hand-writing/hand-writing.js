@@ -229,9 +229,9 @@ function flat5(arr, depth = 1) {
   return arr.reduce(
     (prev, cur) =>
       prev.concat(
-        depth > 1 && Array.isArray(cur) ? flat5(cur, depth - 1) : cur,
+        depth > 1 && Array.isArray(cur) ? flat5(cur, depth - 1) : cur
       ),
-    [],
+    []
   );
 }
 //使用栈结构
@@ -264,24 +264,24 @@ function curry(fn, ...args) {
 // 手写观察者模式
 class Subject {
   constructor() {
-    this.observser = [];
+    this.observer = [];
     this.state = '';
   }
 
   add(instance) {
-    this.observser.push(instance);
+    this.observer.push(instance);
   }
 
   remove(key) {
-    if (this.observser.includes(key)) {
-      const k = this.observser.indexOf(key);
-      this.observser.splice(k, 1);
+    if (this.observer.includes(key)) {
+      const k = this.observer.indexOf(key);
+      this.observer.splice(k, 1);
     }
   }
 
   notify(change) {
     this.state = change;
-    this.observser.forEach((instance) => {
+    this.observer.forEach((instance) => {
       instance.update(this.state);
     });
   }
@@ -304,7 +304,7 @@ subject.add(observer2);
 subject.notify('abc');
 
 // 发布订阅模式
-class EventEmmit {
+class EventEmit {
   constructor() {
     this.events = {};
   }
@@ -333,11 +333,11 @@ class EventEmmit {
     });
   }
   once(type, callback) {
-    function clousure(param) {
+    function closure(param) {
       callback(param);
-      this.removeListener(type, clousure);
+      this.removeListener(type, closure);
     }
-    this.addListener(type, clousure);
+    this.addListener(type, closure);
   }
 }
 
@@ -415,7 +415,7 @@ console.log(render(template, context));
 
 // 转换成驼峰命名
 var s1 = 'get-element-by-id';
-function getCamerCase(s) {
+function getCamelCase(s) {
   return s.replace(/-\w/g, (match) => {
     return match.slice(1).toUpperCase();
   });
@@ -624,7 +624,7 @@ function compose1(...fns) {
   const length = fns.length;
   let i = length;
   while (i) {
-    if (typeof fns[i] !== 'functio') {
+    if (typeof fns[i] !== 'function') {
       throw new TypeError(`${fn[i]} is not a function!`);
     }
     i--;
@@ -718,9 +718,10 @@ function inOrder(node, nodeList = []) {
   return nodeList;
 }
 // 迭代
-function inorderTraverse(root) {
+function inOrderTraverse(root) {
   if (!root) return [];
-  const stack = [], nodeList = [];
+  const stack = [],
+    nodeList = [];
   let node = root;
   while (stack.length || node) {
     if (node) {
@@ -738,19 +739,20 @@ function inorderTraverse(root) {
 }
 
 // 后序遍历, 递归
-function postorderTraverse(root, nodeList = []) {
+function postOrderTraverse(root, nodeList = []) {
   if (!root) {
     return [];
   }
-  postorderTraverse(root.left, nodeList);
-  postorderTraverse(root.right, nodeList);
+  postOrderTraverse(root.left, nodeList);
+  postOrderTraverse(root.right, nodeList);
   nodeList.push(root.val);
   return nodeList;
 }
 // 迭代
-function postorderTraverse(root) {
+function postOrderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.unshift(node.val);
@@ -772,7 +774,8 @@ function levelTraverse(root, nodeList = []) {
 // 层次遍历, 迭代
 function levelTraverse(root) {
   if (!root) return [];
-  const queue = [root], nodeList = [];
+  const queue = [root],
+    nodeList = [];
   while (queue.length) {
     let node = queue.shift();
     nodeList.push(node.val);
@@ -1106,7 +1109,7 @@ console.log(arr[-1]);
 // 完善代码中Scheduler类
 
 //要求
-// ouput : 2 3 1 4
+// output : 2 3 1 4
 //一开始1,2俩个任务进入队列
 //500ms时,2完成,输出2,任务3进入队列
 //800ms时,3完成,输出3,任务4进入队列
@@ -1187,7 +1190,7 @@ function jsonp({ url, params }) {
     let pStrings = '';
     for (const key in args) {
       if (Object.hasOwnProperty.call(args, key)) {
-        pStrings += `${key}=${encodeURIComponent(args[key])}&`
+        pStrings += `${key}=${encodeURIComponent(args[key])}&`;
       }
     }
     return url.includes('?')
@@ -1200,8 +1203,7 @@ function jsonp({ url, params }) {
     window[getCallbackName] = function (data) {
       document.body.removeChild(script);
       resolve(data);
-    }
+    };
     document.body.appendChild(script);
   });
 }
-

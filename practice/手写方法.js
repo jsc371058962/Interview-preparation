@@ -10,10 +10,10 @@ function throttle(fn, time = 500) {
       fn.call(null, ...arguments);
       preDate = nowDate;
     }
-  }
+  };
 }
-// 2. settimeout的方式
-function throttle1(fn, timeout= 500) {
+// 2. setTimeout的方式
+function throttle1(fn, timeout = 500) {
   let timer = null;
   return (...rest) => {
     if (timer) return;
@@ -21,7 +21,7 @@ function throttle1(fn, timeout= 500) {
       fn.apply(null, rest);
       timer = null;
     }, timeout);
-  }
+  };
 }
 var fn = throttle(function name() {
   console.log(123);
@@ -35,8 +35,8 @@ var fn = function () {
     console.log(n);
   }
 
-  return { n, add}
-}
+  return { n, add };
+};
 
 var result = fn();
 var result1 = fn();
@@ -74,8 +74,8 @@ Function.prototype.myApply = function (o) {
 
   delete context[symbol];
   return result;
-}
-var obj = {name: 'abc'};
+};
+var obj = { name: 'abc' };
 // log.myCall(obj)
 console.log.myApply(obj);
 
@@ -98,59 +98,63 @@ var p = function () {
     resolve();
     p.then(() => {
       console.log(1);
-    })
+    });
   });
 };
-p().then(() => { // 1 2 3 4
-  console.log('2');
-  var p1 = new Promise((resolve) => {
-    resolve();
+p()
+  .then(() => {
+    // 1 2 3 4
+    console.log('2');
+    var p1 = new Promise((resolve) => {
+      resolve();
+    });
+    p1.then(() => {
+      console.log(3);
+    });
+  })
+  .then(() => {
+    console.log(4);
   });
-  p1.then(() => {
-    console.log(3);
-  });
-}).then(() => {
-  console.log(4);
-});
 
 // 输出[1, 2, 3]
-var timeout = ms => new Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve();
-  }, ms);
-});
-var ajax1 = () => timeout(2000).then(() => {
-  console.log('1');
-  return 1;
-});
-var ajax2 = () => timeout(1000).then(() => {
-  console.log('2');
-  return 2;
-});
-var ajax3 = () => timeout(2000).then(() => {
-  console.log('3');
-  return 3;
-});
+var timeout = (ms) =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+var ajax1 = () =>
+  timeout(2000).then(() => {
+    console.log('1');
+    return 1;
+  });
+var ajax2 = () =>
+  timeout(1000).then(() => {
+    console.log('2');
+    return 2;
+  });
+var ajax3 = () =>
+  timeout(2000).then(() => {
+    console.log('3');
+    return 3;
+  });
 var mergePromise = (ajaxArray) => {
   const promiseArray = [...ajaxArray];
   const valueArray = [];
   // 建议使用reduce, 万能
-  const results = promiseArray.reduce((prev, cur) => {
-    return prev.then(() => {
-      return cur().then((data) => {
-        valueArray.push(data);
-        return valueArray;
-      })
+  return promiseArray.reduce((prev, cur) => {
+    return prev.then(cur).then((data) => {
+      valueArray.push(data);
+      return valueArray;
     });
   }, Promise.resolve());
-  return results;
 };
-mergePromise([ajax1, ajax2, ajax3]).then(data => {
+mergePromise([ajax1, ajax2, ajax3]).then((data) => {
   console.log('done');
   console.log(data); // data 为 [1, 2, 3]
 });
 
-// 嵌套超过5层的settimeout才会默认将timeout设置为4ms
+// 嵌套超过5层的setTimeout才会默认将timeout设置为4ms
 setTimeout(() => {
   console.log(1);
 }, 1);
@@ -195,8 +199,8 @@ var p = () => {
     setTimeout(() => {
       resolve(2);
     }, 500);
-  })
-}
+  });
+};
 async function asyncfn() {
   try {
     return await p();
@@ -209,16 +213,16 @@ asyncfn().then((message) => {
 });
 
 // 关于执行顺序(node中)
-const promise = Promise.resolve()
+const promise = Promise.resolve();
 setImmediate(() => {
   console.log('setImmediate');
 });
-promise.then(()=>{
+promise.then(() => {
   console.log('promise');
-})
-process.nextTick(()=>{
+});
+process.nextTick(() => {
   console.log('nextTick');
-})
+});
 
 // 维持同时有3个请求在执行
 var urls = [
@@ -229,7 +233,7 @@ var urls = [
   'https://www.kkkk1000.com/images/getImgData/arithmetic2.gif',
   'https://www.kkkk1000.com/images/getImgData/getImgDataError.jpg',
   'https://www.kkkk1000.com/images/getImgData/arithmetic.gif',
-  'https://www.kkkk1000.com/images/wxQrCode2.png',
+  'https://www.kkkk1000.com/images/wxQrCode2.png'
 ];
 function loadImg(url) {
   return new Promise((resolve, reject) => {
@@ -241,7 +245,7 @@ function loadImg(url) {
     img.onerror = reject;
     img.src = url;
   });
-};
+}
 function loadImage1(urls, handler, limit) {
   // 拷贝副本
   let tempUrls = [...urls];
@@ -294,16 +298,17 @@ function limitLoad(urls, handler, limit) {
 }
 limitLoad(urls, loadImg, 3);
 
-
 var numbers = [1, 2, 3, 4, 5, 6];
 var results = [];
 function async(arg, callback) {
-  console.log('参数为 ' + arg +' , 1秒后返回结果');
-  setTimeout(function () { callback(arg * 2); }, 1000);
-};
+  console.log('参数为 ' + arg + ' , 1秒后返回结果');
+  setTimeout(function () {
+    callback(arg * 2);
+  }, 1000);
+}
 function final(value) {
   console.log('完成: ', value);
-};
+}
 // 并行
 numbers.forEach((element) => {
   async(element, function (result) {
@@ -333,7 +338,7 @@ function executor() {
     });
     running++;
   }
-};
+}
 executor();
 
 function timer1() {
@@ -353,4 +358,3 @@ function timer2() {
 Promise.all([timer1(), timer2()]).then(([a]) => {
   console.dir(a);
 });
-

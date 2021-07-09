@@ -399,7 +399,7 @@ class MyPromise {
       onFulfilled(this.data);
     }
     if (this.status === REJECTED) {
-      onRejected(this.reson);
+      onRejected(this.reason);
     }
     if (this.status === PENDING) {
       this.onFulfilledCallback.push(onFulfilled);
@@ -483,7 +483,7 @@ var obj = {
 };
 sum.myCall(obj);
 
-// settimeout节流
+// setTimeout节流
 function throttle(fn, timeout) {
   let timer = null;
   return function (...rest) {
@@ -768,7 +768,7 @@ myIndexOf([1, 3, 6, 4], 4);
 
 // 设计一个简单的任务队列，要求分别在 1,3,4 秒后打印出 "1", "2", "3"
 // Promise实现
-function timeouter(value, time) {
+function timeOuter(value, time) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       console.log(value);
@@ -778,13 +778,13 @@ function timeouter(value, time) {
 }
 Promise.resolve()
   .then(() => {
-    return timeouter('1', 1000);
+    return timeOuter('1', 1000);
   })
   .then(() => {
-    return timeouter('2', 3000);
+    return timeOuter('2', 3000);
   })
   .then(() => {
-    return timeouter('3', 4000);
+    return timeOuter('3', 4000);
   });
 
 //JavaScript 实现如下语法的功能 var a=(5).plus(3).minus(6);
@@ -914,7 +914,7 @@ getResult('C');
 getResult('B');
 
 // history
-// popstage事件， 在调用back(), go(), forward()时会触发
+// popstate事件， 在调用back(), go(), forward()时会触发
 // hashchange事件, 1. location.hash = 'edit';
 // 2. pushState({}, title, url); replaceState({}, title, url), back(), go(), forward()会触发
 
@@ -1409,7 +1409,7 @@ Promise.myAllSettled([p1(), p2(), p3]).then((data) => {
   console.log(data);
 });
 
-// 精确settimeout时间，意思是到某个延时时间立即执行
+// 精确setTimeout时间，意思是到某个延时时间立即执行
 // 采用系统时间补偿方式。
 // 计算每次执行的理想时间和实际执行时间，算出diff时间，进行补偿机制
 // 53(real) - 50(ideal) = 3; delay更新为50 - 3 = 47;
@@ -1472,7 +1472,7 @@ sum(1, 2, 3).then(console.log);
 // ----------------------end---------------------
 
 // ----------------------start---------------------
-// 精确settimeout时间
+// 精确setTimeout时间
 function timer(delay = 50) {
   let startTime = Date.now(),
     count = 1;
@@ -1717,7 +1717,7 @@ function timeSlice(gen) {
     window.requestIdleCallback(next);
   };
 }
-timeSlice(function gen() {
+timeSlice(function* gen() {
   const start = performance.now();
   // 设定终止条件
   while (performance.now() - start <= 10000) {
@@ -1888,14 +1888,14 @@ var o = {
 // ----------------------end---------------------
 
 // ----------------------start-------------------
-// settimeout实现setinterval
-function setTimeoutInteval(fn, timeout) {
+// setTimeout实现setInterval
+function setTimeoutInterval(fn, timeout) {
   setTimeout(() => {
     fn();
-    setTimeoutInteval(fn, timeout);
+    setTimeoutInterval(fn, timeout);
   }, timeout);
 }
-setTimeoutInteval(fn, 500);
+setTimeoutInterval(fn, 500);
 function printLog() {
   console.log(1243);
 }
@@ -2042,7 +2042,7 @@ function getIntersectionArr(arr1, arr2) {
 
 // ----------------------start-------------------
 // 编写一个函数计算多个数组的交集
-function getMutiIntersectionArr(...arrays) {
+function getMultiIntersectionArr(...arrays) {
   // 一个一个来
   return arrays.reverse((prev, cur) => {
     return [...new Set(prev.filter((item) => cur.includes(item)))];

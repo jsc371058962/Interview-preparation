@@ -12,12 +12,12 @@ function flatArray1(arr) {
     }
   });
 }
-flatArray1([1,2,3,[1,2,3,4, [2,3,4]]]);
+flatArray1([1, 2, 3, [1, 2, 3, 4, [2, 3, 4]]]);
 console.log(temp1);
 
 // 2. generator函数
 var temp = [];
-function *flatArray(arr) {
+function* flatArray(arr) {
   for (const item of arr) {
     if (Array.isArray(item)) {
       yield* flatArray(item);
@@ -26,7 +26,7 @@ function *flatArray(arr) {
     }
   }
 }
-var it = flatArray([1,2,3,[1,2,3,4, [2,3,4]]]);
+var it = flatArray([1, 2, 3, [1, 2, 3, 4, [2, 3, 4]]]);
 it.next();
 console.log(temp);
 
@@ -34,7 +34,7 @@ console.log(temp);
 function flatArray2(arr) {
   return arr.flat(Infinity);
 }
-var temp2 = flatArray2([1,2,3,[1,2,3,4, [2,3,4]]]);
+var temp2 = flatArray2([1, 2, 3, [1, 2, 3, 4, [2, 3, 4]]]);
 console.log(temp2);
 
 // 4. 这个不怎么好，改变了数据类型. number => string
@@ -64,11 +64,8 @@ function flatArray5(arr) {
 var temp5 = flatArray5([1, 2, 3, [1, 2, 3, 4, [2, 3, 4]]]);
 console.log(temp5);
 
-
-
-
 var numbers = [1, 2, 3, 4, 5, 6];
-var obj1 = {name: 'jin'};
+var obj1 = { name: 'jin' };
 numbers.forEach((value) => {
   console.log(this);
 });
@@ -91,7 +88,7 @@ Function.prototype.myApply = function (o) {
   const result = ctx.fn(...args);
   Reflect.deleteProperty(ctx, 'fn');
   return result;
-}
+};
 
 Function.prototype.myBind = function (o) {
   const ctx = o || window;
@@ -102,10 +99,10 @@ Function.prototype.myBind = function (o) {
     const result = ctx.fn(...args);
     Reflect.deleteProperty(ctx, 'fn');
     return result;
-  }
-}
+  };
+};
 
-var o = {name: 'jin'}
+var o = { name: 'jin' };
 function getName(a, b) {
   console.log(a, b);
   console.log(this.name);
@@ -130,7 +127,7 @@ Function.prototype.myCall1 = function (o) {
   Reflect.deleteProperty(ctx, 'fn');
   // return the result.
   return result;
-}
+};
 
 Function.prototype.myApply1 = function (o) {
   const ctx = o || window;
@@ -139,7 +136,7 @@ Function.prototype.myApply1 = function (o) {
   const result = ctx.fn(...args);
   Reflect.deleteProperty(ctx, 'fn');
   return result;
-}
+};
 
 Function.prototype.myBind1 = function (o) {
   const ctx = o || window;
@@ -148,8 +145,8 @@ Function.prototype.myBind1 = function (o) {
     const result = ctx.fn(...args);
     Reflect.deleteProperty(ctx, 'fn');
     return result;
-  }
-}
+  };
+};
 
 // deepClone
 var obj3 = {
@@ -158,7 +155,7 @@ var obj3 = {
     c: 2,
     d: 'g'
   }
-}
+};
 
 function deepClone(o) {
   let result = void 0;
@@ -179,7 +176,6 @@ function deepClone(o) {
 var newO = deepClone(obj3);
 console.log(newO);
 
-
 // 柯理化函数
 function createCurry(func, args = []) {
   var argity = func.length;
@@ -190,7 +186,7 @@ function createCurry(func, args = []) {
       return createCurry(func, args);
     }
     return func(...args);
-  }
+  };
 }
 
 function add(a, b, c, d) {
@@ -199,7 +195,6 @@ function add(a, b, c, d) {
 
 var addf = createCurry(add);
 console.log(addf(1)(2)(4)(5));
-
 
 function curry(fn, ...args) {
   const paramLength = fn.length;
@@ -210,7 +205,7 @@ function curry(fn, ...args) {
       return fn(...args);
     }
     return curry(fn, ...args);
-  }
+  };
 }
 function add(a, b, c, d) {
   return a + b + c + d;
@@ -224,7 +219,7 @@ function timer(num) {
       console.log(num);
       resolve();
     }, 1000);
-  })
+  });
 }
 
 // Promise.resolve().then(() => {
@@ -246,29 +241,30 @@ function timer(num) {
 //   });
 // }, Promise.resolve());
 
-
-
 var time = (timer) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
     }, timer);
   });
-}
-var ajax1 = () => time(2000).then(() => {
-  console.log(1);
-  return 1;
-})
-var ajax2 = () => time(1000).then(() => {
-  console.log(2);
-  return 2;
-})
-var ajax3 = () => time(1000).then(() => {
-  console.log(3);
-  return 3;
-})
+};
+var ajax1 = () =>
+  time(2000).then(() => {
+    console.log(1);
+    return 1;
+  });
+var ajax2 = () =>
+  time(1000).then(() => {
+    console.log(2);
+    return 2;
+  });
+var ajax3 = () =>
+  time(1000).then(() => {
+    console.log(3);
+    return 3;
+  });
 
-function mergePromise (promiseArray) {
+function mergePromise(promiseArray) {
   // 在这里写代码
   let p = Promise.resolve();
   let results = [];
@@ -282,7 +278,7 @@ function mergePromise (promiseArray) {
 }
 
 mergePromise([ajax1, ajax2, ajax3]).then((data) => {
-  console.log("done");
+  console.log('done');
   console.log(data); // data 为 [1, 2, 3]
 });
 
@@ -292,7 +288,6 @@ const FULFILLED = 'fulfilled';
 const REJECTED = 'rejected';
 
 class MyPromise {
-
   constructor(executor) {
     this.reason;
     this.value;
@@ -344,7 +339,7 @@ new MyPromise((resolve) => {
     resolve(1);
   }, 100);
 }).then((data) => {
-  console.log(data)
+  console.log(data);
 });
 
 // 封装一个异步加载图片的方法
@@ -353,13 +348,12 @@ function loadImage(url) {
     const img = new Image();
     img.onload = function () {
       console.log('一张图片加载完成');
-      resolve()
+      resolve();
     };
     img.onerror = reject;
     img.src = url;
   });
 }
-
 
 var urls = [
   'https://www.kkkk1000.com/images/getImgData/getImgDatadata.jpg',
@@ -369,7 +363,7 @@ var urls = [
   'https://www.kkkk1000.com/images/getImgData/arithmetic2.gif',
   'https://www.kkkk1000.com/images/getImgData/getImgDataError.jpg',
   'https://www.kkkk1000.com/images/getImgData/arithmetic.gif',
-  'https://www.kkkk1000.com/images/wxQrCode2.png',
+  'https://www.kkkk1000.com/images/wxQrCode2.png'
 ];
 
 /**
@@ -389,29 +383,36 @@ function limitLoad(urls, handler, limit) {
     });
   });
 
-  return urls.reduce((first, cur) => {
-    return first.then(() => {
-      return Promise.race(promises);
-    }).then((index) => {
-      // 取得最先完毕的index值
-      // 替换已执行完毕的promise
-      promises[index] = handler(cur).then(() => index);
-    }).catch((err) => {
-      throw new Error(err);
+  return urls
+    .reduce((first, cur) => {
+      return first
+        .then(() => {
+          return Promise.race(promises);
+        })
+        .then((index) => {
+          // 取得最先完毕的index值
+          // 替换已执行完毕的promise
+          promises[index] = handler(cur).then(() => index);
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+    }, Promise.resolve())
+    .then(() => {
+      return Promise.all(promises);
     });
-  }, Promise.resolve()).then(() => {
-    return Promise.all(promises);
-  });
 }
 
-limitLoad(urls, loadImage, 3).then(() => {
-  console.log('所有图片加载完成');
-}).catch(err => {
-  console.error(err);
-});
+limitLoad(urls, loadImage, 3)
+  .then(() => {
+    console.log('所有图片加载完成');
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 var obj4 = Object.create(null, {
-  'a': {
+  a: {
     enumerable: false,
     configurable: true,
     writable: true,
@@ -441,7 +442,7 @@ console.log([] instanceof Object);
 console.log(instanceOf([], Array));
 console.log(instanceOf([], Object));
 
-class A{};
+class A {}
 
 var a = new A();
 console.log(instanceOf(a, A));
@@ -453,8 +454,7 @@ function parse(a, ...params) {
 
 console.log(parse([1, 2], 'abc'));
 
-
-var sortArray = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+var sortArray = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
 // 冒泡排序: 升续: 相邻两两比较，pre > next, 交换元素，直到末尾，得到最大数。
 // 事件复杂度: O(n^2)， 稳定排序
 function bubbleSort(array) {
@@ -597,7 +597,6 @@ function insertSort(array) {
   //   array[j + 1] = loopNumber;
   // }
 
-
   // for (let i = 1; i < len; i++) {
   //   const loopNumber = array[i];
   //   let j = i - 1;
@@ -643,9 +642,43 @@ function insertSort(array) {
 }
 console.log(insertSort(sortArray));
 
+// 归并排序
+function mergeSort(array) {
+  if (array.length <= 1) return array;
+  const mid = ~~(array.length / 2);
+  const leftArray = array.slice(0, mid);
+  const rightArray = array.slice(mid);
+  return merge(mergeSort(leftArray), mergeSort(rightArray));
+}
+function merge(left, right) {
+  const result = [];
+  while (left.length && right.length) {
+    if (left[0] <= right[0]) {
+      result.push(left.shift());
+    } else {
+      result.push(right.shift());
+    }
+  }
+  left.length ? result.push(...left) : result.push(...right);
+  return result;
+}
+
 // 快速排序
-
-
-
-
-
+function quickSort(array, start = 0, end = array.length - 1) {
+  if (end - start < 1) return;
+  const pivotIndex = partition(array, start, end);
+  quickSort(array, start, pivotIndex - 1);
+  quickSort(array, pivotIndex + 1, end);
+  return array;
+}
+function partition(array, start, end) {
+  const pivot = array[end];
+  let j = start;
+  for (let i = start; i <= end; i++) {
+    if (array[i] <= pivot) {
+      [array[i], array[j]] = [array[j], array[i]];
+      j++;
+    }
+  }
+  return j - 1;
+}

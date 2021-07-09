@@ -25,6 +25,12 @@
  * 23. Object.is手动实现
  * 24. 列表转成树形结构
  * 25. 树转数组
+ * 26. 对象扁平
+ * 27. 发布订阅
+ * 28. 实现sendRequest(promises, max, callback)，同时最多执行max个promises
+ * 29. 实现compose函数，类似koa-compose中间件
+ * 30. 单链表是否有环
+ * 31.
  */
 
 // 冒泡
@@ -96,7 +102,7 @@ function quickSort(arr, start = 0, end = arr.length - 1) {
 function partition(arr, start, end) {
   const pivot = arr[end];
   let j = start;
-  for (let i = start; i <= arr[end] ; i++) {
+  for (let i = start; i <= arr[end]; i++) {
     if (arr[i] <= pivot) {
       [arr[i], arr[j]] = [arr[j], arr[i]];
       j++;
@@ -105,9 +111,10 @@ function partition(arr, start, end) {
   return j - 1;
 }
 // 先序遍历
-function preorderTraverse(root) {
+function preOrderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node.val);
@@ -117,9 +124,10 @@ function preorderTraverse(root) {
   return nodeList;
 }
 // 中序遍历
-function inorderTraverse(root) {
+function inOrderTraverse(root) {
   if (!root) return [];
-  const stack = [], nodeList = [];
+  const stack = [],
+    nodeList = [];
   let node = root;
   while (stack.length || node) {
     if (node) {
@@ -136,9 +144,10 @@ function inorderTraverse(root) {
   return nodeList;
 }
 // 后序遍历
-function postorderTraverse(root) {
+function postOrderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.unshift(node.val);
@@ -159,7 +168,8 @@ function levelTraverse(root, nodeList = []) {
 }
 function levelTraverse(root) {
   if (!root) return [];
-  const queue = [root], nodeList = [];
+  const queue = [root],
+    nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node.val);
@@ -180,7 +190,8 @@ function dfs(root, nodeList = []) {
 }
 function dfs(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node);
@@ -194,7 +205,8 @@ function dfs(root) {
 // bfs
 function bfs(root) {
   if (!root) return [];
-  const queue = [root], nodeList = [];
+  const queue = [root],
+    nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node);
@@ -206,14 +218,14 @@ function bfs(root) {
   return nodeList;
 }
 // Virtual DOM转真实DOM
-function _render(vnode) {
-  if (typeof vnode === 'number') {
-    vnode = String(vnode);
+function _render(vNode) {
+  if (typeof vNode === 'number') {
+    vNode = String(vNode);
   }
-  if (typeof vnode === 'string') {
-    return document.createTextNode(vnode);
+  if (typeof vNode === 'string') {
+    return document.createTextNode(vNode);
   }
-  const { tag, attrs, children } = vnode;
+  const { tag, attrs, children } = vNode;
   const dom = document.createElement(tag);
   if (attrs) {
     for (const key in attrs) {
@@ -288,7 +300,8 @@ addTask(300, 3);
 addTask(400, 4);
 // 栈结构实现flat数组
 function flatten(array) {
-  const stack = [...array], result = [];
+  const stack = [...array],
+    result = [];
   while (stack.length) {
     const item = stack.shift();
     if (Array.isArray(item)) {
@@ -303,7 +316,7 @@ function flatten(array) {
 function flatten(array, depth = 1) {
   return array.reduce((prev, cur) => {
     return prev.concat(
-      depth > 1 && Array.isArray(cur) ? flatten(cur, depth - 1) : cur,
+      depth > 1 && Array.isArray(cur) ? flatten(cur, depth - 1) : cur
     );
   }, []);
 }
@@ -316,8 +329,8 @@ Function.prototype.myBind = function myBind(o, ...args) {
   if (typeof this !== 'function') {
     throw new TypeError('Not a function!');
   }
-  const obj = null == o ? window : Object(o),
-    function fn() {}
+  const obj = null == o ? window : Object(o);
+  function fn() {}
   fToBind = this;
 
   function F(...rest) {
@@ -328,7 +341,7 @@ Function.prototype.myBind = function myBind(o, ...args) {
   }
   F.prototype = new fn();
   return F;
-}
+};
 // 洗牌算法, 原地
 function shuffle(array) {
   const length = array.length;
@@ -387,16 +400,16 @@ function asyncFunction(gen) {
       } catch (error) {
         reject(error);
       }
-      const {
-        done,
-        value
-      } = result;
+      const { done, value } = result;
       if (done) return resolve(value);
-      return Promise.resolve(value).then((data) => {
-        step('next', data);
-      }, (error) => {
-        step('throw', error);
-      });
+      return Promise.resolve(value).then(
+        (data) => {
+          step('next', data);
+        },
+        (error) => {
+          step('throw', error);
+        }
+      );
     }
     step('next');
   });
@@ -476,7 +489,7 @@ function getExcept7Array(n = 100) {
 // 防抖(支持立即执行版本)
 function debounce(fn, timeout, immediate = false) {
   let timer = null;
-  return function(...rest) {
+  return function (...rest) {
     if (timer) clearTimeout(timer);
     if (immediate) {
       const isCallNow = !timer;
@@ -490,43 +503,43 @@ function debounce(fn, timeout, immediate = false) {
         timer = null;
       });
     }
-  }
+  };
 }
 // 节流(时间戳 + 定时器)
 function throttle(fn, timeout) {
   let prevTime = +new Date();
-  return function(...rest) {
+  return function (...rest) {
     if (+new Date() - prevTime >= timeout) {
       fn.call(this, ...rest);
       prevTime = +new Date();
     }
-  }
+  };
 }
 function throttle1(fn, timeout) {
   let timer = null;
-  return function(...rest) {
+  return function (...rest) {
     if (timer) return;
     timer = setTimeout(() => {
       fn(...rest);
       timer = null;
     }, timeout);
-  }
+  };
 }
 // 实现一个 add 方法(不定参数的柯理化)
 function currying(fn, ...args) {
-  return function(...rest) {
+  return function (...rest) {
     if (rest.length) {
       rest = [...args, ...rest];
       return currying(fn, ...rest);
     }
     return fn(...args);
-  }
+  };
 }
 function f(...arr) {
   return arr.reduce((prev, cur) => prev + cur);
 }
 var add = currying(f);
-add(1)(2, 3)(4)()
+add(1)(2, 3)(4)();
 // 方法2
 function add(...rest) {
   function compute(nums) {
@@ -538,9 +551,9 @@ function add(...rest) {
     total += compute(args);
     return f;
   }
-  f.toString = function() {
+  f.toString = function () {
     return total;
-  }
+  };
   return f;
 }
 // 22. 请实现 DOM2JSON 一个函数，可以把一个 DOM 节点输出 JSON 的格式
@@ -548,24 +561,25 @@ function dom2JSON(root) {
   const res = {
     tag: root.tagName,
     children: []
-  }
+  };
   for (const item of root.children) {
     res.children.push(dom2JSON(item));
   }
   return res;
 }
 // 23. Object.is手动实现
-Object.is = function(x, y) {
+Object.is = function (x, y) {
   if (x === y) {
     return x !== 0 || 1 / x === 1 / y;
   }
   return x !== x && y !== y;
-}
+};
 // 24. 列表转成树形结构
 // 迭代
 function toTree(list, parId = 0) {
-  const result = [], obj = {};
-  list.forEach((el) => obj[el.id] = el);
+  const result = [],
+    obj = {};
+  list.forEach((el) => (obj[el.id] = el));
   for (let i = 0, len = list.length; i < len; i++) {
     const pId = list[i].parentId;
     if (pId === parId) {
@@ -600,7 +614,8 @@ function toTree(list, parId = 0) {
 // dfs, 迭代
 function transformTree2Array(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const item = stack.pop();
     const { id, text, parentId } = item;
@@ -629,7 +644,8 @@ function transformTree2Array(root, nodeList = []) {
 // bfs, 迭代
 function transformTree2Array(root) {
   if (!root) return [];
-  const queue = [root], nodeList = [];
+  const queue = [root],
+    nodeList = [];
   while (queue.length) {
     const item = queue.shift();
     const { id, text, parentId, children } = item;
@@ -642,4 +658,189 @@ function transformTree2Array(root) {
   }
   return nodeList;
 }
+// 26. 对象扁平化
+var source = {
+  a: {
+    b: {
+      c: 1,
+      d: 2
+    },
+    e: 3
+  },
+  f: {
+    g: 2
+  }
+};
+function objectFlatten(obj, key, res = {}) {
+  Object.entries(obj).forEach(([k, value]) => {
+    const newKey = key ? `${key}.${k}` : k;
+    if (typeof value === 'object' && value !== null) {
+      objectFlatten(value, newKey, res);
+    } else {
+      res[newKey] = value;
+    }
+  });
+  return res;
+}
+objectFlatten(source);
+// 27. 发布订阅
+class Emitter {
+  constructor() {
+    // 键是type，值是数组
+    this.eventType = {};
+  }
+  on(type, handler) {
+    if (!this.eventType[type]) {
+      this.eventType[type] = [];
+    }
+    this.eventType[type].push(handler);
+  }
+  emit(type, message) {
+    if (this.eventType?.[type]) {
+      this.eventType[type].forEach((fn) => {
+        fn(message);
+      });
+    }
+  }
+  remove(type, handler) {
+    if (this.eventType?.[type]) {
+      this.eventType[type].forEach((fn, index) => {
+        if (handler === fn) {
+          this.eventType[type].splice(index, 1);
+        }
+      });
+    }
+  }
+  once(type, handler) {
+    function closure(param) {
+      handler(param);
+      this.remove(type, closure);
+    }
+    this.on(type, closure);
+  }
+}
+// 28. 实现sendRequest(promises, max, callback)，同时最多执行max个promises，
+// 超过的等待有空闲的开始执行，执行完成后执行callback
+var urls = [
+  'https://www.kkkk1000.com/images/getImgData/getImgDatadata.jpg',
+  'https://www.kkkk1000.com/images/getImgData/gray.gif',
+  'https://www.kkkk1000.com/images/getImgData/Particle.gif',
+  'https://www.kkkk1000.com/images/getImgData/arithmetic.png',
+  'https://www.kkkk1000.com/images/getImgData/arithmetic2.gif',
+  'https://www.kkkk1000.com/images/getImgData/getImgDataError.jpg',
+  'https://www.kkkk1000.com/images/getImgData/arithmetic.gif',
+  'https://www.kkkk1000.com/images/wxQrCode2.png'
+];
+function loadImg(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      console.log('一张图片加载完成');
+      resolve();
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+var promises = urls.map((url) => {
+  return function () {
+    return loadImg(url);
+  };
+});
+function log() {
+  console.log('done!!!!!!!!!!');
+}
+function sendRequest(promises, max, callback) {
+  const promiseArr = [...promises];
+  const ps = promiseArr.splice(0, max).map((item, index) => {
+    return item()
+      .then(() => index)
+      .catch(() => index);
+  });
+  return promiseArr
+    .reduce((prev, cur, index) => {
+      return prev
+        .then(() => {
+          return Promise.race(ps);
+        })
+        .then((idx) => {
+          return (ps[idx] = cur()
+            .then(() => index)
+            .catch(() => index));
+        });
+    }, Promise.resolve())
+    .then(() => {
+      return Promise.all(ps);
+    })
+    .then(() => {
+      callback();
+    });
+}
+sendRequest(promises, 3, log);
+// 29. 实现compose函数，类似koa-compose中间件
+function compose(middlewares) {
+  return function () {
+    return dispatch(0);
+    function dispatch(i) {
+      const fn = middlewares[i];
+      if (!fn) return;
+      return fn(function next() {
+        dispatch(i + 1);
+      });
+    }
+  };
+}
+// 30. 单链表是否有环
+function hasCircle(head) {
+  let p1 = head,
+    p2 = head.next;
+  while (p2) {
+    if (p1 === p2) {
+      return true;
+    }
+    p1 = p1.next;
+    p2 = p2.next.next;
+  }
+  return false;
+}
+// 31.
+var timeout = (ms) =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
 
+var ajax1 = () =>
+  timeout(2000).then(() => {
+    console.log('1');
+    return 1;
+  });
+
+var ajax2 = () =>
+  timeout(1000).then(() => {
+    console.log('2');
+    return 2;
+  });
+
+var ajax3 = () =>
+  timeout(2000).then(() => {
+    console.log('3');
+    return 3;
+  });
+
+var mergePromise = (ajaxArray) => {
+  // 在这里实现你的代码
+  const res = [];
+  return ajaxArray.reduce((prev, cur) => {
+    return prev.then(cur).then((data) => {
+      res.push(data);
+      return res;
+    });
+  }, Promise.resolve());
+};
+
+mergePromise([ajax1, ajax2, ajax3]).then((data) => {
+  console.log('done');
+  console.log(data); // data 为 [1, 2, 3]
+});
