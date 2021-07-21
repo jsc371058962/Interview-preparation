@@ -2,7 +2,7 @@
 function bubbleSort(array) {
   const length = array.length;
   for (let i = 0; i < length; i++) {
-    for (let j = 0; j < length - i; j++) {
+    for (let j = 0; j < length - i - 1; j++) {
       if (array[j] > array[j + 1]) {
         [array[j], array[j + 1]] = [array[j + 1], array[j]];
       }
@@ -597,12 +597,11 @@ function levelTraverse(treeNode) {
   }
 }
 
-
 // 冒泡排序
 function bubbleSort(array) {
   const length = array.length;
   for (let i = 0; i < length; i++) {
-    for (let j = 0; j < length - i; j++) {
+    for (let j = 0; j < length - i - 1; j++) {
       if (array[j] > array[j + 1]) {
         [array[j], array[j + 1]] = [array[j + 1], array[j]];
       }
@@ -690,7 +689,8 @@ function partition(array, start, end) {
 // 二分查找, (有序数组)
 function binarySearch(array, target) {
   const length = array.length;
-  let left = 0, right = length - 1;
+  let left = 0,
+    right = length - 1;
   while (left <= right) {
     const mid = ~~((left + right) / 2);
     if (array[mid] === target) {
@@ -712,7 +712,7 @@ var tree = {
     left: {
       val: 4,
       left: {
-        val: 8,
+        val: 8
       },
       right: {
         val: 9
@@ -721,7 +721,7 @@ var tree = {
     right: {
       val: 5,
       left: {
-        val: 10,
+        val: 10
       },
       right: {
         val: 11
@@ -740,7 +740,7 @@ var tree = {
       val: 7
     }
   }
-}
+};
 // 先序遍历 递归(根->左->右)
 function preOrderTraverse(treeNode, array = []) {
   if (!treeNode) return array;
@@ -878,25 +878,25 @@ function bfs(treeNode, nodeList = []) {
 var vnode = {
   tag: 'DIV',
   attrs: {
-    id: 'app',
+    id: 'app'
   },
   children: [
     {
       tag: 'SPAN',
-      children: [{ tag: 'A', children: [] }],
+      children: [{ tag: 'A', children: [] }]
     },
     {
       tag: 'SPAN',
       children: [
         { tag: 'A', children: [] },
-        { tag: 'A', children: [] },
-      ],
-    },
-  ],
+        { tag: 'A', children: [] }
+      ]
+    }
+  ]
 };
 
 function _render(vnode) {
-  if (typeof vnode === 'number') (vnode = String(vnode));
+  if (typeof vnode === 'number') vnode = String(vnode);
   if (typeof vnode === 'string') return document.createTextNode(vnode);
   const dom = document.createElement(vnode.tag);
   const attrs = vnode.attrs;
@@ -912,8 +912,7 @@ function _render(vnode) {
   return dom;
 }
 
-
-const { setSimuInterval, cancelSimuInterval }= (function () {
+const { setSimuInterval, cancelSimuInterval } = (function () {
   let timer = null;
   function setSimuInterval(callback, timeout) {
     timer = setTimeout(() => {
@@ -927,4 +926,3 @@ const { setSimuInterval, cancelSimuInterval }= (function () {
   }
   return { setSimuInterval, cancelSimuInterval };
 })();
-

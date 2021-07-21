@@ -450,7 +450,7 @@ console.log(person === person1);
 
 // 手动实现简单的深拷贝(可拷贝Symbol)
 function deepClone(obj, map = new weakMap()) {
-  // null, nudefined直接返回
+  // null, undefined直接返回
   if (obj == null) return obj;
   if (obj instanceof Date) return new Date(obj);
   if (obj instanceof RegExp) return new RegExp(obj);

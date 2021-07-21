@@ -12,7 +12,7 @@
 function bubbleSort(array) {
   const length = array.length;
   for (let i = 0; i < length; i++) {
-    for (let j = 0; j < length - i; j++) {
+    for (let j = 0; j < length - i - 1; j++) {
       if (array[j] > array[j + 1]) {
         [array[j], array[j + 1]] = [array[j + 1], array[j]];
       }
@@ -93,7 +93,8 @@ function partition(array, start, end) {
 // 二分查找, 预置条件: 升序数组, 时间复杂度: O(logn), 空间复杂度: O(1)
 function binarySearch(array, target) {
   const length = array.length;
-  let left = 0, right = length - 1;
+  let left = 0,
+    right = length - 1;
   while (left <= right) {
     const mid = ~~((left + right) / 2);
     if (array[mid] === target) {
@@ -104,7 +105,7 @@ function binarySearch(array, target) {
       right = mid - 1;
     }
   }
-  return - 1;
+  return -1;
 }
 
 // 先序遍历, 迭代
@@ -118,7 +119,8 @@ function preorderTraverse(root, nodeList = []) {
 //迭代
 function preorderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node.val);
@@ -139,7 +141,9 @@ function inorderTraverse(root, nodeList = []) {
 // 迭代
 function inorderTraverse(root) {
   if (!root) return [];
-  let stack = [], nodeList = [], node = root;
+  let stack = [],
+    nodeList = [],
+    node = root;
   while (stack.length || node) {
     if (node) {
       stack.push(node);
@@ -166,7 +170,8 @@ function postorderTraverse(root, nodeList = []) {
 //迭代
 function postorderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.unshift(node);
@@ -188,7 +193,8 @@ function levelTraverse(root, nodeList = []) {
 // 迭代
 function leveLTraverse(root) {
   if (!root) return [];
-  const queue = [root], nodeList = [];
+  const queue = [root],
+    nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node.val);
@@ -211,7 +217,8 @@ function dfs(root, nodeList = []) {
 // 迭代
 function dfs(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node);
@@ -226,7 +233,8 @@ function dfs(root) {
 // 树的广度优先遍历, 迭代
 function bfs(root) {
   if (!root) return [];
-  const queue = [root], nodeList = [];
+  const queue = [root],
+    nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node);
@@ -287,4 +295,3 @@ function versionsSort(array) {
   });
 }
 console.log(versionsSort(arr));
-

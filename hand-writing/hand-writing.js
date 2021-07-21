@@ -453,7 +453,7 @@ function bubbleSort(array) {
   // 控制循环次数
   for (let i = 0; i < len; i++) {
     // 控制内循环并交换
-    for (let j = 0; j < len - i; j++) {
+    for (let j = 0; j < len - i - 1; j++) {
       if (array[j] > array[j + 1]) {
         [array[j], array[j + 1]] = [array[j + 1], array[j]];
       }
@@ -809,7 +809,7 @@ getString(string);
 function bubbleSort(array) {
   const len = array.length;
   for (let i = 0; i < len; i++) {
-    for (let j = 0; j < len - i; j++) {
+    for (let j = 0; j < len - i - 1; j++) {
       if (array[j] > array[j + 1]) {
         [array[j], array[j + 1]] = [array[j + 1], array[j]];
       }

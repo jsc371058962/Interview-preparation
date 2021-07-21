@@ -462,7 +462,7 @@ function bubbleSort(array) {
   // 外层控制循环次数
   // for (let i = 0; i < len; i++) { // O(n)
   //   // 内层控制交换规则
-  //   for (let j = 0; j < len - i ; j++) { // O(n)
+  //   for (let j = 0; j < len - i - 1 ; j++) { // O(n)
   //     if (array[j] > array[j + 1]) {
   //       [array[j], array[j + 1]] = [array[j + 1], array[j]];
   //     }
@@ -471,7 +471,7 @@ function bubbleSort(array) {
 
   // // 1
   // for (let i = 0; i < len; i++) {
-  //   for (let j = 0; j < len - i; j++) {
+  //   for (let j = 0; j < len - i - 1; j++) {
   //     if (array[j] > array[j + 1]) {
   //       [array[j], array[j + 1]] = [array[j + 1], array[j]];
   //     }

@@ -10,7 +10,7 @@
 function bubbleSort(array) {
   const length = array.length;
   for (let i = 0; i < length; i++) {
-    for (let j = 0; j < length - i; j++) {
+    for (let j = 0; j < length - i - 1; j++) {
       if (array[j] > array[j + 1]) {
         [array[j + 1], array[j]] = [array[j], array[j + 1]];
       }
@@ -92,7 +92,8 @@ function partition(array, start, end) {
 // 二分查找, 预置条件: 升序数组, 时间复杂度: O(logn), 空间复杂度: O(1)
 function binarySearch(array, target) {
   let length = array.length,
-    left = 0, right = length - 1;
+    left = 0,
+    right = length - 1;
   while (left <= right) {
     const mid = ~~((left + right) / 2);
     if (array[mid] === target) {
@@ -150,7 +151,8 @@ function inOrderTraverse(root, nodeList = []) {
 function inOrderTraverse(root) {
   if (!root) return [];
   let node = root;
-  const stack = [], nodeList = [];
+  const stack = [],
+    nodeList = [];
   while (stack.length || node) {
     if (node) {
       stack.push(node);
@@ -182,7 +184,8 @@ function postOrderTraverse(root, nodeList = []) {
 // 迭代, 栈结构
 function postOrderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.unshift(node.val);
@@ -293,8 +296,3 @@ function _render(root) {
   children.forEach((vnode) => dom.appendChild(_render(vnode)));
   return dom;
 }
-
-
-
-
-

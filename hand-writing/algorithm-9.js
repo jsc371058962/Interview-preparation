@@ -37,7 +37,7 @@
 function bubbleSort(arr) {
   const length = arr.length;
   for (let i = 0; i < length; i++) {
-    for (let j = 0; j < length - i; j++) {
+    for (let j = 0; j < length - i - 1; j++) {
       if (arr[j] > arr[j + 1]) {
         [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
       }
@@ -586,10 +586,10 @@ function toTree(list, parId = 0) {
       result.push(list[i]);
       continue;
     }
-    if (obj[id].children.length) {
-      obj[id].children.push(list[i]);
+    if (obj[pId].children.length) {
+      obj[pId].children.push(list[i]);
     } else {
-      obj[i].children = [list[i]];
+      obj[pId].children = [list[i]];
     }
   }
   return result;

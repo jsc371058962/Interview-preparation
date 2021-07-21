@@ -13,7 +13,7 @@
 function bubbleSort(array) {
   const length = array.length;
   for (let i = 0; i < length; i++) {
-    for (let j = 0; j < length - i; j++) {
+    for (let j = 0; j < length - i - 1; j++) {
       if (array[j] > array[j + 1]) {
         [array[j], array[j + 1]] = [array[j + 1], array[j]];
       }
@@ -28,7 +28,7 @@ function selectSort(array) {
   for (let i = 0; i < length; i++) {
     for (let j = i + 1; j < length; j++) {
       if (array[i] > array[j]) {
-        [array[i], array[j]] = [array[j], array[i]]
+        [array[i], array[j]] = [array[j], array[i]];
       }
     }
   }
@@ -67,7 +67,7 @@ function merge(left, right) {
       result.push(right.shift());
     }
   }
-  left.length ? result.push(...left) : result.push(...right)
+  left.length ? result.push(...left) : result.push(...right);
   return result;
 }
 
@@ -95,7 +95,8 @@ function partition(array, start, end) {
 // 先序遍历，迭代
 function preorderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node.val);
@@ -108,7 +109,8 @@ function preorderTraverse(root) {
 // 中序遍历,迭代
 function inorderTraverse(root) {
   if (!root) return [];
-  const stack = [], nodeList = [];
+  const stack = [],
+    nodeList = [];
   let node = root;
   while (stack.length || node) {
     if (node) {
@@ -128,7 +130,8 @@ function inorderTraverse(root) {
 // 后序遍历
 function postorderTraverse(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.unshift(node.val);
@@ -151,7 +154,8 @@ function levelTraverse(root, nodeList = []) {
 // 迭代
 function levelTraverse(root) {
   if (!root) return [];
-  const queue = [root], nodeList = [];
+  const queue = [root],
+    nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node.val);
@@ -175,7 +179,8 @@ function dfs(root, nodeList = []) {
 // 迭代
 function dfs(root) {
   if (!root) return [];
-  const stack = [root], nodeList = [];
+  const stack = [root],
+    nodeList = [];
   while (stack.length) {
     const node = stack.pop();
     nodeList.push(node);
@@ -190,7 +195,8 @@ function dfs(root) {
 // bfs,迭代
 function bfs(root) {
   if (!root) return [];
-  const queue = [root], nodeList = [];
+  const queue = [root],
+    nodeList = [];
   while (queue.length) {
     const node = queue.shift();
     nodeList.push(node);
