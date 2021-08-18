@@ -124,11 +124,11 @@ Object.myAssign = function (target, ...sources) {
 };
 
 // 实现防抖综合版本
-function debounce(fn, timeout, immidate = false) {
+function debounce(fn, timeout, immediate = false) {
   let timer = null;
   return function (...args) {
     if (timer) clearTimeout(timer);
-    if (immidate) {
+    if (immediate) {
       const isCallNow = !timer;
       timer = setTimeout(() => {
         timer = null;
