@@ -1,0 +1,93 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>test-RIC</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <button id="btn">添加节点</button><button id="insertBtn">优先级任务</button>
+  </div>
+  <div id="root" style="width: 720px; height: 100%; word-wrap: break-word;"></div>
+</body>
+<script>
+  const btn = document.querySelector("#btn");
+  const insertBtn = document.querySelector("#insertBtn");
+  const container = document.querySelector("#root");
+
+  // 直接生成100000个节点，内容为1
+  // btn.onclick = () => {
+  //   let i = 0;
+  //   for (; i < 100000; i++) {
+  //     const span = document.createElement('span');
+  //     span.innerText = "1";
+  //     container.appendChild(span);
+  //   }
+  // }
+
+
+  // 1.先生成100000个节点
+
+  const task = () => {
+    const startTime = performance.now()
+    let span = document.createElement('span')
+    span.innerText = 1
+    while (performance.now() - startTime < 1) {
+      // 阻塞 1 ms
+    }
+    container.appendChild(span)
+  }
+  const taskQueue = Array.from({ length: 10000 }, () => task)
+  function performWorkUnit() {
+    // 任务执行完毕后结束递归
+    if (taskQueue.length === 0) {
+      btn.innerText = '执行';
+      return
+    }
+
+    requestIdleCallback(deadline => {
+      let task;
+      while ((task = taskQueue.shift()) && !deadline.didTimeout && deadline.timeRemaining() > 0) {
+        task()
+      }
+      performWorkUnit()
+    })
+  }
+
+  function highPriorityTask() {
+    const startTime = performance.now()
+    let span = document.createElement('span')
+    span.style.color = 'red'
+    span.innerHTML = '<strong>222222222</strong>'
+
+    // while (performance.now() - startTime < 1) {
+    //   // 阻塞 1 ms
+    // }
+    container.appendChild(span)
+  }
+  btn.onclick = () => {
+    btn.innerText = '已点击，插入中'
+
+    requestIdleCallback(performWorkUnit)
+  }
+
+  insertBtn.onclick = () => {
+    taskQueue.unshift(highPriorityTask)
+  }
+
+
+  btn.click();
+
+
+</script>
+
+</html>

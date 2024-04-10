@@ -193,7 +193,7 @@ function flat(arr) {
 }
 
 function flat1(arr) {
-  while (arr.som((item) => Array.isArray(item))) {
+  while (arr.some((item) => Array.isArray(item))) {
     arr = [].concat(...arr);
   }
   return arr;

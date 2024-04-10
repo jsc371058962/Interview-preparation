@@ -4,7 +4,6 @@ class LinkedList {
     this.next = null;
   }
 }
-
 // ----------------------start-------------------
 // 反转单链表(迭代)
 function reverseList(head) {

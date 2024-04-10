@@ -208,7 +208,7 @@ function bfs(root) {
   return nodeList;
 }
 
-// 虚拟DOM转换真实DOM
+// 虚拟DOM转换真实DOM会执行其中的 JavaScript 代码
 function _render(vnode) {
   if (typeof vnode === 'number') {
     vnode = String(vnode);
